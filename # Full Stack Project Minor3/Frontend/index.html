@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Registration Management System</title>
+    <!-- Google Fonts: Inter & Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Background glowing orbs -->
+    <div class="blob-container">
+        <div class="blob blob-purple"></div>
+        <div class="blob blob-blue"></div>
+        <div class="blob blob-cyan"></div>
+    </div>
+
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-logo">
+                <i class="fa-solid fa-calendar-check logo-icon"></i>
+                <div>
+                    <h1>EventRegistration</h1>
+                    <p class="subtitle">Event Registration Management System</p>
+                </div>
+            </div>
+            <div class="connection-status" id="connectionStatus">
+                <span class="status-indicator online"></span>
+                <span class="status-text">Connected to MongoDB Atlas</span>
+            </div>
+        </header>
+
+        <!-- Stats Overview Row -->
+        <section class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon-wrapper purple">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-label">Total Registrations</span>
+                    <span class="stat-value" id="statTotalRegistrations">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-wrapper blue">
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-label">Total Revenue</span>
+                    <span class="stat-value" id="statTotalRevenue">₹0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-wrapper cyan">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-label">Colleges Represented</span>
+                    <span class="stat-value" id="statTotalColleges">0</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon-wrapper green">
+                    <i class="fa-solid fa-award"></i>
+                </div>
+                <div class="stat-details">
+                    <span class="stat-label">Active Events</span>
+                    <span class="stat-value" id="statTotalEvents">0</span>
+                </div>
+            </div>
+        </section>
+
+        <main class="dashboard-grid">
+            <!-- Left Column: Form Panel -->
+            <section class="panel-section form-panel">
+                <div class="glass-card">
+                    <div class="card-header">
+                        <h2 id="formTitle">Register Participant</h2>
+                        <p id="formSubtitle">Enter the participant's registration details below</p>
+                    </div>
+                    <form id="registrationForm" class="registration-form" novalidate>
+                        <!-- Participant ID -->
+                        <div class="form-group">
+                            <label for="participant_id">Participant ID <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-id-card input-icon"></i>
+                                <input type="number" id="participant_id" name="participant_id" placeholder="e.g., 1001" required min="1">
+                            </div>
+                            <span class="error-msg" id="err_participant_id"></span>
+                        </div>
+
+                        <!-- Full Name -->
+                        <div class="form-group">
+                            <label for="full_name">Full Name <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-user input-icon"></i>
+                                <input type="text" id="full_name" name="full_name" placeholder="e.g., Rahul Sharma" required>
+                            </div>
+                            <span class="error-msg" id="err_full_name"></span>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="form-group">
+                            <label for="email">Email Address <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-envelope input-icon"></i>
+                                <input type="email" id="email" name="email" placeholder="e.g., rahul@gmail.com" required>
+                            </div>
+                            <span class="error-msg" id="err_email"></span>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="form-group">
+                            <label for="phone">Phone Number <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-phone input-icon"></i>
+                                <input type="tel" id="phone" name="phone" placeholder="e.g., 9876543210" required>
+                            </div>
+                            <span class="error-msg" id="err_phone"></span>
+                        </div>
+
+                        <!-- College -->
+                        <div class="form-group">
+                            <label for="college">College Name <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-school input-icon"></i>
+                                <input type="text" id="college" name="college" placeholder="e.g., ABC Engineering College" required>
+                            </div>
+                            <span class="error-msg" id="err_college"></span>
+                        </div>
+
+                        <!-- Event Name -->
+                        <div class="form-group">
+                            <label for="event_name">Event Name <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-gamepad input-icon"></i>
+                                <input type="text" id="event_name" name="event_name" placeholder="e.g., Hackathon 2026" required>
+                            </div>
+                            <span class="error-msg" id="err_event_name"></span>
+                        </div>
+
+                        <!-- Registration Fee -->
+                        <div class="form-group">
+                            <label for="registration_fee">Registration Fee (₹) <span class="required">*</span></label>
+                            <div class="input-wrapper">
+                                <i class="fa-solid fa-indian-rupee-sign input-icon"></i>
+                                <input type="number" id="registration_fee" name="registration_fee" placeholder="e.g., 500" required min="0">
+                            </div>
+                            <span class="error-msg" id="err_registration_fee"></span>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" id="submitBtn" class="btn btn-primary btn-block">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span id="submitBtnText">Register Participant</span>
+                            </button>
+                            <button type="button" id="cancelEditBtn" class="btn btn-secondary btn-block hidden">
+                                <i class="fa-solid fa-xmark"></i>
+                                <span>Cancel Update</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Right Column: Database Records List -->
+            <section class="panel-section list-panel">
+                <div class="glass-card">
+                    <div class="card-header list-header">
+                        <div>
+                            <h2>Participant List</h2>
+                            <p>Manage and track all registered participants</p>
+                        </div>
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" id="searchInput" placeholder="Search by name, event, college...">
+                        </div>
+                    </div>
+
+                    <!-- Loader -->
+                    <div class="loader-container hidden" id="tableLoader">
+                        <div class="spinner"></div>
+                        <p>Loading database records...</p>
+                    </div>
+
+                    <!-- Empty State -->
+                    <div class="empty-state hidden" id="emptyState">
+                        <i class="fa-regular fa-folder-open empty-icon"></i>
+                        <h3>No Registrations Found</h3>
+                        <p>Register a new participant to populate the records.</p>
+                    </div>
+
+                    <!-- Participant List View -->
+                    <div class="participants-list-container" id="participantsListContainer">
+                        <!-- Items will be dynamically generated by JS -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Global Toast Notifications Container -->
+    <div class="toast-container" id="toastContainer"></div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
