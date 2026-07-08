@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A premium, glassmorphic To-Do List Management System featuring Django REST Framework backend and MongoDB Atlas.">
+    <title>To-Do List Management System</title>
+    <!-- Google Fonts - Outfit -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-glows">
+        <div class="glow-1"></div>
+        <div class="glow-2"></div>
+    </div>
+    
+    <div class="app-container">
+        <header class="app-header animate-fade-in">
+            <h1><i class="fa-solid fa-clipboard-list header-icon"></i> To-Do List Management System</h1>
+            <p class="subtitle">Efficiently organize, track, and complete your daily goals</p>
+        </header>
+
+        <!-- Stats Counter Dashboard -->
+        <section class="stats-dashboard animate-slide-up" aria-label="Task Statistics">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fa-solid fa-list-check"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value" id="total-tasks-count">0</span>
+                    <span class="stat-label">Total Tasks</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon pending"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value" id="pending-tasks-count">0</span>
+                    <span class="stat-label">Pending Tasks</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon completed"><i class="fa-solid fa-circle-check"></i></div>
+                <div class="stat-info">
+                    <span class="stat-value" id="completed-tasks-count">0</span>
+                    <span class="stat-label">Completed Tasks</span>
+                </div>
+            </div>
+            <div class="stat-card progress-card">
+                <div class="stat-info">
+                    <div class="progress-info-row">
+                        <span class="stat-label">Completion Progress</span>
+                        <span class="stat-value" id="completion-percentage">0%</span>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar-fill" id="progress-bar-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <main class="main-content">
+            <!-- Left Side: Task Creation Form -->
+            <section class="form-section animate-slide-up-left" aria-labelledby="form-title">
+                <div class="glass-panel">
+                    <h2 id="form-title"><i class="fa-solid fa-circle-plus"></i> Create New Task</h2>
+                    <form id="task-form">
+                        <div class="input-group">
+                            <label for="task-title">Task Title</label>
+                            <input type="text" id="task-title" placeholder="Enter task title..." required autocomplete="off">
+                        </div>
+
+                        <div class="input-group">
+                            <label for="task-desc">Description</label>
+                            <textarea id="task-desc" placeholder="Provide detailed task description..." rows="4"></textarea>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="input-group half">
+                                <label for="task-priority">Priority</label>
+                                <select id="task-priority">
+                                    <option value="Low">Low</option>
+                                    <option value="Medium" selected>Medium</option>
+                                    <option value="High">High</option>
+                                </select>
+                            </div>
+
+                            <div class="input-group half">
+                                <label for="task-status">Status</label>
+                                <select id="task-status">
+                                    <option value="Pending" selected>Pending</option>
+                                    <option value="Completed">Completed</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" id="add-task-btn" class="btn btn-primary">
+                            <i class="fa-solid fa-plus"></i> Add Task
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Right Side: Task Board & List -->
+            <section class="list-section animate-slide-up-right" aria-labelledby="list-title">
+                <div class="glass-panel">
+                    <div class="panel-header">
+                        <h2 id="list-title"><i class="fa-solid fa-list"></i> Your Tasks</h2>
+                        
+                        <!-- Search Bar -->
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" id="search-input" placeholder="Search tasks...">
+                        </div>
+                    </div>
+
+                    <!-- Filters Control Panel -->
+                    <div class="filters-container">
+                        <div class="filter-group">
+                            <span class="filter-label">Filter Status:</span>
+                            <div class="filter-buttons">
+                                <button type="button" class="filter-btn active" data-filter-status="all">All</button>
+                                <button type="button" class="filter-btn" data-filter-status="Pending">Pending</button>
+                                <button type="button" class="filter-btn" data-filter-status="Completed">Completed</button>
+                            </div>
+                        </div>
+
+                        <div class="filter-group">
+                            <span class="filter-label">Filter Priority:</span>
+                            <div class="filter-buttons">
+                                <button type="button" class="filter-btn active" data-filter-priority="all">All</button>
+                                <button type="button" class="filter-btn" data-filter-priority="High">High</button>
+                                <button type="button" class="filter-btn" data-filter-priority="Medium">Medium</button>
+                                <button type="button" class="filter-btn" data-filter-priority="Low">Low</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tasks List Grid -->
+                    <div class="task-list-wrapper">
+                        <!-- Loading State -->
+                        <div id="loading-state" class="loading-state">
+                            <i class="fa-solid fa-circle-notch fa-spin spinner"></i>
+                            <p>Loading tasks from MongoDB...</p>
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div id="empty-state" class="empty-state hidden">
+                            <div class="empty-icon"><i class="fa-regular fa-folder-open"></i></div>
+                            <h3>No tasks found</h3>
+                            <p>Get started by creating a new task, or adjust your filters.</p>
+                        </div>
+
+                        <!-- Active Task List -->
+                        <div id="task-list" class="task-list">
+                            <!-- Tasks will be rendered dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast-notification" class="toast-notification hidden" role="alert">
+        <i class="toast-icon fa-solid fa-circle-info"></i>
+        <span id="toast-message">Notification message goes here</span>
+    </div>
+
+    <!-- Custom Glassmorphic Confirm Modal -->
+    <div id="confirm-modal" class="modal-overlay hidden">
+        <div class="modal-content glass-panel animate-scale-up">
+            <h3><i class="fa-solid fa-triangle-exclamation warning-icon"></i> Delete Task?</h3>
+            <p>Are you sure you want to delete this task? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button id="confirm-cancel-btn" class="btn btn-secondary">Cancel</button>
+                <button id="confirm-delete-btn" class="btn btn-danger">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Script -->
+    <script src="script.js"></script>
+</body>
+</html>

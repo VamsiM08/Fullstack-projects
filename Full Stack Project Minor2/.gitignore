@@ -1,0 +1,14 @@
+# Python compilation cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django database
+db.sqlite3
+
+# Local environment variables
+.env
+
+# OS files
+.DS_Store
+Thumbs.db
