@@ -1,0 +1,32 @@
+[
+    {
+        "_id": "show-1",
+        "movieId": "movie-leo",
+        "theatreId": "theatre-pvr",
+        "screenId": "screen-pvr-1",
+        "showDate": "2026-07-15",
+        "showTime": "10:00 AM",
+        "ticketPrice": 250,
+        "enabled": true
+    },
+    {
+        "_id": "show-2",
+        "movieId": "movie-pushpa2",
+        "theatreId": "theatre-inox",
+        "screenId": "screen-inox-2",
+        "showDate": "2026-07-15",
+        "showTime": "02:00 PM",
+        "ticketPrice": 300,
+        "enabled": true
+    },
+    {
+        "_id": "show-3",
+        "movieId": "movie-kalki",
+        "theatreId": "theatre-cinepolis",
+        "screenId": "screen-cine-3",
+        "showDate": "2026-07-15",
+        "showTime": "07:30 PM",
+        "ticketPrice": 350,
+        "enabled": true
+    }
+]

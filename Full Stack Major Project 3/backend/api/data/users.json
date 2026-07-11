@@ -1,0 +1,34 @@
+[
+    {
+        "_id": "user-admin",
+        "name": "Admin",
+        "email": "admin@movies.com",
+        "phone": "9876543210",
+        "password": "$pbkdf2-sha256$29000$rXXu/d9bC6F0LkVojfG.1w$Cu01bUU0otJmAm7Ccvu7Z.9o.iDBLeWUWePXVF2nR.g",
+        "role": "admin"
+    },
+    {
+        "_id": "user-rahul",
+        "name": "Rahul Sharma",
+        "email": "rahul@gmail.com",
+        "phone": "9876543211",
+        "password": "$pbkdf2-sha256$29000$DmHsHSOEUErJ2TuHEALgnA$4L.J0SrJUwajDmW5TYGzkYdHjxC1C7DTXWI6frV9Zz0",
+        "role": "customer"
+    },
+    {
+        "_id": "user-priya",
+        "name": "Priya Verma",
+        "email": "priya@gmail.com",
+        "phone": "9876543212",
+        "password": "$pbkdf2-sha256$29000$stZ6DwHgnPOeMwZgDMHY2w$CIOUfjNp6SKn75yToN7/s2NK9flybllCraodRZVOaRc",
+        "role": "customer"
+    },
+    {
+        "_id": "184bd317-f2f9-4a5f-bd89-f424b9e9699f",
+        "name": "Integration Test User",
+        "email": "testuser_1783743446@test.com",
+        "phone": "9999999999",
+        "password": "$pbkdf2-sha256$29000$UIpR6h1jLMXYW8sZQyilNA$M1T/Il0sLZLQbyhiTTegXNpxdJ5Ih3ZLQ2zf1NQ02gU",
+        "role": "customer"
+    }
+]

@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Seats - CinePass</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Shared Navigation Header -->
+    <header></header>
+
+    <main class="container">
+        
+        <!-- Header Info -->
+        <section class="fade-in" style="margin-bottom: 2rem;">
+            <a href="javascript:history.back()" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 1rem;">
+                <i class="fas fa-arrow-left"></i> Back to Movie Details
+            </a>
+            <h1 id="booking-movie-title" style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800;">Select Seats</h1>
+            <p id="booking-show-details" style="color: var(--text-secondary); font-size: 1rem; margin-top: 0.25rem;">Loading show details...</p>
+        </section>
+
+        <!-- Booking Layout -->
+        <section class="booking-layout fade-in">
+            <!-- Left Seats Area -->
+            <div class="glass-panel" style="padding: 3rem 2rem;">
+                <div class="screen-container">
+                    <div class="screen-visual"></div>
+                    <div class="screen-text">All Eyes Here (Screen)</div>
+                </div>
+
+                <!-- Seat arrangement grid -->
+                <div class="seats-grid" id="seats-grid-element">
+                    <!-- Dynamic seats generation -->
+                </div>
+
+                <!-- Legend -->
+                <div class="seats-legend">
+                    <div class="legend-item">
+                        <div class="seat"></div>
+                        <span>Available</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat selected"></div>
+                        <span>Selected</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="seat booked"></div>
+                        <span>Sold Out</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right checkout Sidebar -->
+            <div class="glass-panel summary-card">
+                <h3 class="summary-title">Booking Summary</h3>
+                
+                <div class="summary-row">
+                    <span>Ticket Price</span>
+                    <span id="summary-unit-price">Rs. 0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Selected Seats</span>
+                    <span id="summary-selected-seats" style="font-weight: 600; color: var(--accent-magenta);">None</span>
+                </div>
+                <div class="summary-row">
+                    <span>Convenience Fee</span>
+                    <span style="color: var(--success); font-weight: 500;">FREE</span>
+                </div>
+                
+                <div class="summary-row total">
+                    <span>Total Amount</span>
+                    <span id="summary-total-price" style="color: var(--text-primary);">Rs. 0</span>
+                </div>
+
+                <!-- Payment Methods -->
+                <div style="margin-top: 2rem;">
+                    <h4 style="font-family: var(--font-heading); font-size: 1rem; margin-bottom: 0.8rem;">Select Payment Method</h4>
+                    <div class="payment-methods-grid">
+                        <div class="payment-method-item active" data-method="UPI">
+                            <input type="radio" name="payment" checked id="pay-upi">
+                            <label for="pay-upi"><i class="fas fa-mobile-alt"></i> UPI</label>
+                        </div>
+                        <div class="payment-method-item" data-method="Card">
+                            <input type="radio" name="payment" id="pay-card">
+                            <label for="pay-card"><i class="far fa-credit-card"></i> Card</label>
+                        </div>
+                        <div class="payment-method-item" data-method="Wallet">
+                            <input type="radio" name="payment" id="pay-wallet">
+                            <label for="pay-wallet"><i class="fas fa-wallet"></i> Wallet</label>
+                        </div>
+                        <div class="payment-method-item" data-method="Cash">
+                            <input type="radio" name="payment" id="pay-cash">
+                            <label for="pay-cash"><i class="fas fa-money-bill-wave"></i> Cash</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 2rem;">
+                    <button id="checkout-btn" class="btn-primary" style="width: 100%; padding: 0.9rem; font-size: 1rem;">
+                        <i class="fas fa-check" style="margin-right: 0.5rem;"></i>Confirm Booking
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/app.js"></script>
+    <script>
+        const showId = getQueryParam("showId");
+        let showDetails = null;
+        let selectedSeats = [];
+        let bookedSeats = [];
+        let ticketPrice = 0;
+
+        async function loadBookingDetails() {
+            if (!showId) {
+                showToast("Invalid show selected", "danger");
+                setTimeout(() => window.location.href = "index.html", 1500);
+                return;
+            }
+
+            try {
+                // Fetch Show details
+                showDetails = await apiRequest(`shows/${showId}`);
+                if (!showDetails) return;
+
+                ticketPrice = showDetails.ticketPrice;
+                
+                // Set Header values
+                document.getElementById("booking-movie-title").innerText = showDetails.movie.title;
+                document.getElementById("booking-show-details").innerHTML = `
+                    <i class="fas fa-film"></i> ${showDetails.movie.language} • 
+                    <i class="fas fa-hotel"></i> ${showDetails.theatre.theatreName} (${showDetails.screen.screenName}) • 
+                    <i class="fas fa-calendar-day"></i> ${showDetails.showDate} • 
+                    <i class="fas fa-clock"></i> ${showDetails.showTime}
+                `;
+
+                document.getElementById("summary-unit-price").innerText = `Rs. ${ticketPrice}`;
+
+                // Load seat layout status
+                await fetchSeatsLayout();
+
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        async function fetchSeatsLayout() {
+            try {
+                const seatsData = await apiRequest(`seats/${showId}`);
+                bookedSeats = seatsData.bookedSeats || [];
+                renderSeatsGrid(seatsData.totalSeats || 120);
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        function renderSeatsGrid(totalSeatsCount) {
+            const grid = document.getElementById("seats-grid-element");
+            grid.innerHTML = "";
+
+            // Let's layout 120 seats: Rows A to L (12 rows), numbers 1 to 10.
+            const rows = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L"];
+            const seatsPerRow = 10;
+            const rowsToDraw = Math.ceil(totalSeatsCount / seatsPerRow);
+
+            for (let r = 0; r < rowsToDraw; r++) {
+                const rowLabel = rows[r];
+                for (let s = 1; s <= seatsPerRow; s++) {
+                    const seatId = `${rowLabel}${s}`;
+                    const isBooked = bookedSeats.includes(seatId);
+
+                    const seatDiv = document.createElement("div");
+                    seatDiv.className = `seat ${isBooked ? 'booked' : ''}`;
+                    seatDiv.innerText = seatId;
+                    seatDiv.setAttribute("data-seat-id", seatId);
+
+                    if (!isBooked) {
+                        seatDiv.addEventListener("click", () => toggleSeatSelection(seatDiv, seatId));
+                    }
+
+                    grid.appendChild(seatDiv);
+                }
+            }
+        }
+
+        function toggleSeatSelection(seatDiv, seatId) {
+            if (selectedSeats.includes(seatId)) {
+                // remove
+                selectedSeats = selectedSeats.filter(s => s !== seatId);
+                seatDiv.classList.remove("selected");
+            } else {
+                // add
+                selectedSeats.push(seatId);
+                seatDiv.classList.add("selected");
+            }
+
+            updateSummary();
+        }
+
+        function updateSummary() {
+            const seatsLabel = document.getElementById("summary-selected-seats");
+            const totalPriceLabel = document.getElementById("summary-total-price");
+
+            if (selectedSeats.length === 0) {
+                seatsLabel.innerText = "None";
+                totalPriceLabel.innerText = "Rs. 0";
+            } else {
+                // Sort seats logically
+                selectedSeats.sort((a, b) => {
+                    const aRow = a.charCodeAt(0);
+                    const bRow = b.charCodeAt(0);
+                    if (aRow !== bRow) return aRow - bRow;
+                    return parseInt(a.slice(1)) - parseInt(b.slice(1));
+                });
+                
+                seatsLabel.innerText = selectedSeats.join(", ");
+                totalPriceLabel.innerText = `Rs. ${selectedSeats.length * ticketPrice}`;
+            }
+        }
+
+        // Setup checkout flow
+        async function handleCheckout() {
+            if (!isLoggedIn()) {
+                showToast("Please login to complete your booking", "warning");
+                // Save current URL to redirect back after login
+                setTimeout(() => {
+                    window.location.href = `login.html`;
+                }, 1000);
+                return;
+            }
+
+            if (selectedSeats.length === 0) {
+                showToast("Please select at least one seat to book", "warning");
+                return;
+            }
+
+            const activePaymentEl = document.querySelector(".payment-method-item.active");
+            const paymentMethod = activePaymentEl ? activePaymentEl.getAttribute("data-method") : "UPI";
+
+            const checkoutBtn = document.getElementById("checkout-btn");
+            checkoutBtn.disabled = true;
+            checkoutBtn.innerHTML = `<i class="fas fa-spinner fa-spin" style="margin-right: 0.5rem;"></i>Processing...`;
+
+            try {
+                const bookingResult = await apiRequest("bookings", "POST", {
+                    showId,
+                    seats: selectedSeats,
+                    paymentMethod
+                });
+
+                if (bookingResult && bookingResult.booking) {
+                    showToast("Ticket booked successfully!", "success");
+                    
+                    // Render page into Booking success layout
+                    const mainContainer = document.querySelector("main");
+                    mainContainer.innerHTML = `
+                        <div class="glass-panel fade-in" style="max-width: 600px; margin: 4rem auto 0; padding: 4rem 3rem; text-align: center;">
+                            <i class="fas fa-check-circle fa-5x" style="color: var(--success); margin-bottom: 2rem; filter: drop-shadow(0 0 10px rgba(16,185,129,0.3));"></i>
+                            <h1 style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem;">Booking Confirmed!</h1>
+                            <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 2rem;">
+                                Thank you for booking with CinePass! Your seats <b>${selectedSeats.join(', ')}</b> for <b>${showDetails.movie.title}</b> have been reserved. 
+                                A confirmation has been sent to your email.
+                            </p>
+                            <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                                <a href="profile.html" class="btn-primary" style="text-decoration: none;"><i class="fas fa-ticket-alt" style="margin-right: 0.5rem;"></i>Go to My Bookings</a>
+                                <a href="${API_BASE}/bookings/${bookingResult.booking._id}/pdf?Authorization=Bearer ${getJWT()}" class="btn-secondary" style="text-decoration: none;" download id="direct-pdf-download"><i class="fas fa-download" style="margin-right: 0.5rem;"></i>Download Ticket PDF</a>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // Hook Authorization header parameter into download link since standard browser requests don't pass headers
+                    const pdfLink = document.getElementById("direct-pdf-download");
+                    if (pdfLink) {
+                        pdfLink.addEventListener("click", async (e) => {
+                            e.preventDefault();
+                            try {
+                                showToast("Generating ticket PDF...", "info");
+                                const res = await fetch(pdfLink.href);
+                                if (!res.ok) throw new Error("Failed to download PDF");
+                                const blob = await res.blob();
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = `ticket-${bookingResult.booking._id}.pdf`;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                showToast("PDF Downloaded successfully", "success");
+                            } catch(err) {
+                                console.error(err);
+                                showToast("PDF download failed. Please access it from your profile.", "danger");
+                            }
+                        });
+                    }
+                }
+            } catch(e) {
+                console.error(e);
+                checkoutBtn.disabled = false;
+                checkoutBtn.innerHTML = `<i class="fas fa-check" style="margin-right: 0.5rem;"></i>Confirm Booking`;
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            loadBookingDetails();
+
+            // Toggle active state for payment methods
+            const paymentItems = document.querySelectorAll(".payment-method-item");
+            paymentItems.forEach(item => {
+                item.addEventListener("click", () => {
+                    paymentItems.forEach(x => x.classList.remove("active"));
+                    item.classList.add("active");
+                    const radio = item.querySelector("input[type='radio']");
+                    if (radio) radio.checked = true;
+                });
+            });
+
+            // Handle checkout confirm
+            document.getElementById("checkout-btn").addEventListener("click", handleCheckout);
+        });
+    </script>
+</body>
+</html>

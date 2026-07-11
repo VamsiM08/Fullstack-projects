@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - CinePass</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Shared Navigation Header -->
+    <header></header>
+
+    <main class="container">
+        
+        <div class="profile-layout fade-in">
+            <!-- Sidebar Navigation -->
+            <div class="glass-panel profile-sidebar">
+                <div class="avatar-wrapper">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150" alt="Avatar" id="profile-avatar">
+                    <h3 id="sidebar-user-name" style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; margin-top: 0.5rem;">User Profile</h3>
+                    <p id="sidebar-user-role" style="font-size: 0.8rem; color: var(--accent-magenta); font-weight: 600; text-transform: uppercase;">Customer</p>
+                </div>
+                
+                <button class="sidebar-nav-btn active" id="tab-bookings-btn">
+                    <i class="fas fa-ticket-alt" style="margin-right: 0.6rem; width: 18px;"></i>My Bookings
+                </button>
+                <button class="sidebar-nav-btn" id="tab-profile-btn">
+                    <i class="fas fa-user-edit" style="margin-right: 0.6rem; width: 18px;"></i>Edit Profile
+                </button>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="profile-main-content">
+                
+                <!-- MY BOOKINGS TAB -->
+                <div class="profile-tab-panel active" id="bookings-panel">
+                    <h2 style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; margin-bottom: 1.5rem;">Booking History</h2>
+                    <div id="bookings-list-container">
+                        <!-- Bookings populate here -->
+                        <div style="text-align: center; padding: 3rem; color: var(--text-secondary);">
+                            <i class="fas fa-spinner fa-spin fa-2x" style="margin-bottom: 1rem;"></i>
+                            <p>Loading your booking logs...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EDIT PROFILE TAB -->
+                <div class="glass-panel profile-tab-panel" id="profile-panel" style="padding: 2.5rem; display: none;">
+                    <h2 style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; margin-bottom: 1.5rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 0.75rem;">
+                        Account Information
+                    </h2>
+                    
+                    <form id="edit-profile-form">
+                        <div class="form-group">
+                            <label for="profile-name">Full Name</label>
+                            <input type="text" id="profile-name" required placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-email">Email Address</label>
+                            <input type="email" id="profile-email" required placeholder="john@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-phone">Phone Number</label>
+                            <input type="tel" id="profile-phone" required placeholder="9876543210">
+                        </div>
+                        <div class="form-group" style="margin-top: 1.5rem; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+                            <label for="profile-password">New Password (Leave blank to keep current)</label>
+                            <input type="password" id="profile-password" placeholder="Min. 6 characters">
+                        </div>
+                        
+                        <div style="margin-top: 2rem;">
+                            <button type="submit" class="btn-primary" style="padding: 0.7rem 2rem;">
+                                <i class="fas fa-save" style="margin-right: 0.5rem;"></i>Save Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Check auth status
+            if (!isLoggedIn()) {
+                window.location.href = "login.html";
+                return;
+            }
+
+            const currentUser = getCurrentUser();
+            document.getElementById("sidebar-user-name").innerText = currentUser.name;
+            document.getElementById("sidebar-user-role").innerText = currentUser.role;
+
+            if (currentUser.role === 'admin') {
+                document.getElementById("profile-avatar").src = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150";
+            }
+
+            // Tab toggling logic
+            const tabBookingsBtn = document.getElementById("tab-bookings-btn");
+            const tabProfileBtn = document.getElementById("tab-profile-btn");
+            const bookingsPanel = document.getElementById("bookings-panel");
+            const profilePanel = document.getElementById("profile-panel");
+
+            tabBookingsBtn.addEventListener("click", () => {
+                tabBookingsBtn.classList.add("active");
+                tabProfileBtn.classList.remove("active");
+                bookingsPanel.style.display = "block";
+                profilePanel.style.display = "none";
+                loadBookings();
+            });
+
+            tabProfileBtn.addEventListener("click", () => {
+                tabProfileBtn.classList.add("active");
+                tabBookingsBtn.classList.remove("active");
+                profilePanel.style.display = "block";
+                bookingsPanel.style.display = "none";
+                fillProfileForm();
+            });
+
+            // Fill profile inputs
+            function fillProfileForm() {
+                document.getElementById("profile-name").value = currentUser.name;
+                document.getElementById("profile-email").value = currentUser.email;
+                document.getElementById("profile-phone").value = currentUser.phone;
+                document.getElementById("profile-password").value = "";
+            }
+
+            // Handle Profile updates
+            document.getElementById("edit-profile-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const name = document.getElementById("profile-name").value;
+                const email = document.getElementById("profile-email").value;
+                const phone = document.getElementById("profile-phone").value;
+                const password = document.getElementById("profile-password").value;
+
+                const payload = { name, email, phone };
+                if (password.trim() !== "") {
+                    payload.password = password;
+                }
+
+                try {
+                    const res = await apiRequest("profile", "PUT", payload);
+                    if (res) {
+                        showToast("Profile updated successfully", "success");
+                        // Update cache
+                        currentUser.name = name;
+                        currentUser.email = email;
+                        currentUser.phone = phone;
+                        localStorage.setItem("booking_user", JSON.stringify(currentUser));
+                        document.getElementById("sidebar-user-name").innerText = name;
+                        renderHeader();
+                    }
+                } catch(err) {
+                    console.error(err);
+                }
+            });
+
+            // Fetch and render customer bookings
+            async function loadBookings() {
+                try {
+                    const bookings = await apiRequest("bookings");
+                    const container = document.getElementById("bookings-list-container");
+
+                    if (!bookings || bookings.length === 0) {
+                        container.innerHTML = `
+                            <div class="glass-panel" style="text-align: center; padding: 4rem; color: var(--text-muted);">
+                                <i class="fas fa-ticket-alt fa-3x" style="margin-bottom: 1.5rem; color: var(--text-muted);"></i>
+                                <p style="font-size: 1.1rem; font-weight: 500;">No bookings found</p>
+                                <p style="font-size: 0.85rem; margin-top: 0.25rem;">You haven't booked any movie tickets yet. Visit Home to explore movies.</p>
+                                <a href="index.html" class="btn-primary" style="text-decoration: none; display: inline-block; margin-top: 1.5rem;">Browse Movies</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    // Sort bookings latest first
+                    bookings.reverse();
+
+                    container.innerHTML = bookings.map(b => {
+                        const show = b.show || {};
+                        const movie = show.movie || {};
+                        const theatre = show.theatre || {};
+                        const screen = show.screen || {};
+                        const isCancelled = b.status === "Cancelled";
+
+                        return `
+                            <div class="glass-panel booking-history-item">
+                                <div class="booking-header">
+                                    <div>
+                                        <h3 class="booking-movie-title">${movie.title || 'Unknown Movie'}</h3>
+                                        <p style="color: var(--text-secondary); font-size: 0.85rem;">Booking Ref: ${b._id}</p>
+                                    </div>
+                                    <span class="booking-status-badge ${isCancelled ? 'cancelled' : 'confirmed'}">
+                                        ${b.status}
+                                    </span>
+                                </div>
+                                <div class="booking-body">
+                                    <div class="booking-info-chunk">
+                                        <label>Theatre & Screen</label>
+                                        <val>${theatre.theatreName || 'Theatre'} • ${screen.screenName || 'Screen'}</val>
+                                    </div>
+                                    <div class="booking-info-chunk">
+                                        <label>Date & Time</label>
+                                        <val>${show.showDate || 'N/A'} • ${show.showTime || 'N/A'}</val>
+                                    </div>
+                                    <div class="booking-info-chunk">
+                                        <label>Seats Selected</label>
+                                        <val>${b.seats ? b.seats.join(', ') : 'None'}</val>
+                                    </div>
+                                    <div class="booking-info-chunk" style="margin-top: 0.5rem;">
+                                        <label>Total Price</label>
+                                        <val>Rs. ${b.totalAmount} (${b.paymentMethod})</val>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 0.8rem; justify-content: flex-end;">
+                                    ${!isCancelled ? `
+                                        <button class="btn-secondary cancel-booking-btn" data-booking-id="${b._id}" style="padding: 0.4rem 1rem; border-color: rgba(239, 68, 68, 0.4); color: var(--danger);">
+                                            <i class="fas fa-times-circle" style="margin-right: 0.4rem;"></i>Cancel Ticket
+                                        </button>
+                                        <button class="btn-primary download-pdf-btn" data-booking-id="${b._id}" style="padding: 0.4rem 1rem;">
+                                            <i class="fas fa-file-pdf" style="margin-right: 0.4rem;"></i>Download PDF
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    // Hook Cancel click handlers
+                    document.querySelectorAll(".cancel-booking-btn").forEach(btn => {
+                        btn.addEventListener("click", async () => {
+                            const bId = btn.getAttribute("data-booking-id");
+                            if (confirm("Are you sure you want to cancel this booking? This action is irreversible.")) {
+                                try {
+                                    const res = await apiRequest(`bookings/${bId}`, "DELETE");
+                                    if (res) {
+                                        showToast("Booking cancelled successfully", "success");
+                                        loadBookings();
+                                    }
+                                } catch(err) {
+                                    console.error(err);
+                                }
+                            }
+                        });
+                    });
+
+                    // Hook PDF downloads
+                    document.querySelectorAll(".download-pdf-btn").forEach(btn => {
+                        btn.addEventListener("click", async () => {
+                            const bId = btn.getAttribute("data-booking-id");
+                            try {
+                                showToast("Generating PDF ticket...", "info");
+                                const res = await fetch(`http://127.0.0.1:8000/api/bookings/${bId}/pdf`, {
+                                    headers: { "Authorization": `Bearer ${getJWT()}` }
+                                });
+                                if (!res.ok) throw new Error("Could not download ticket PDF");
+                                const blob = await res.blob();
+                                const url = window.URL.createObjectURL(blob);
+                                const a = document.createElement("a");
+                                a.href = url;
+                                a.download = `ticket-${bId}.pdf`;
+                                document.body.appendChild(a);
+                                a.click();
+                                document.body.removeChild(a);
+                                showToast("PDF downloaded successfully", "success");
+                            } catch(err) {
+                                console.error(err);
+                                showToast(err.message, "danger");
+                            }
+                        });
+                    });
+
+                } catch(err) {
+                    console.error(err);
+                }
+            }
+
+            // Initial load
+            loadBookings();
+        });
+    </script>
+</body>
+</html>

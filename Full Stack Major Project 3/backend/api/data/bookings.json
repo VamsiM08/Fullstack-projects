@@ -1,0 +1,39 @@
+[
+    {
+        "_id": "booking-1",
+        "userId": "user-rahul",
+        "showId": "show-1",
+        "seats": [
+            "A1",
+            "A2"
+        ],
+        "totalAmount": 500,
+        "paymentMethod": "UPI",
+        "status": "Confirmed"
+    },
+    {
+        "_id": "booking-2",
+        "userId": "user-priya",
+        "showId": "show-2",
+        "seats": [
+            "C5",
+            "C6",
+            "C7"
+        ],
+        "totalAmount": 900,
+        "paymentMethod": "Credit Card",
+        "status": "Confirmed"
+    },
+    {
+        "_id": "2ff2f9bd-3c0c-4a53-a0ae-d9d08f9a1ba2",
+        "userId": "184bd317-f2f9-4a5f-bd89-f424b9e9699f",
+        "showId": "show-1",
+        "seats": [
+            "B1",
+            "B2"
+        ],
+        "totalAmount": 500,
+        "paymentMethod": "Credit Card",
+        "status": "Cancelled"
+    }
+]

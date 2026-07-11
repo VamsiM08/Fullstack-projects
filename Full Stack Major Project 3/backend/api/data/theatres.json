@@ -1,0 +1,23 @@
+[
+    {
+        "_id": "theatre-pvr",
+        "theatreName": "PVR Cinemas",
+        "city": "Hyderabad",
+        "address": "Next Galleria Mall, Punjagutta, Hyderabad",
+        "screens": 5
+    },
+    {
+        "_id": "theatre-inox",
+        "theatreName": "INOX",
+        "city": "Bengaluru",
+        "address": "Mantri Square Mall, Malleshwaram, Bengaluru",
+        "screens": 4
+    },
+    {
+        "_id": "theatre-cinepolis",
+        "theatreName": "Cinepolis",
+        "city": "Chennai",
+        "address": "Season's Mall, Velachery, Chennai",
+        "screens": 6
+    }
+]

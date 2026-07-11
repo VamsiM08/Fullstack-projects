@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication - CinePass</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .auth-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: calc(100vh - 12rem);
+            margin-top: 4rem;
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .auth-banner-side {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(236, 72, 153, 0.9)), 
+                        url('https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=800');
+            background-size: cover;
+            background-blend-mode: overlay;
+            background-position: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 3rem;
+            text-align: center;
+        }
+
+        .auth-form-side {
+            background: var(--bg-secondary);
+            padding: 4rem 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-header-toggle {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--glass-border);
+            padding-bottom: 1rem;
+        }
+
+        .auth-toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            font-weight: 700;
+            font-family: var(--font-heading);
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .auth-toggle-btn.active {
+            color: var(--text-primary);
+        }
+
+        .auth-toggle-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--accent-blue);
+            border-radius: 2px;
+        }
+
+        .form-panel {
+            display: none;
+        }
+
+        .form-panel.active {
+            display: block;
+        }
+
+        @media (max-width: 900px) {
+            .auth-container {
+                grid-template-columns: 1fr;
+            }
+            .auth-banner-side {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Shared Navigation Header -->
+    <header></header>
+
+    <main class="container">
+        <div class="auth-container">
+            <!-- Left Branding Side -->
+            <div class="auth-banner-side">
+                <i class="fas fa-ticket-alt" style="font-size: 4rem; color: white; margin-bottom: 1.5rem; filter: drop-shadow(0 0 15px rgba(255,255,255,0.4));"></i>
+                <h2 style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: white; margin-bottom: 1rem;">Welcome to CinePass</h2>
+                <p style="color: rgba(255,255,255,0.8); max-width: 320px; font-size: 0.95rem; line-height: 1.6;">
+                    Discover blockbuster movies, view show schedules, secure your favorite seats, and enjoy a seamless booking experience.
+                </p>
+            </div>
+
+            <!-- Right Form Forms Side -->
+            <div class="auth-form-side">
+                
+                <div class="auth-header-toggle">
+                    <button class="auth-toggle-btn active" id="toggle-login-btn">Login</button>
+                    <button class="auth-toggle-btn" id="toggle-register-btn">Register</button>
+                </div>
+
+                <!-- LOGIN FORM -->
+                <div class="form-panel active" id="login-panel">
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-email">Email Address</label>
+                            <input type="email" id="login-email" required placeholder="name@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" required placeholder="••••••••">
+                        </div>
+                        <div style="margin-top: 2rem;">
+                            <button type="submit" class="btn-primary" style="width: 100%; padding: 0.8rem;"><i class="fas fa-sign-in-alt" style="margin-right: 0.5rem;"></i>Login to Account</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- REGISTER FORM -->
+                <div class="form-panel" id="register-panel">
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="register-name">Full Name</label>
+                            <input type="text" id="register-name" required placeholder="John Doe">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-email">Email Address</label>
+                            <input type="email" id="register-email" required placeholder="john@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-phone">Phone Number</label>
+                            <input type="tel" id="register-phone" required placeholder="9876543210">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-password">Password</label>
+                            <input type="password" id="register-password" required placeholder="Minimum 6 characters">
+                        </div>
+                        <div class="form-group">
+                            <label for="register-role">Account Role Type</label>
+                            <select id="register-role" class="select-filter" style="width: 100%; background: rgba(255,255,255,0.04); padding: 0.8rem 1rem;">
+                                <option value="customer">Customer</option>
+                                <option value="admin">Administrator</option>
+                            </select>
+                        </div>
+                        <div style="margin-top: 2rem;">
+                            <button type="submit" class="btn-primary" style="width: 100%; padding: 0.8rem;"><i class="fas fa-user-plus" style="margin-right: 0.5rem;"></i>Create Account</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Check if already logged in
+            if (isLoggedIn()) {
+                window.location.href = isAdmin() ? "admin.html" : "index.html";
+            }
+
+            const toggleLogin = document.getElementById("toggle-login-btn");
+            const toggleRegister = document.getElementById("toggle-register-btn");
+            const loginPanel = document.getElementById("login-panel");
+            const registerPanel = document.getElementById("register-panel");
+
+            toggleLogin.addEventListener("click", () => {
+                toggleLogin.classList.add("active");
+                toggleRegister.classList.remove("active");
+                loginPanel.classList.add("active");
+                registerPanel.classList.remove("active");
+            });
+
+            toggleRegister.addEventListener("click", () => {
+                toggleRegister.classList.add("active");
+                toggleLogin.classList.remove("active");
+                registerPanel.classList.add("active");
+                loginPanel.classList.remove("active");
+            });
+
+            // Login submit handler
+            document.getElementById("login-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const email = document.getElementById("login-email").value;
+                const password = document.getElementById("login-password").value;
+
+                try {
+                    const data = await apiRequest("login", "POST", { email, password });
+                    if (data && data.token) {
+                        saveSession(data.token, data.user);
+                        showToast(`Welcome back, ${data.user.name}!`, "success");
+                        setTimeout(() => {
+                            window.location.href = data.user.role === 'admin' ? "admin.html" : "index.html";
+                        }, 1000);
+                    }
+                } catch(err) {
+                    console.error("Login Error:", err);
+                }
+            });
+
+            // Register submit handler
+            document.getElementById("register-form").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const name = document.getElementById("register-name").value;
+                const email = document.getElementById("register-email").value;
+                const phone = document.getElementById("register-phone").value;
+                const password = document.getElementById("register-password").value;
+                const role = document.getElementById("register-role").value;
+
+                try {
+                    const data = await apiRequest("register", "POST", { name, email, phone, password, role });
+                    if (data) {
+                        showToast("Registration successful! Logging in...", "success");
+                        
+                        // Automatically login after successful registration
+                        const loginData = await apiRequest("login", "POST", { email, password });
+                        if (loginData && loginData.token) {
+                            saveSession(loginData.token, loginData.user);
+                            setTimeout(() => {
+                                window.location.href = loginData.user.role === 'admin' ? "admin.html" : "index.html";
+                            }, 1000);
+                        }
+                    }
+                } catch(err) {
+                    console.error("Registration Error:", err);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

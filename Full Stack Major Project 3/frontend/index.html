@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CinePass - Movie Ticket Booking Portal</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Shared Navigation Header -->
+    <header></header>
+
+    <!-- Main Container -->
+    <main class="container">
+        
+        <!-- Hero Movie Banner (Featured Banner) -->
+        <section class="hero-banner fade-in" id="featured-banner">
+            <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1200" alt="Featured Banner">
+            <div class="hero-content">
+                <span class="hero-meta" style="margin-bottom: 0.5rem;"><span class="category-chip active" style="font-size: 0.75rem; padding: 0.2rem 0.6rem;">FEATURED</span></span>
+                <h1 class="hero-title" id="featured-title">Kalki 2898 AD</h1>
+                <div class="hero-meta">
+                    <span><i class="fas fa-film"></i> Sci-Fi</span>
+                    <span><i class="fas fa-clock"></i> 3h 00m</span>
+                    <span><i class="fas fa-star" style="color: var(--warning);"></i> 8.9 / 10</span>
+                    <span><i class="fas fa-language"></i> Telugu</span>
+                </div>
+                <p style="color: var(--text-secondary); max-width: 600px; margin-bottom: 1.5rem;" id="featured-desc">
+                    A modern avatar of Vishnu, a Hindu god, is believed to have descended to earth to protect the world from evil forces.
+                </p>
+                <div>
+                    <a href="movie-details.html?id=movie-kalki" class="btn-primary" style="text-decoration: none;"><i class="fas fa-ticket-alt" style="margin-right: 0.5rem;"></i>Book Tickets Now</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Search & Filter Section -->
+        <section class="search-filter-bar fade-in">
+            <div class="search-input-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-box" placeholder="Search movies by title, genre, language...">
+            </div>
+            
+            <select id="language-filter" class="select-filter">
+                <option value="">All Languages</option>
+                <option value="Telugu">Telugu</option>
+                <option value="Hindi">Hindi</option>
+                <option value="Tamil">Tamil</option>
+                <option value="English">English</option>
+            </select>
+
+            <select id="sort-filter" class="select-filter">
+                <option value="default">Sort By: Featured</option>
+                <option value="rating">Top Rated</option>
+                <option value="release">New Releases</option>
+            </select>
+        </section>
+
+        <!-- Genre Categories (Chips) -->
+        <section class="categories-container fade-in" id="genre-chips-container">
+            <span class="category-chip active" data-genre="">All Genres</span>
+            <span class="category-chip" data-genre="Action">Action</span>
+            <span class="category-chip" data-genre="Sci-Fi">Sci-Fi</span>
+            <span class="category-chip" data-genre="Drama">Drama</span>
+            <span class="category-chip" data-genre="Comedy">Comedy</span>
+            <span class="category-chip" data-genre="Horror">Horror</span>
+        </section>
+
+        <!-- Movies Section -->
+        <section class="fade-in">
+            <div class="section-header">
+                <h2 id="movies-section-heading">Now Showing</h2>
+            </div>
+            
+            <!-- Movie Grid -->
+            <div class="movies-grid" id="movies-container">
+                <!-- Movie cards are loaded dynamically -->
+                <div style="grid-column: 1/-1; text-align: center; padding: 3rem; color: var(--text-secondary);">
+                    <i class="fas fa-spinner fa-spin fa-2x" style="margin-bottom: 1rem;"></i>
+                    <p>Loading movies...</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script src="js/app.js"></script>
+    <script>
+        // Homepage functionality
+        let allMovies = [];
+        let selectedGenre = "";
+        let selectedLanguage = "";
+        let searchQuery = "";
+
+        async function fetchMovies() {
+            try {
+                // Fetch using custom search parameter query if available
+                const endpoint = "movies";
+                const data = await apiRequest(endpoint);
+                allMovies = data || [];
+                renderMovies();
+            } catch(e) {
+                console.error(e);
+            }
+        }
+
+        function filterMovies() {
+            let filtered = allMovies;
+
+            if (selectedGenre) {
+                filtered = filtered.filter(m => m.genre.toLowerCase() === selectedGenre.toLowerCase());
+            }
+
+            if (selectedLanguage) {
+                filtered = filtered.filter(m => m.language.toLowerCase() === selectedLanguage.toLowerCase());
+            }
+
+            if (searchQuery) {
+                const q = searchQuery.toLowerCase();
+                filtered = filtered.filter(m => 
+                    m.title.toLowerCase().includes(q) || 
+                    m.genre.toLowerCase().includes(q) || 
+                    m.language.toLowerCase().includes(q) ||
+                    m.description.toLowerCase().includes(q)
+                );
+            }
+
+            const sortVal = document.getElementById("sort-filter").value;
+            if (sortVal === "rating") {
+                filtered.sort((a,b) => parseFloat(b.rating) - parseFloat(a.rating));
+            } else if (sortVal === "release") {
+                filtered.sort((a,b) => new Date(b.releaseDate || 0) - new Date(a.releaseDate || 0));
+            }
+
+            return filtered;
+        }
+
+        function renderMovies() {
+            const container = document.getElementById("movies-container");
+            const filtered = filterMovies();
+            
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 4rem; color: var(--text-muted);">
+                        <i class="fas fa-video-slash fa-3x" style="margin-bottom: 1.5rem;"></i>
+                        <p style="font-size: 1.1rem;">No movies matched your current filters.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(m => `
+                <a href="movie-details.html?id=${m._id}" class="movie-card">
+                    <div class="movie-poster-wrapper">
+                        <img src="${m.poster || 'https://images.unsplash.com/photo-1594909122845-11baa439b7bf?w=500'}" alt="${m.title}">
+                        <div class="movie-rating-badge">
+                            <i class="fas fa-star"></i> ${m.rating}
+                        </div>
+                    </div>
+                    <div class="movie-info">
+                        <h3 class="movie-card-title">${m.title}</h3>
+                        <div class="movie-card-meta">
+                            <span>${m.genre}</span>
+                            <span>${m.language}</span>
+                        </div>
+                        <div style="font-size: 0.8rem; margin-top: 0.5rem; color: var(--text-muted);">
+                            <i class="fas fa-clock"></i> ${m.duration}
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+            
+            // Set the banner image to be dynamic based on the top movie loaded
+            if (filtered.length > 0 && !selectedGenre && !selectedLanguage && !searchQuery) {
+                const topMovie = filtered[0];
+                document.getElementById("featured-title").innerText = topMovie.title;
+                document.getElementById("featured-desc").innerText = topMovie.description;
+                document.getElementById("featured-banner").querySelector("img").src = topMovie.banner || "https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=1200";
+                document.getElementById("featured-banner").querySelector("a").href = `movie-details.html?id=${topMovie._id}`;
+                
+                const metaSpans = document.getElementById("featured-banner").querySelectorAll(".hero-meta span");
+                if (metaSpans.length >= 4) {
+                    metaSpans[0].innerHTML = `<i class="fas fa-film"></i> ${topMovie.genre}`;
+                    metaSpans[1].innerHTML = `<i class="fas fa-clock"></i> ${topMovie.duration}`;
+                    metaSpans[2].innerHTML = `<i class="fas fa-star" style="color: var(--warning);"></i> ${topMovie.rating} / 10`;
+                    metaSpans[3].innerHTML = `<i class="fas fa-language"></i> ${topMovie.language}`;
+                }
+            }
+        }
+
+        // Add event listeners
+        document.addEventListener("DOMContentLoaded", () => {
+            fetchMovies();
+
+            // Genre filter handler
+            const genreChips = document.querySelectorAll("#genre-chips-container .category-chip");
+            genreChips.forEach(chip => {
+                chip.addEventListener("click", () => {
+                    genreChips.forEach(c => c.classList.remove("active"));
+                    chip.classList.add("active");
+                    selectedGenre = chip.getAttribute("data-genre");
+                    renderMovies();
+                });
+            });
+
+            // Language selector handler
+            document.getElementById("language-filter").addEventListener("change", (e) => {
+                selectedLanguage = e.target.value;
+                renderMovies();
+            });
+
+            // Sort selector handler
+            document.getElementById("sort-filter").addEventListener("change", () => {
+                renderMovies();
+            });
+
+            // Search input handler (debounce search slightly for responsiveness)
+            let searchTimeout;
+            document.getElementById("search-box").addEventListener("input", (e) => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    searchQuery = e.target.value;
+                    renderMovies();
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>

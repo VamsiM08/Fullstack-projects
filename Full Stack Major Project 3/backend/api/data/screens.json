@@ -1,0 +1,92 @@
+[
+    {
+        "_id": "screen-pvr-1",
+        "theatreId": "theatre-pvr",
+        "screenName": "Screen 1",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-pvr-2",
+        "theatreId": "theatre-pvr",
+        "screenName": "Screen 2",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-pvr-3",
+        "theatreId": "theatre-pvr",
+        "screenName": "Screen 3",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-pvr-4",
+        "theatreId": "theatre-pvr",
+        "screenName": "Screen 4",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-pvr-5",
+        "theatreId": "theatre-pvr",
+        "screenName": "Screen 5",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-inox-1",
+        "theatreId": "theatre-inox",
+        "screenName": "Screen 1",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-inox-2",
+        "theatreId": "theatre-inox",
+        "screenName": "Screen 2",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-inox-3",
+        "theatreId": "theatre-inox",
+        "screenName": "Screen 3",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-inox-4",
+        "theatreId": "theatre-inox",
+        "screenName": "Screen 4",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-cine-1",
+        "theatreId": "theatre-cinepolis",
+        "screenName": "Screen 1",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-cine-2",
+        "theatreId": "theatre-cinepolis",
+        "screenName": "Screen 2",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-cine-3",
+        "theatreId": "theatre-cinepolis",
+        "screenName": "Screen 3",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-cine-4",
+        "theatreId": "theatre-cinepolis",
+        "screenName": "Screen 4",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-cine-5",
+        "theatreId": "theatre-cinepolis",
+        "screenName": "Screen 5",
+        "totalSeats": 120
+    },
+    {
+        "_id": "screen-cine-6",
+        "theatreId": "theatre-cinepolis",
+        "screenName": "Screen 6",
+        "totalSeats": 120
+    }
+]
