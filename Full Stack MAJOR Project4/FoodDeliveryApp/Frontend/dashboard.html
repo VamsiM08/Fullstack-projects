@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GourmetGO | Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Extra styles specifically for Dashboard admin interactions */
+        .dash-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .admin-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-glass);
+            border-radius: 8px;
+            color: var(--text-main);
+            padding: 0.3rem 0.5rem;
+            outline: none;
+        }
+        .admin-select option {
+            background: #0f172a;
+            color: var(--text-main);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header id="global-header"></header>
+
+    <!-- Main Section -->
+    <main>
+        <!-- Statistics counters -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div>
+                    <div class="stat-number" id="stat-customers">0</div>
+                    <div class="stat-label">Customers</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏪</div>
+                <div>
+                    <div class="stat-number" id="stat-restaurants">0</div>
+                    <div class="stat-label">Restaurants</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🍔</div>
+                <div>
+                    <div class="stat-number" id="stat-foods">0</div>
+                    <div class="stat-label">Food Items</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div>
+                    <div class="stat-number" id="stat-revenue">₹0.00</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dashboard layout with sidebar navigation -->
+        <div class="dashboard-layout">
+            <aside class="dashboard-sidebar">
+                <button class="sidebar-tab active" onclick="switchTab('customers')">👥 Manage Customers</button>
+                <button class="sidebar-tab" onclick="switchTab('restaurants')">🏪 Manage Restaurants</button>
+                <button class="sidebar-tab" onclick="switchTab('foods')">🍳 Manage Food Items</button>
+                <button class="sidebar-tab" onclick="switchTab('orders')">📦 Manage Orders</button>
+            </aside>
+
+            <!-- Table & CRUD Content Area -->
+            <section style="flex: 1;">
+                <!-- 1. Customers Section -->
+                <div id="section-customers" class="dash-section">
+                    <div class="dash-card-header">
+                        <h2>Registered Customers</h2>
+                        <button class="nav-btn" style="padding: 0.5rem 1.2rem;" onclick="openCustomerModal('add')">+ Add Customer</button>
+                    </div>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Location</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-customers-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. Restaurants Section -->
+                <div id="section-restaurants" class="dash-section" style="display: none;">
+                    <div class="dash-card-header">
+                        <h2>Partner Restaurants</h2>
+                        <button class="nav-btn" style="padding: 0.5rem 1.2rem;" onclick="openRestaurantModal('add')">+ Add Restaurant</button>
+                    </div>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Restaurant Name</th>
+                                    <th>Owner</th>
+                                    <th>Cuisine</th>
+                                    <th>Rating</th>
+                                    <th>Location</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-restaurants-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 3. Food Items Section -->
+                <div id="section-foods" class="dash-section" style="display: none;">
+                    <div class="dash-card-header">
+                        <h2>Menu Dishes</h2>
+                        <button class="nav-btn" style="padding: 0.5rem 1.2rem;" onclick="openFoodModal('add')">+ Add Food Item</button>
+                    </div>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Dish Name</th>
+                                    <th>Restaurant</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Availability</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-foods-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. Orders Section -->
+                <div id="section-orders" class="dash-section" style="display: none;">
+                    <div class="dash-card-header">
+                        <h2>Active & Historic Orders</h2>
+                        <!-- Orders are added through cart, no add button here -->
+                    </div>
+                    <div class="admin-table-wrapper">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer</th>
+                                    <th>Restaurant</th>
+                                    <th>Items</th>
+                                    <th>Amount</th>
+                                    <th>Payment</th>
+                                    <th>Delivery</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-orders-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- CUSTOMER MODAL -->
+    <div class="modal" id="customer-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="customer-modal-title">Add Customer</h3>
+                <button class="modal-close" onclick="closeModal('customer-modal')">&times;</button>
+            </div>
+            <form onsubmit="saveCustomer(event)">
+                <input type="hidden" id="cust-modal-id">
+                <div class="form-group" id="cust-id-group">
+                    <label class="form-label">Customer ID (Leave blank to autoincrement)</label>
+                    <input type="number" id="cust-modal-field-id" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="cust-modal-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="cust-modal-email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone</label>
+                    <input type="text" id="cust-modal-phone" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Address</label>
+                    <input type="text" id="cust-modal-address" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input type="text" id="cust-modal-city" class="form-control" required>
+                </div>
+                <button type="submit" class="form-btn" style="width: 100%; margin-top: 1.5rem;">Save Customer</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- RESTAURANT MODAL -->
+    <div class="modal" id="restaurant-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="restaurant-modal-title">Add Restaurant</h3>
+                <button class="modal-close" onclick="closeModal('restaurant-modal')">&times;</button>
+            </div>
+            <form onsubmit="saveRestaurant(event)">
+                <input type="hidden" id="rest-modal-id">
+                <div class="form-group" id="rest-id-group">
+                    <label class="form-label">Restaurant ID (Leave blank to autoincrement)</label>
+                    <input type="number" id="rest-modal-field-id" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Restaurant Name</label>
+                    <input type="text" id="rest-modal-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Owner Name</label>
+                    <input type="text" id="rest-modal-owner" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Cuisine</label>
+                    <input type="text" id="rest-modal-cuisine" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location (City)</label>
+                    <input type="text" id="rest-modal-location" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Rating (0.0 to 5.0)</label>
+                    <input type="number" step="0.1" min="0" max="5" id="rest-modal-rating" class="form-control" required>
+                </div>
+                <button type="submit" class="form-btn" style="width: 100%; margin-top: 1.5rem;">Save Restaurant</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- FOOD ITEM MODAL -->
+    <div class="modal" id="food-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="food-modal-title">Add Food Item</h3>
+                <button class="modal-close" onclick="closeModal('food-modal')">&times;</button>
+            </div>
+            <form onsubmit="saveFood(event)">
+                <input type="hidden" id="food-modal-id">
+                <div class="form-group" id="food-id-group">
+                    <label class="form-label">Food ID (Leave blank to autoincrement)</label>
+                    <input type="number" id="food-modal-field-id" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Food Name</label>
+                    <input type="text" id="food-modal-name" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Restaurant Name</label>
+                    <select id="food-modal-restaurant" class="form-control" required>
+                        <!-- Dynamic options -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select id="food-modal-category" class="form-control" required>
+                        <option value="Main Course">Main Course</option>
+                        <option value="Starters">Starters</option>
+                        <option value="Breakfast">Breakfast</option>
+                        <option value="Beverages">Beverages</option>
+                        <option value="Desserts">Desserts</option>
+                        <option value="Fast Food">Fast Food</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Price (₹)</label>
+                    <input type="number" step="0.01" min="0" id="food-modal-price" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Availability</label>
+                    <select id="food-modal-availability" class="form-control">
+                        <option value="Available">Available</option>
+                        <option value="Out of Stock">Out of Stock</option>
+                    </select>
+                </div>
+                <button type="submit" class="form-btn" style="width: 100%; margin-top: 1.5rem;">Save Food Item</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ORDER UPDATE STATUS MODAL -->
+    <div class="modal" id="order-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Update Order Status</h3>
+                <button class="modal-close" onclick="closeModal('order-modal')">&times;</button>
+            </div>
+            <form onsubmit="saveOrderStatus(event)">
+                <input type="hidden" id="order-modal-id">
+                <div class="form-group">
+                    <label class="form-label">Payment Status</label>
+                    <select id="order-modal-payment" class="form-control">
+                        <option value="Pending">Pending</option>
+                        <option value="Paid">Paid</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Delivery Status</label>
+                    <select id="order-modal-delivery" class="form-control">
+                        <option value="Preparing">Preparing</option>
+                        <option value="Out for Delivery">Out for Delivery</option>
+                        <option value="Delivered">Delivered</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+                <button type="submit" class="form-btn" style="width: 100%; margin-top: 1.5rem;">Update Order</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2026 GourmetGO Food Delivery Application. Designed for Python-FSD major evaluation.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        let dbCustomers = [];
+        let dbRestaurants = [];
+        let dbFoods = [];
+        let dbOrders = [];
+        let currentTab = "customers";
+
+        async function initDashboard() {
+            // Loading stats and table data
+            await refreshData();
+        }
+
+        async function refreshData() {
+            try {
+                // Fetch datasets in parallel
+                const [custs, rests, foods, ords] = await Promise.all([
+                    fetchAPI("/customers/"),
+                    fetchAPI("/restaurants/"),
+                    fetchAPI("/foods/"),
+                    fetchAPI("/orders/")
+                ]);
+
+                dbCustomers = custs;
+                dbRestaurants = rests;
+                dbFoods = foods;
+                dbOrders = ords;
+
+                // Update Stats Counter UI
+                document.getElementById("stat-customers").textContent = dbCustomers.length;
+                document.getElementById("stat-restaurants").textContent = dbRestaurants.length;
+                document.getElementById("stat-foods").textContent = dbFoods.length;
+
+                // Sum revenue of Paid / Delivered orders
+                const revenue = dbOrders
+                    .filter(o => o.payment_status === 'Paid')
+                    .reduce((sum, o) => sum + o.total_amount, 0);
+                document.getElementById("stat-revenue").textContent = `₹${revenue.toFixed(2)}`;
+
+                // Refresh the visible tab table
+                renderActiveTable();
+            } catch (err) {
+                showToast("Failed to fetch database information.", "error");
+            }
+        }
+
+        function switchTab(tabName) {
+            currentTab = tabName;
+            
+            // Toggle sidebar active highlights
+            const tabs = document.querySelectorAll(".sidebar-tab");
+            tabs.forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(tabName)) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
+
+            // Toggle table section visibility
+            const sections = document.querySelectorAll(".dash-section");
+            sections.forEach(sec => sec.style.display = "none");
+            document.getElementById(`section-${tabName}`).style.display = "block";
+
+            renderActiveTable();
+        }
+
+        function renderActiveTable() {
+            if (currentTab === "customers") renderCustomersTable();
+            else if (currentTab === "restaurants") renderRestaurantsTable();
+            else if (currentTab === "foods") renderFoodsTable();
+            else if (currentTab === "orders") renderOrdersTable();
+        }
+
+        // --- Render functions ---
+
+        function renderCustomersTable() {
+            const tbody = document.getElementById("table-customers-tbody");
+            tbody.innerHTML = dbCustomers.map(c => `
+                <tr>
+                    <td>${c.customer_id}</td>
+                    <td><strong>${c.full_name}</strong></td>
+                    <td>${c.email}</td>
+                    <td>${c.phone}</td>
+                    <td>${c.address}, ${c.city}</td>
+                    <td>
+                        <button class="admin-action-btn edit" onclick="openCustomerModal('edit', ${c.customer_id})">Edit</button>
+                        <button class="admin-action-btn delete" onclick="deleteCustomer(${c.customer_id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderRestaurantsTable() {
+            const tbody = document.getElementById("table-restaurants-tbody");
+            tbody.innerHTML = dbRestaurants.map(r => `
+                <tr>
+                    <td>${r.restaurant_id}</td>
+                    <td><strong>${r.restaurant_name}</strong></td>
+                    <td>${r.owner_name}</td>
+                    <td>${r.cuisine}</td>
+                    <td><span class="rating-badge">★ ${r.rating.toFixed(1)}</span></td>
+                    <td>📍 ${r.location}</td>
+                    <td>
+                        <button class="admin-action-btn edit" onclick="openRestaurantModal('edit', ${r.restaurant_id})">Edit</button>
+                        <button class="admin-action-btn delete" onclick="deleteRestaurant(${r.restaurant_id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function renderFoodsTable() {
+            const tbody = document.getElementById("table-foods-tbody");
+            tbody.innerHTML = dbFoods.map(f => {
+                const isAvail = f.availability === 'Available';
+                return `
+                    <tr>
+                        <td>${f.food_id}</td>
+                        <td><strong>${f.food_name}</strong></td>
+                        <td>${f.restaurant_name}</td>
+                        <td>${f.category}</td>
+                        <td style="font-weight:700">₹${f.price}</td>
+                        <td>
+                            <span class="food-avail-badge ${isAvail ? 'available' : 'out-of-stock'}">${f.availability}</span>
+                        </td>
+                        <td>
+                            <button class="admin-action-btn edit" onclick="openFoodModal('edit', ${f.food_id})">Edit</button>
+                            <button class="admin-action-btn delete" onclick="deleteFood(${f.food_id})">Delete</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function renderOrdersTable() {
+            const tbody = document.getElementById("table-orders-tbody");
+            tbody.innerHTML = dbOrders.map(o => `
+                <tr>
+                    <td>${o.order_id}</td>
+                    <td>${o.customer_name}</td>
+                    <td>${o.restaurant_name}</td>
+                    <td style="max-width:250px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${o.order_items}">${o.order_items}</td>
+                    <td style="font-weight:700">₹${o.total_amount.toFixed(2)}</td>
+                    <td>
+                        <span style="font-size:0.8rem; font-weight:700; padding:0.2rem 0.5rem; border-radius:6px; background:${o.payment_status === 'Paid' ? 'var(--accent-glow)' : 'rgba(239, 68, 68, 0.1)'}; color:${o.payment_status === 'Paid' ? 'var(--accent)' : '#ef4444'}">
+                            ${o.payment_status}
+                        </span>
+                    </td>
+                    <td>
+                        <strong style="color: ${o.delivery_status === 'Delivered' ? 'var(--accent)' : o.delivery_status === 'Cancelled' ? '#ef4444' : 'var(--primary)'}">${o.delivery_status}</strong>
+                    </td>
+                    <td>
+                        <button class="admin-action-btn edit" onclick="openOrderModal(${o.order_id})">Status</button>
+                        <button class="admin-action-btn delete" onclick="deleteOrder(${o.order_id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // --- Modals Handlers ---
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove("open");
+        }
+
+        // Customer CRUD modal
+        function openCustomerModal(mode, id = null) {
+            const modal = document.getElementById("customer-modal");
+            const title = document.getElementById("customer-modal-title");
+            const idGroup = document.getElementById("cust-id-group");
+            
+            // Reset fields
+            document.getElementById("cust-modal-id").value = id || "";
+            document.getElementById("cust-modal-field-id").value = "";
+            document.getElementById("cust-modal-name").value = "";
+            document.getElementById("cust-modal-email").value = "";
+            document.getElementById("cust-modal-phone").value = "";
+            document.getElementById("cust-modal-address").value = "";
+            document.getElementById("cust-modal-city").value = "";
+
+            if (mode === 'add') {
+                title.textContent = "Add Customer";
+                idGroup.style.display = "block";
+            } else {
+                title.textContent = "Update Customer";
+                idGroup.style.display = "none";
+                // Prefill fields
+                const c = dbCustomers.find(item => item.customer_id === id);
+                if (c) {
+                    document.getElementById("cust-modal-name").value = c.full_name;
+                    document.getElementById("cust-modal-email").value = c.email;
+                    document.getElementById("cust-modal-phone").value = c.phone;
+                    document.getElementById("cust-modal-address").value = c.address;
+                    document.getElementById("cust-modal-city").value = c.city;
+                }
+            }
+            modal.classList.add("open");
+        }
+
+        async function saveCustomer(e) {
+            e.preventDefault();
+            const id = document.getElementById("cust-modal-id").value;
+            const customId = document.getElementById("cust-modal-field-id").value;
+            
+            const payload = {
+                full_name: document.getElementById("cust-modal-name").value,
+                email: document.getElementById("cust-modal-email").value,
+                phone: document.getElementById("cust-modal-phone").value,
+                address: document.getElementById("cust-modal-address").value,
+                city: document.getElementById("cust-modal-city").value
+            };
+
+            try {
+                if (id) {
+                    // Update Customer (PUT)
+                    await fetchAPI(`/customers/update/${id}/`, {
+                        method: "PUT",
+                        body: payload
+                    });
+                    showToast("Customer details updated.", "success");
+                } else {
+                    // Add Customer (POST)
+                    if (customId) {
+                        payload.customer_id = parseInt(customId);
+                    }
+                    await fetchAPI("/customers/add/", {
+                        method: "POST",
+                        body: payload
+                    });
+                    showToast("Customer added successfully.", "success");
+                }
+                closeModal("customer-modal");
+                await refreshData();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        async function deleteCustomer(id) {
+            if (!confirm(`Delete customer #${id}?`)) return;
+            try {
+                await fetchAPI(`/customers/delete/${id}/`, { method: "DELETE" });
+                showToast("Customer deleted successfully.", "success");
+                await refreshData();
+            } catch(err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // Restaurant CRUD modal
+        function openRestaurantModal(mode, id = null) {
+            const modal = document.getElementById("restaurant-modal");
+            const title = document.getElementById("restaurant-modal-title");
+            const idGroup = document.getElementById("rest-id-group");
+            
+            document.getElementById("rest-modal-id").value = id || "";
+            document.getElementById("rest-modal-field-id").value = "";
+            document.getElementById("rest-modal-name").value = "";
+            document.getElementById("rest-modal-owner").value = "";
+            document.getElementById("rest-modal-cuisine").value = "";
+            document.getElementById("rest-modal-location").value = "";
+            document.getElementById("rest-modal-rating").value = "4.0";
+
+            if (mode === 'add') {
+                title.textContent = "Add Restaurant";
+                idGroup.style.display = "block";
+            } else {
+                title.textContent = "Update Restaurant";
+                idGroup.style.display = "none";
+                const r = dbRestaurants.find(item => item.restaurant_id === id);
+                if (r) {
+                    document.getElementById("rest-modal-name").value = r.restaurant_name;
+                    document.getElementById("rest-modal-owner").value = r.owner_name;
+                    document.getElementById("rest-modal-cuisine").value = r.cuisine;
+                    document.getElementById("rest-modal-location").value = r.location;
+                    document.getElementById("rest-modal-rating").value = r.rating;
+                }
+            }
+            modal.classList.add("open");
+        }
+
+        async function saveRestaurant(e) {
+            e.preventDefault();
+            const id = document.getElementById("rest-modal-id").value;
+            const customId = document.getElementById("rest-modal-field-id").value;
+
+            const payload = {
+                restaurant_name: document.getElementById("rest-modal-name").value,
+                owner_name: document.getElementById("rest-modal-owner").value,
+                cuisine: document.getElementById("rest-modal-cuisine").value,
+                location: document.getElementById("rest-modal-location").value,
+                rating: parseFloat(document.getElementById("rest-modal-rating").value)
+            };
+
+            try {
+                if (id) {
+                    await fetchAPI(`/restaurants/update/${id}/`, {
+                        method: "PUT",
+                        body: payload
+                    });
+                    showToast("Restaurant details updated.", "success");
+                } else {
+                    if (customId) {
+                        payload.restaurant_id = parseInt(customId);
+                    }
+                    await fetchAPI("/restaurants/add/", {
+                        method: "POST",
+                        body: payload
+                    });
+                    showToast("Restaurant partner onboarded.", "success");
+                }
+                closeModal("restaurant-modal");
+                await refreshData();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        async function deleteRestaurant(id) {
+            if (!confirm(`Delete restaurant #${id}?`)) return;
+            try {
+                await fetchAPI(`/restaurants/delete/${id}/`, { method: "DELETE" });
+                showToast("Restaurant partner deleted.", "success");
+                await refreshData();
+            } catch(err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // Food Item CRUD modal
+        function openFoodModal(mode, id = null) {
+            const modal = document.getElementById("food-modal");
+            const title = document.getElementById("food-modal-title");
+            const idGroup = document.getElementById("food-id-group");
+            const restSelector = document.getElementById("food-modal-restaurant");
+
+            // Populate restaurants selector
+            restSelector.innerHTML = dbRestaurants.map(r => `
+                <option value="${r.restaurant_name}">${r.restaurant_name}</option>
+            `).join('');
+
+            document.getElementById("food-modal-id").value = id || "";
+            document.getElementById("food-modal-field-id").value = "";
+            document.getElementById("food-modal-name").value = "";
+            document.getElementById("food-modal-price").value = "";
+            document.getElementById("food-modal-availability").value = "Available";
+
+            if (mode === 'add') {
+                title.textContent = "Add Food Item";
+                idGroup.style.display = "block";
+            } else {
+                title.textContent = "Update Food Item";
+                idGroup.style.display = "none";
+                const f = dbFoods.find(item => item.food_id === id);
+                if (f) {
+                    document.getElementById("food-modal-name").value = f.food_name;
+                    document.getElementById("food-modal-restaurant").value = f.restaurant_name;
+                    document.getElementById("food-modal-category").value = f.category;
+                    document.getElementById("food-modal-price").value = f.price;
+                    document.getElementById("food-modal-availability").value = f.availability;
+                }
+            }
+            modal.classList.add("open");
+        }
+
+        async function saveFood(e) {
+            e.preventDefault();
+            const id = document.getElementById("food-modal-id").value;
+            const customId = document.getElementById("food-modal-field-id").value;
+
+            const payload = {
+                food_name: document.getElementById("food-modal-name").value,
+                restaurant_name: document.getElementById("food-modal-restaurant").value,
+                category: document.getElementById("food-modal-category").value,
+                price: parseFloat(document.getElementById("food-modal-price").value),
+                availability: document.getElementById("food-modal-availability").value
+            };
+
+            try {
+                if (id) {
+                    await fetchAPI(`/foods/update/${id}/`, {
+                        method: "PUT",
+                        body: payload
+                    });
+                    showToast("Food details updated.", "success");
+                } else {
+                    if (customId) {
+                        payload.food_id = parseInt(customId);
+                    }
+                    await fetchAPI("/foods/add/", {
+                        method: "POST",
+                        body: payload
+                    });
+                    showToast("Menu food item added.", "success");
+                }
+                closeModal("food-modal");
+                await refreshData();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        async function deleteFood(id) {
+            if (!confirm(`Delete food item #${id}?`)) return;
+            try {
+                await fetchAPI(`/foods/delete/${id}/`, { method: "DELETE" });
+                showToast("Food item deleted.", "success");
+                await refreshData();
+            } catch(err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // Order update status modal
+        function openOrderModal(id) {
+            const modal = document.getElementById("order-modal");
+            document.getElementById("order-modal-id").value = id;
+            
+            const o = dbOrders.find(item => item.order_id === id);
+            if (o) {
+                document.getElementById("order-modal-payment").value = o.payment_status;
+                document.getElementById("order-modal-delivery").value = o.delivery_status;
+            }
+            modal.classList.add("open");
+        }
+
+        async function saveOrderStatus(e) {
+            e.preventDefault();
+            const id = document.getElementById("order-modal-id").value;
+            const payload = {
+                payment_status: document.getElementById("order-modal-payment").value,
+                delivery_status: document.getElementById("order-modal-delivery").value
+            };
+
+            try {
+                await fetchAPI(`/orders/update/${id}/`, {
+                    method: "PUT",
+                    body: payload
+                });
+                showToast("Order status updated.", "success");
+                closeModal("order-modal");
+                await refreshData();
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        async function deleteOrder(id) {
+            if (!confirm(`Delete order log #${id}?`)) return;
+            try {
+                await fetchAPI(`/orders/delete/${id}/`, { method: "DELETE" });
+                showToast("Order log entry deleted.", "success");
+                await refreshData();
+            } catch(err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // Initialize Admin Dashboard page
+        initDashboard();
+    </script>
+</body>
+</html>

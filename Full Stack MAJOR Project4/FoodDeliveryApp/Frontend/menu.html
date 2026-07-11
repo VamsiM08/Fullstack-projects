@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GourmetGO | Restaurant Menu</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header id="global-header"></header>
+
+    <!-- Main Section -->
+    <main>
+        <!-- Restaurant Details Header -->
+        <section class="restaurant-banner" id="restaurant-banner-details">
+            <div class="rest-title-info">
+                <h1 id="rest-name">Restaurant Name</h1>
+                <div class="rest-tagline">
+                    <span id="rest-cuisine">Cuisine Type</span>
+                    <span id="rest-location">📍 Location</span>
+                </div>
+            </div>
+            <div>
+                <span class="rating-badge" id="rest-rating" style="font-size: 1.2rem; padding: 0.5rem 1rem;">★ 0.0</span>
+            </div>
+        </section>
+
+        <!-- Category selector -->
+        <div class="section-header">
+            <h2 class="section-title">Culinary Offerings</h2>
+            <div class="categories-container" id="menu-categories" style="margin: 0;">
+                <span class="category-tag active" onclick="filterMenu('All')">All Items</span>
+            </div>
+        </div>
+
+        <!-- Food Menu Grid -->
+        <div class="cards-grid" id="menu-grid">
+            <!-- Dynamic Content -->
+            <div style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Loading dishes...</div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2026 GourmetGO Food Delivery Application. Designed for Python-FSD major evaluation.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        let restaurantName = "";
+        let menuItems = [];
+
+        async function loadMenu() {
+            const urlParams = new URLSearchParams(window.location.search);
+            restaurantName = urlParams.get('restaurant');
+
+            if (!restaurantName) {
+                showToast("No restaurant selected. Redirecting...", "error");
+                setTimeout(() => window.location.href = "restaurants.html", 2000);
+                return;
+            }
+
+            try {
+                // Fetch Restaurant Info (to display details header)
+                const restaurants = await fetchAPI(`/restaurants/?search=${encodeURIComponent(restaurantName)}`);
+                const restObj = restaurants.find(r => r.restaurant_name.toLowerCase() === restaurantName.toLowerCase());
+                
+                if (restObj) {
+                    document.getElementById("rest-name").textContent = restObj.restaurant_name;
+                    document.getElementById("rest-cuisine").textContent = `🍳 ${restObj.cuisine}`;
+                    document.getElementById("rest-location").textContent = `📍 ${restObj.location}`;
+                    document.getElementById("rest-rating").textContent = `★ ${restObj.rating.toFixed(1)}`;
+                } else {
+                    document.getElementById("rest-name").textContent = restaurantName;
+                }
+
+                // Fetch Foods for this restaurant
+                menuItems = await fetchAPI(`/foods/?restaurant_name=${encodeURIComponent(restaurantName)}`);
+                
+                // Populate categories dynamically
+                populateCategories();
+                
+                displayMenu(menuItems);
+            } catch (err) {
+                showToast("Failed to load restaurant menu.", "error");
+            }
+        }
+
+        function populateCategories() {
+            const categories = ['All', ...new Set(menuItems.map(item => item.category))];
+            const catContainer = document.getElementById("menu-categories");
+            
+            catContainer.innerHTML = categories.map(cat => `
+                <span class="category-tag ${cat === 'All' ? 'active' : ''}" onclick="filterMenu('${cat}')">${cat}</span>
+            `).join('');
+        }
+
+        function filterMenu(category) {
+            // Update active tags styling
+            const tags = document.querySelectorAll("#menu-categories .category-tag");
+            tags.forEach(tag => {
+                if (tag.textContent === category) {
+                    tag.classList.add("active");
+                } else {
+                    tag.classList.remove("active");
+                }
+            });
+
+            if (category === "All") {
+                displayMenu(menuItems);
+            } else {
+                const filtered = menuItems.filter(item => item.category === category);
+                displayMenu(filtered);
+            }
+        }
+
+        function displayMenu(items) {
+            const grid = document.getElementById("menu-grid");
+            if (items.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 4rem;">No food items listed in this category.</div>`;
+                return;
+            }
+
+            grid.innerHTML = items.map(f => {
+                const isAvailable = f.availability === 'Available';
+                return `
+                    <div class="premium-card">
+                        <div class="card-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500&auto=format&fit=crop&q=60" alt="${f.food_name}" class="card-image">
+                            <div class="card-tag">${f.category}</div>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">${f.food_name}</h3>
+                            <div style="margin-bottom:1rem">
+                                <span class="food-avail-badge ${isAvailable ? 'available' : 'out-of-stock'}">
+                                    ${f.availability}
+                                </span>
+                            </div>
+                            
+                            <div class="card-meta" style="margin-top:auto">
+                                <span class="card-price">₹${f.price}</span>
+                                
+                                ${isAvailable ? `
+                                    <div style="display:flex; flex-direction:column; gap:0.5rem; align-items:flex-end">
+                                        <div class="quantity-ctrl" id="qty-ctrl-${f.food_id}">
+                                            <button class="qty-btn" onclick="adjustQty(${f.food_id}, -1)">-</button>
+                                            <span class="qty-num" id="qty-${f.food_id}">1</span>
+                                            <button class="qty-btn" onclick="adjustQty(${f.food_id}, 1)">+</button>
+                                        </div>
+                                        <button class="nav-btn" style="padding:0.4rem 1rem; font-size:0.85rem;" onclick="addToCart(${f.food_id}, '${f.food_name}', ${f.price})">
+                                            Add To Cart
+                                        </button>
+                                    </div>
+                                ` : `
+                                    <button class="nav-btn" style="padding:0.4rem 1rem; font-size:0.85rem; opacity:0.5; cursor:not-allowed;" disabled>
+                                        Sold Out
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Qty adjust
+        function adjustQty(foodId, change) {
+            const qtyLabel = document.getElementById(`qty-${foodId}`);
+            let val = parseInt(qtyLabel.textContent) + change;
+            if (val < 1) val = 1;
+            qtyLabel.textContent = val;
+        }
+
+        async function addToCart(foodId, foodName, price) {
+            const user = getLoggedInUser();
+            if (!user) {
+                showToast("Please login to order food.", "error");
+                setTimeout(() => window.location.href = "login.html", 1500);
+                return;
+            }
+
+            const qty = parseInt(document.getElementById(`qty-${foodId}`).textContent);
+
+            try {
+                // Post to cart/add/
+                await fetchAPI("/cart/add/", {
+                    method: "POST",
+                    body: {
+                        customer_name: user.full_name,
+                        food_name: foodName,
+                        quantity: qty,
+                        price: price
+                    }
+                });
+
+                showToast(`Added ${qty}x ${foodName} to cart!`, "success");
+                updateCartBadgeCount(user.full_name);
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // Initialize menu page
+        loadMenu();
+    </script>
+</body>
+</html>

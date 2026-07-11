@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GourmetGO | Restaurants</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header id="global-header"></header>
+
+    <!-- Main Section -->
+    <main>
+        <section style="margin-bottom: 3rem; text-align: center;">
+            <h1 style="font-size: 2.5rem; margin-bottom: 1rem;">Explore Restaurants</h1>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Find the finest gourmet dishes near your location.</p>
+            
+            <!-- Filters bar -->
+            <div style="display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; max-width: 800px; margin: 0 auto;">
+                <input type="text" id="restaurant-search" class="form-control" placeholder="Search by name, location, cuisine..." style="flex: 1; min-width: 250px;" oninput="applyFilters()">
+                
+                <select id="cuisine-filter" class="form-control" style="width: 180px;" onchange="applyFilters()">
+                    <option value="">All Cuisines</option>
+                    <option value="South Indian">South Indian</option>
+                    <option value="Fast Food">Fast Food</option>
+                    <option value="Italian">Italian</option>
+                    <option value="Asian">Asian</option>
+                </select>
+
+                <select id="location-filter" class="form-control" style="width: 180px;" onchange="applyFilters()">
+                    <option value="">All Cities</option>
+                    <option value="Hyderabad">Hyderabad</option>
+                    <option value="Mumbai">Mumbai</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Bangalore">Bangalore</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Restaurant Grid -->
+        <div class="cards-grid" id="restaurants-grid">
+            <!-- Dynamic Content -->
+            <div style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Loading restaurants...</div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2026 GourmetGO Food Delivery Application. Designed for Python-FSD major evaluation.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        let allRestaurants = [];
+
+        async function loadRestaurants() {
+            try {
+                // Read query params if routed from Home Search
+                const urlParams = new URLSearchParams(window.location.search);
+                const searchQuery = urlParams.get('search');
+                
+                if (searchQuery) {
+                    document.getElementById("restaurant-search").value = searchQuery;
+                }
+
+                // Initial fetch
+                allRestaurants = await fetchAPI("/restaurants/");
+                applyFilters();
+            } catch (err) {
+                showToast("Failed to load restaurants list.", "error");
+            }
+        }
+
+        function applyFilters() {
+            const search = document.getElementById("restaurant-search").value.toLowerCase().trim();
+            const cuisine = document.getElementById("cuisine-filter").value;
+            const location = document.getElementById("location-filter").value;
+
+            let filtered = allRestaurants;
+
+            if (search) {
+                filtered = filtered.filter(r => 
+                    r.restaurant_name.toLowerCase().includes(search) ||
+                    r.cuisine.toLowerCase().includes(search) ||
+                    r.location.toLowerCase().includes(search)
+                );
+            }
+
+            if (cuisine) {
+                filtered = filtered.filter(r => r.cuisine === cuisine);
+            }
+
+            if (location) {
+                filtered = filtered.filter(r => r.location === location);
+            }
+
+            displayRestaurants(filtered);
+        }
+
+        function displayRestaurants(restaurants) {
+            const grid = document.getElementById("restaurants-grid");
+            if (restaurants.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 4rem;">No restaurants matched your filters.</div>`;
+                return;
+            }
+
+            grid.innerHTML = restaurants.map(r => `
+                <div class="premium-card">
+                    <div class="card-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&auto=format&fit=crop&q=60" alt="${r.restaurant_name}" class="card-image">
+                        <div class="card-tag">📍 ${r.location}</div>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">${r.restaurant_name}</h3>
+                        <p class="cuisine-text" style="margin-bottom:1rem">${r.cuisine}</p>
+                        <div class="card-meta">
+                            <span class="rating-badge">★ ${r.rating.toFixed(1)}</span>
+                            <span style="font-size:0.8rem; color:var(--text-muted)">Owner: ${r.owner_name}</span>
+                        </div>
+                        <button class="card-btn" onclick="viewMenu('${r.restaurant_name}')">View Menu & Order</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function viewMenu(restaurantName) {
+            window.location.href = `menu.html?restaurant=${encodeURIComponent(restaurantName)}`;
+        }
+
+        // Initialize
+        loadRestaurants();
+    </script>
+</body>
+</html>

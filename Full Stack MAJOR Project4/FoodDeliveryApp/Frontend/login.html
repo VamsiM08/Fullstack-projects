@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GourmetGO | Customer Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header id="global-header"></header>
+
+    <!-- Auth Wrapper -->
+    <section class="auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Log in to order from the best kitchens around you.</p>
+            </div>
+            
+            <form id="login-form" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label class="form-label" for="login-email">Registered Email Address</label>
+                    <input type="email" id="login-email" class="form-control" required placeholder="e.g. rahul@gmail.com">
+                </div>
+                
+                <button type="submit" class="form-btn">Continue Ordering 🚀</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>New to GourmetGO? <a href="register.html">Create a Profile</a></p>
+                <p style="margin-top: 1.5rem; font-size: 0.75rem; color: var(--text-muted);">For quick testing, use seeded email: <strong style="color: var(--primary);">rahul@gmail.com</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2026 GourmetGO Food Delivery Application. Designed for Python-FSD major evaluation.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        // Redirect if already logged in
+        if (getLoggedInUser()) {
+            window.location.href = "index.html";
+        }
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById("login-email").value.trim();
+
+            try {
+                // Fetch customer details by email
+                const customer = await fetchAPI(`/customers/?email=${encodeURIComponent(email)}`);
+                loginUser(customer);
+            } catch (err) {
+                showToast("Email address not found. Please register to continue.", "error");
+            }
+        }
+    </script>
+</body>
+</html>

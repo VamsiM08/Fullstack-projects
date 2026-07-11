@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GourmetGO | My Orders</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header id="global-header"></header>
+
+    <!-- Main Section -->
+    <main>
+        <div class="section-header">
+            <h1 class="section-title">Order History & Tracking</h1>
+        </div>
+
+        <section id="orders-list-section">
+            <!-- Dynamic Content -->
+            <div style="text-align: center; padding: 4rem; color: var(--text-muted);">Loading your order records...</div>
+        </section>
+
+        <!-- No Orders State -->
+        <div id="no-orders-state" style="text-align: center; padding: 5rem 2rem; display: none;">
+            <span style="font-size: 5rem;">📦</span>
+            <h2 style="margin: 1.5rem 0 0.5rem 0;">No orders found</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">You haven't placed any food delivery orders yet.</p>
+            <a href="restaurants.html" class="nav-btn">Order Food Now</a>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2026 GourmetGO Food Delivery Application. Designed for Python-FSD major evaluation.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        let loggedUser = null;
+
+        async function initOrdersPage() {
+            loggedUser = getLoggedInUser();
+            if (!loggedUser) {
+                showToast("Please login to view your orders.", "error");
+                setTimeout(() => window.location.href = "login.html", 1500);
+                return;
+            }
+
+            try {
+                const orders = await fetchAPI(`/orders/?customer_name=${encodeURIComponent(loggedUser.full_name)}`);
+                displayOrders(orders);
+            } catch (err) {
+                showToast("Failed to fetch order history.", "error");
+            }
+        }
+
+        function getTrackerConfig(status) {
+            switch(status) {
+                case 'Preparing':
+                    return { width: '0%', steps: ['active', '', ''] };
+                case 'Out for Delivery':
+                    return { width: '50%', steps: ['completed', 'active', ''] };
+                case 'Delivered':
+                    return { width: '100%', steps: ['completed', 'completed', 'completed'] };
+                default: // Cancelled or other
+                    return { width: '0%', steps: ['', '', ''] };
+            }
+        }
+
+        function displayOrders(orders) {
+            const listSection = document.getElementById("orders-list-section");
+            const emptyState = document.getElementById("no-orders-state");
+
+            if (orders.length === 0) {
+                listSection.style.display = "none";
+                emptyState.style.display = "block";
+                return;
+            }
+
+            emptyState.style.display = "none";
+            listSection.style.display = "block";
+
+            listSection.innerHTML = orders.map(order => {
+                const isCancelled = order.delivery_status === 'Cancelled';
+                const tracker = getTrackerConfig(order.delivery_status);
+
+                return `
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <span class="order-id-txt">Order #${order.order_id}</span>
+                                <div class="order-date">Kitchen: <strong>${order.restaurant_name}</strong></div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-weight: 800; font-size:1.1rem; color: var(--primary);">₹${order.total_amount.toFixed(2)}</div>
+                                <span style="font-size: 0.8rem; padding: 0.2rem 0.6rem; border-radius: 6px; font-weight:700; background: ${order.payment_status === 'Paid' ? 'var(--accent-glow)' : 'rgba(255, 94, 54, 0.15)'}; color: ${order.payment_status === 'Paid' ? 'var(--accent)' : 'var(--primary)'}">
+                                    ${order.payment_status}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 1.5rem;">
+                            <strong style="color:var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Items Ordered:</strong>
+                            <p style="font-size:1.05rem; margin-top:0.2rem;">${order.order_items}</p>
+                        </div>
+
+                        ${isCancelled ? `
+                            <div style="background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding: 1rem; border-radius: 8px; display:flex; align-items:center; gap: 0.8rem;">
+                                <span>❌</span>
+                                <div>
+                                    <strong style="color: #ef4444; display:block">Order Cancelled</strong>
+                                    <span style="font-size: 0.85rem; color: var(--text-muted)">This order was cancelled. Please contact restaurant owner or admin support.</span>
+                                </div>
+                            </div>
+                        ` : `
+                            <div>
+                                <strong style="color:var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Delivery Status:</strong>
+                                <div class="tracker-container">
+                                    <div class="tracker-line">
+                                        <div class="tracker-line-fill" style="width: ${tracker.width};"></div>
+                                    </div>
+                                    <div class="tracker-step ${tracker.steps[0]}">
+                                        <div class="tracker-node">1</div>
+                                        <div class="tracker-label">Preparing</div>
+                                    </div>
+                                    <div class="tracker-step ${tracker.steps[1]}">
+                                        <div class="tracker-node">2</div>
+                                        <div class="tracker-label">Out for Delivery</div>
+                                    </div>
+                                    <div class="tracker-step ${tracker.steps[2]}">
+                                        <div class="tracker-node">3</div>
+                                        <div class="tracker-label">Delivered</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Initialize orders page
+        initOrdersPage();
+    </script>
+</body>
+</html>

@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GourmetGO | Shopping Cart</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header id="global-header"></header>
+
+    <!-- Main Section -->
+    <main>
+        <div class="section-header">
+            <h1 class="section-title">Your Gourmet Cart</h1>
+        </div>
+
+        <div class="cart-layout" id="cart-content" style="display: none;">
+            <!-- Cart Items List -->
+            <div class="cart-table-wrapper">
+                <table class="cart-table">
+                    <thead>
+                        <tr>
+                            <th>Item Details</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="cart-items-tbody">
+                        <!-- Dynamic items -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Cart Summary Side-card -->
+            <div class="cart-summary">
+                <h3 style="font-size: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem;">Order Summary</h3>
+                
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="summary-subtotal">₹0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>GST (5%)</span>
+                    <span id="summary-gst">₹0.00</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery Partner Fee</span>
+                    <span id="summary-delivery">₹40.00</span>
+                </div>
+
+                <div class="summary-row total">
+                    <span>Grand Total</span>
+                    <span id="summary-grandtotal">₹0.00</span>
+                </div>
+
+                <button class="form-btn" style="width: 100%; margin-top: 1.5rem;" onclick="openCheckoutModal()">Proceed to Checkout 💳</button>
+            </div>
+        </div>
+
+        <!-- Empty Cart State -->
+        <div id="empty-cart-state" style="text-align: center; padding: 5rem 2rem; display: none;">
+            <span style="font-size: 5rem;">🛒</span>
+            <h2 style="margin: 1.5rem 0 0.5rem 0;">Your cart is empty</h2>
+            <p style="color: var(--text-muted); margin-bottom: 2rem;">Add items from menus to start placing an order.</p>
+            <a href="restaurants.html" class="nav-btn">Browse Restaurants</a>
+        </div>
+    </main>
+
+    <!-- Checkout Modal Dialog -->
+    <div class="modal" id="checkout-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="font-size: 1.5rem;">Confirm Your Order</h3>
+                <button class="modal-close" onclick="closeCheckoutModal()">&times;</button>
+            </div>
+            
+            <form onsubmit="handlePlaceOrder(event)">
+                <div class="form-group">
+                    <label class="form-label">Delivery Address</label>
+                    <input type="text" id="checkout-address" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Payment Status</label>
+                    <select id="checkout-payment-status" class="form-control">
+                        <option value="Paid">Paid (Online Payment)</option>
+                        <option value="Pending">Pending (Cash on Delivery)</option>
+                    </select>
+                </div>
+
+                <div style="margin-top: 2rem; border-top: 1px solid var(--border-glass); padding-top: 1.5rem;">
+                    <div class="summary-row" style="font-weight: 700; font-size: 1.1rem; margin-bottom: 1.5rem;">
+                        <span>Final Amount</span>
+                        <span id="checkout-final-amount" style="color: var(--primary);">₹0.00</span>
+                    </div>
+                    <button type="submit" class="form-btn" style="width: 100%; margin: 0;">Place Order 📦</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2026 GourmetGO Food Delivery Application. Designed for Python-FSD major evaluation.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        let cartItems = [];
+        let allFoods = [];
+        let loggedUser = null;
+
+        async function initCart() {
+            loggedUser = getLoggedInUser();
+            if (!loggedUser) {
+                showToast("Please login to view your cart.", "error");
+                setTimeout(() => window.location.href = "login.html", 1500);
+                return;
+            }
+
+            try {
+                // Fetch all food menu items to map cart items to their restaurant names
+                allFoods = await fetchAPI("/foods/");
+                
+                // Fetch current user's cart
+                await loadCartItems();
+            } catch (err) {
+                showToast("Failed to initialize cart page.", "error");
+            }
+        }
+
+        async function loadCartItems() {
+            try {
+                cartItems = await fetchAPI(`/cart/?customer_name=${encodeURIComponent(loggedUser.full_name)}`);
+                displayCart();
+            } catch (err) {
+                showToast("Failed to fetch cart contents.", "error");
+            }
+        }
+
+        function displayCart() {
+            const content = document.getElementById("cart-content");
+            const emptyState = document.getElementById("empty-cart-state");
+
+            if (cartItems.length === 0) {
+                content.style.display = "none";
+                emptyState.style.display = "block";
+                return;
+            }
+
+            emptyState.style.display = "none";
+            content.style.display = "grid";
+
+            let subtotal = 0;
+            const tbody = document.getElementById("cart-items-tbody");
+            
+            tbody.innerHTML = cartItems.map(item => {
+                subtotal += item.total_price;
+                
+                // Look up food item to find restaurant name
+                const foodObj = allFoods.find(f => f.food_name.toLowerCase() === item.food_name.toLowerCase());
+                const restaurant = foodObj ? foodObj.restaurant_name : "Gourmet Kitchen";
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="cart-item-name">${item.food_name}</div>
+                            <div class="cart-item-meta">Restaurant: <strong>${restaurant}</strong></div>
+                        </td>
+                        <td>₹${item.price}</td>
+                        <td>
+                            <div class="quantity-ctrl">
+                                <button class="qty-btn" onclick="updateItemQuantity(${item.cart_id}, ${item.quantity - 1})">-</button>
+                                <span class="qty-num">${item.quantity}</span>
+                                <button class="qty-btn" onclick="updateItemQuantity(${item.cart_id}, ${item.quantity + 1})">+</button>
+                            </div>
+                        </td>
+                        <td style="font-weight: 700;">₹${item.total_price}</td>
+                        <td>
+                            <span class="delete-cart-item" onclick="deleteItem(${item.cart_id})">🗑️</span>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            // Calculate fees
+            const gst = subtotal * 0.05;
+            const deliveryFee = 40.0;
+            const grandTotal = subtotal + gst + deliveryFee;
+
+            document.getElementById("summary-subtotal").textContent = `₹${subtotal.toFixed(2)}`;
+            document.getElementById("summary-gst").textContent = `₹${gst.toFixed(2)}`;
+            document.getElementById("summary-delivery").textContent = `₹${deliveryFee.toFixed(2)}`;
+            document.getElementById("summary-grandtotal").textContent = `₹${grandTotal.toFixed(2)}`;
+            document.getElementById("checkout-final-amount").textContent = `₹${grandTotal.toFixed(2)}`;
+        }
+
+        async function updateItemQuantity(cartId, newQty) {
+            if (newQty < 1) {
+                deleteItem(cartId);
+                return;
+            }
+
+            try {
+                await fetchAPI(`/cart/update/${cartId}/`, {
+                    method: "PUT",
+                    body: { quantity: newQty }
+                });
+                await loadCartItems();
+                updateCartBadgeCount(loggedUser.full_name);
+            } catch (err) {
+                showToast("Failed to update item quantity.", "error");
+            }
+        }
+
+        async function deleteItem(cartId) {
+            try {
+                await fetchAPI(`/cart/delete/${cartId}/`, {
+                    method: "DELETE"
+                });
+                showToast("Item removed from cart.", "success");
+                await loadCartItems();
+                updateCartBadgeCount(loggedUser.full_name);
+            } catch (err) {
+                showToast("Failed to delete cart item.", "error");
+            }
+        }
+
+        function openCheckoutModal() {
+            const addressInput = document.getElementById("checkout-address");
+            addressInput.value = loggedUser.address + ", " + loggedUser.city;
+            document.getElementById("checkout-modal").classList.add("open");
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById("checkout-modal").classList.remove("open");
+        }
+
+        async function handlePlaceOrder(event) {
+            event.preventDefault();
+            
+            const paymentStatus = document.getElementById("checkout-payment-status").value;
+            const finalAmountString = document.getElementById("summary-grandtotal").textContent.replace("₹", "");
+            const finalAmount = parseFloat(finalAmountString);
+
+            // Create formatted string representation of order items: e.g. "Chicken Biryani x2, Masala Dosa x1"
+            const orderItemsStr = cartItems.map(item => `${item.food_name} x${item.quantity}`).join(", ");
+
+            // Determine restaurant name of the order (using restaurant name of the first item in the cart)
+            const firstItemFood = allFoods.find(f => f.food_name.toLowerCase() === cartItems[0].food_name.toLowerCase());
+            const restaurantName = firstItemFood ? firstItemFood.restaurant_name : "Gourmet Kitchen";
+
+            try {
+                // Post order to orders/add/
+                await fetchAPI("/orders/add/", {
+                    method: "POST",
+                    body: {
+                        customer_name: loggedUser.full_name,
+                        restaurant_name: restaurantName,
+                        order_items: orderItemsStr,
+                        total_amount: finalAmount,
+                        payment_status: paymentStatus,
+                        delivery_status: "Preparing"
+                    }
+                });
+
+                closeCheckoutModal();
+                showToast("Order placed successfully!", "success");
+                
+                // Clear cart badge count locally
+                const badge = document.getElementById("nav-cart-count");
+                if (badge) badge.textContent = "0";
+
+                setTimeout(() => {
+                    window.location.href = "orders.html";
+                }, 1500);
+            } catch (err) {
+                showToast(err.message || "Failed to place order.", "error");
+            }
+        }
+
+        // Initialize cart
+        initCart();
+    </script>
+</body>
+</html>

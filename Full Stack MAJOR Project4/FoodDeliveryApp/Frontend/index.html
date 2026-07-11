@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GourmetGO | Luxury Food Delivery</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Section -->
+    <header id="global-header"></header>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <h1 class="hero-title">Delicious Foods Delivered to <span>Your Doorstep</span></h1>
+        <p class="hero-subtitle">Browse menus from the finest restaurants in your city. Track your order in real-time. Fast, fresh, and gourmet.</p>
+        
+        <!-- Search bar -->
+        <div class="search-container">
+            <input type="text" id="home-search" class="search-input" placeholder="Search restaurants, cuisines, or dishes...">
+            <button class="search-btn" onclick="handleSearch()">🔍</button>
+        </div>
+
+        <!-- Categories tags -->
+        <div class="categories-container" id="category-tags">
+            <span class="category-tag active" onclick="filterCategory('All')">All Cuisines</span>
+            <span class="category-tag" onclick="filterCategory('South Indian')">South Indian</span>
+            <span class="category-tag" onclick="filterCategory('Fast Food')">Fast Food</span>
+            <span class="category-tag" onclick="filterCategory('Italian')">Italian</span>
+            <span class="category-tag" onclick="filterCategory('Asian')">Asian</span>
+        </div>
+    </section>
+
+    <!-- Main Section -->
+    <main>
+        <!-- Popular Restaurants Section -->
+        <div class="section-header">
+            <h2 class="section-title">Popular Restaurants</h2>
+            <a href="restaurants.html" style="color: var(--primary); font-weight:600;">View All →</a>
+        </div>
+        <div class="cards-grid" id="restaurants-container">
+            <!-- Dynamic Content -->
+            <div style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Loading restaurants...</div>
+        </div>
+
+        <!-- Featured Foods Section -->
+        <div class="section-header" style="margin-top: 4rem;">
+            <h2 class="section-title">Featured Culinary Items</h2>
+        </div>
+        <div class="cards-grid" id="featured-foods-container">
+            <!-- Dynamic Content -->
+            <div style="text-align: center; grid-column: 1/-1; color: var(--text-muted);">Loading gourmet dishes...</div>
+        </div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2026 GourmetGO Food Delivery Application. Designed for Python-FSD major evaluation.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        let allRestaurants = [];
+        let allFoods = [];
+
+        async function loadHomepageData() {
+            try {
+                // Fetch Restaurants
+                allRestaurants = await fetchAPI("/restaurants/");
+                displayRestaurants(allRestaurants.slice(0, 4)); // Show top 4 on home
+
+                // Fetch Foods
+                allFoods = await fetchAPI("/foods/");
+                displayFoods(allFoods.slice(0, 4)); // Show top 4 on home
+            } catch (err) {
+                showToast("Failed to connect to Django Backend.", "error");
+            }
+        }
+
+        function displayRestaurants(restaurants) {
+            const container = document.getElementById("restaurants-container");
+            if (restaurants.length === 0) {
+                container.innerHTML = `<div style="grid-column:1/-1; text-align:center; color: var(--text-muted);">No restaurants match your selection.</div>`;
+                return;
+            }
+
+            container.innerHTML = restaurants.map(r => `
+                <div class="premium-card">
+                    <div class="card-image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=500&auto=format&fit=crop&q=60" alt="${r.restaurant_name}" class="card-image">
+                        <div class="card-tag">${r.location}</div>
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">${r.restaurant_name}</h3>
+                        <p class="cuisine-text">${r.cuisine}</p>
+                        <div class="card-meta">
+                            <span class="rating-badge">★ ${r.rating.toFixed(1)}</span>
+                            <span style="font-size:0.8rem; color:var(--text-muted)">By ${r.owner_name}</span>
+                        </div>
+                        <button class="card-btn" onclick="viewMenu('${r.restaurant_name}')">Explore Menu</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function displayFoods(foods) {
+            const container = document.getElementById("featured-foods-container");
+            if (foods.length === 0) {
+                container.innerHTML = `<div style="grid-column:1/-1; text-align:center; color: var(--text-muted);">No dishes available.</div>`;
+                return;
+            }
+
+            container.innerHTML = foods.map(f => {
+                const isAvailable = f.availability === 'Available';
+                return `
+                    <div class="premium-card">
+                        <div class="card-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500&auto=format&fit=crop&q=60" alt="${f.food_name}" class="card-image">
+                            <div class="card-tag">${f.category}</div>
+                        </div>
+                        <div class="card-body">
+                            <h3 class="card-title">${f.food_name}</h3>
+                            <p class="cuisine-text" style="margin-bottom:0.5rem">From: <strong>${f.restaurant_name}</strong></p>
+                            <span class="food-avail-badge ${isAvailable ? 'available' : 'out-of-stock'}">
+                                ${f.availability}
+                            </span>
+                            <div class="card-meta" style="margin-top:1rem">
+                                <span class="card-price">₹${f.price}</span>
+                                ${isAvailable ? `
+                                    <button class="nav-btn" style="padding:0.4rem 1rem; font-size:0.85rem;" onclick="quickAddToCart('${f.food_name}', ${f.price})">
+                                        + Add
+                                    </button>
+                                ` : `
+                                    <button class="nav-btn" style="padding:0.4rem 1rem; font-size:0.85rem; opacity:0.5; cursor:not-allowed;" disabled>
+                                        Sold Out
+                                    </button>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function handleSearch() {
+            const query = document.getElementById("home-search").value.trim();
+            if (query) {
+                window.location.href = `restaurants.html?search=${encodeURIComponent(query)}`;
+            }
+        }
+
+        // Search trigger on Enter key
+        document.getElementById("home-search").addEventListener("keypress", (e) => {
+            if (e.key === "Enter") handleSearch();
+        });
+
+        function filterCategory(cuisine) {
+            // Update active state in category tags
+            const tags = document.querySelectorAll("#category-tags .category-tag");
+            tags.forEach(tag => {
+                if (tag.textContent.includes(cuisine) || (cuisine === 'All' && tag.textContent === 'All Cuisines')) {
+                    tag.classList.add("active");
+                } else {
+                    tag.classList.remove("active");
+                }
+            });
+
+            if (cuisine === "All") {
+                displayRestaurants(allRestaurants.slice(0, 4));
+            } else {
+                const filtered = allRestaurants.filter(r => r.cuisine.toLowerCase() === cuisine.toLowerCase());
+                displayRestaurants(filtered);
+            }
+        }
+
+        function viewMenu(restaurantName) {
+            window.location.href = `menu.html?restaurant=${encodeURIComponent(restaurantName)}`;
+        }
+
+        async function quickAddToCart(foodName, price) {
+            const user = getLoggedInUser();
+            if (!user) {
+                showToast("Please login to order food.", "error");
+                setTimeout(() => window.location.href = "login.html", 1500);
+                return;
+            }
+
+            try {
+                await fetchAPI("/cart/add/", {
+                    method: "POST",
+                    body: {
+                        customer_name: user.full_name,
+                        food_name: foodName,
+                        quantity: 1,
+                        price: price
+                    }
+                });
+                showToast(`${foodName} added to cart!`, "success");
+                updateCartBadgeCount(user.full_name);
+            } catch (err) {
+                showToast(err.message, "error");
+            }
+        }
+
+        // Initialize homepage
+        loadHomepageData();
+    </script>
+</body>
+</html>
