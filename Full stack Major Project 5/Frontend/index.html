@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GigNexus | Freelance Marketplace Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="ambient-bg">
+        <div class="ambient-glow-1"></div>
+        <div class="ambient-glow-2"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                GigNexus <span class="logo-dot"></span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Home</a></li>
+                    <li><a href="projects.html">Browse Projects</a></li>
+                    <li id="nav-dashboard-link" style="display: none;"><a href="dashboard.html">Dashboard</a></li>
+                    <li id="nav-contracts-link" style="display: none;"><a href="contracts.html">Contracts</a></li>
+                </ul>
+            </nav>
+            <div class="nav-auth" id="nav-auth-section">
+                <!-- Logged-in/out buttons rendered by script.js -->
+                <a href="login.html" class="btn btn-secondary btn-sm">Login</a>
+                <a href="register.html" class="btn btn-primary btn-sm">Register</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">Connect with Top Freelance Talent Globally</h1>
+            <p class="hero-subtitle">Post projects, submit bids, and collaborate securely on GigNexus – the ultimate decentralized ecosystem for digital work.</p>
+            <div class="hero-cta">
+                <a href="projects.html" class="btn btn-primary"><i class="fa-solid fa-briefcase"></i> Explore Projects</a>
+                <a href="register.html" class="btn btn-secondary"><i class="fa-solid fa-user-plus"></i> Join as Freelancer</a>
+            </div>
+        </section>
+
+        <!-- Featured Freelancers -->
+        <section style="margin-bottom: 4rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <div>
+                    <h2 class="section-title">Featured Freelancers</h2>
+                    <p class="section-subtitle" style="margin-bottom: 0;">Top-rated experts ready to bring your ideas to life.</p>
+                </div>
+                <a href="register.html" class="btn btn-secondary btn-sm">Join Them <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="grid-3" id="featured-freelancers-container">
+                <!-- Dynamically populated -->
+                <div class="card" style="grid-column: span 3; text-align: center; padding: 2rem; color: var(--text-muted);">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem; color: var(--color-primary);"></i>
+                    <p>Loading top freelancers...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Projects -->
+        <section style="margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <div>
+                    <h2 class="section-title">Trending Project Gigs</h2>
+                    <p class="section-subtitle" style="margin-bottom: 0;">Explore open proposals and make your pitch today.</p>
+                </div>
+                <a href="projects.html" class="btn btn-secondary btn-sm">Browse All <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="grid-3" id="featured-projects-container">
+                <!-- Dynamically populated -->
+                <div class="card" style="grid-column: span 3; text-align: center; padding: 2rem; color: var(--text-muted);">
+                    <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem; color: var(--color-primary);"></i>
+                    <p>Loading projects...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-logo">
+            <a href="index.html" class="logo" style="justify-content: center; font-size: 1.25rem;">
+                GigNexus <span class="logo-dot"></span>
+            </a>
+        </div>
+        <p>&copy; 2026 GigNexus Inc. All rights reserved. Built for Python-FSD major evaluation.</p>
+    </footer>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Load homepage specific data
+            GigNexus.loadHomepageData();
+        });
+    </script>
+</body>
+</html>

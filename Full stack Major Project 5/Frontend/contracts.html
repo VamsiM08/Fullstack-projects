@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Contracts | GigNexus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="ambient-bg">
+        <div class="ambient-glow-1"></div>
+        <div class="ambient-glow-2"></div>
+    </div>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                GigNexus <span class="logo-dot"></span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="projects.html">Browse Projects</a></li>
+                    <li id="nav-dashboard-link" style="display: none;"><a href="dashboard.html">Dashboard</a></li>
+                    <li id="nav-contracts-link" style="display: none;"><a href="contracts.html" class="active">Contracts</a></li>
+                </ul>
+            </nav>
+            <div class="nav-auth" id="nav-auth-section"></div>
+        </div>
+    </header>
+
+    <main>
+        <section style="margin-bottom: 2.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem;">
+                <div>
+                    <h1 class="section-title">Project Contracts</h1>
+                    <p class="section-subtitle">Track milestones, check dates, and review details of accepted proposals.</p>
+                </div>
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <select id="filter-contract-status" class="form-control" style="min-width: 160px;" onchange="GigNexus.renderContractsPage()">
+                        <option value="">All Statuses</option>
+                        <option value="Active">Active</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Contracts Grid -->
+            <div class="grid-3" id="contracts-grid-container">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 GigNexus Inc. All rights reserved.</p>
+    </footer>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            GigNexus.renderContractsPage();
+        });
+    </script>
+</body>
+</html>

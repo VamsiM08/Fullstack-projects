@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Bid Proposal | GigNexus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="ambient-bg">
+        <div class="ambient-glow-1"></div>
+        <div class="ambient-glow-2"></div>
+    </div>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                GigNexus <span class="logo-dot"></span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="projects.html">Browse Projects</a></li>
+                    <li id="nav-dashboard-link" style="display: none;"><a href="dashboard.html">Dashboard</a></li>
+                    <li id="nav-contracts-link" style="display: none;"><a href="contracts.html">Contracts</a></li>
+                </ul>
+            </nav>
+            <div class="nav-auth" id="nav-auth-section"></div>
+        </div>
+    </header>
+
+    <main style="max-width: 800px;">
+        <div class="card" style="margin-bottom: 2rem;">
+            <h2 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1.5rem;">
+                <i class="fa-solid fa-gavel"></i> Place a Project Proposal Bid
+            </h2>
+            <div id="bid-warning" style="display: none; padding: 1rem; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: var(--radius-sm); margin-bottom: 1.5rem; color: #f87171;">
+                <i class="fa-solid fa-circle-exclamation"></i> You must be logged in as a <strong>Freelancer</strong> to place a proposal bid.
+            </div>
+            
+            <form id="bid-submit-form" onsubmit="GigNexus.handleCreateBid(event)">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="bid-id">Bid ID (Optional)</label>
+                        <input type="number" id="bid-id" class="form-control" placeholder="e.g. 402 (will auto-assign if empty)">
+                    </div>
+                    <div class="form-group">
+                        <label for="bid-project-title">Select Project</label>
+                        <!-- Can select from dropdown or read-only text if passed via query parameters -->
+                        <select id="bid-project-title" class="form-control" required>
+                            <option value="" disabled selected>Select a project listing</option>
+                        </select>
+                        <input type="text" id="bid-project-title-text" class="form-control" style="display: none;" readonly>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="bid-freelancer-name">Freelancer Name</label>
+                        <input type="text" id="bid-freelancer-name" class="form-control" readonly required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bid-amount">Bid Amount ($)</label>
+                        <input type="number" id="bid-amount" class="form-control" placeholder="e.g. 45000" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="bid-proposal">Proposal Pitch</label>
+                    <textarea id="bid-proposal" class="form-control" placeholder="Pitch your solution! Describe your approach, experience in similar projects, and estimated delivery timeline..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" id="btn-submit-bid" style="margin-top: 0.5rem;">
+                    Submit Proposal <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+
+        <section style="margin-top: 3rem; display: none;" id="all-bids-section">
+            <h2 class="section-title">Submitted Bids</h2>
+            <p class="section-subtitle">Track proposals currently open for review.</p>
+            <div class="grid-2" id="bids-list-container">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 GigNexus Inc. All rights reserved.</p>
+    </footer>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            GigNexus.renderBidsPage();
+        });
+    </script>
+</body>
+</html>

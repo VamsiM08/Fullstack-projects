@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | GigNexus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="ambient-bg">
+        <div class="ambient-glow-1"></div>
+        <div class="ambient-glow-2"></div>
+    </div>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                GigNexus <span class="logo-dot"></span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="projects.html">Browse Projects</a></li>
+                </ul>
+            </nav>
+            <div class="nav-auth">
+                <a href="login.html" class="btn btn-secondary btn-sm">Login Instead</a>
+            </div>
+        </div>
+    </header>
+
+    <main style="display: flex; justify-content: center; align-items: center; min-height: 80vh; padding: 2rem 1rem;">
+        <div class="card" style="width: 100%; max-width: 550px; padding: 2.5rem;">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <i class="fa-solid fa-user-plus" style="font-size: 2.5rem; color: var(--color-primary); margin-bottom: 1rem;"></i>
+                <h2 style="margin-bottom: 0.5rem;">Create Account</h2>
+                <p class="text-muted" style="font-size: 0.9rem;">Join GigNexus as a freelancer or a hiring business client.</p>
+            </div>
+
+            <!-- Registration Tab Navigation -->
+            <div class="tab-container" style="margin-bottom: 2rem;">
+                <div class="tab-nav" style="justify-content: center; margin-bottom: 0.5rem;">
+                    <button class="tab-btn active" id="tab-reg-freelancer" onclick="GigNexus.toggleRegisterForm('freelancer')">
+                        <i class="fa-solid fa-laptop-code"></i> Freelancer
+                    </button>
+                    <button class="tab-btn" id="tab-reg-client" onclick="GigNexus.toggleRegisterForm('client')">
+                        <i class="fa-solid fa-building"></i> Client Group
+                    </button>
+                </div>
+            </div>
+
+            <!-- Freelancer Form -->
+            <form id="freelancer-register-form" onsubmit="GigNexus.handleRegisterFreelancer(event)">
+                <div class="form-group">
+                    <label for="free-id">Freelancer ID (Optional)</label>
+                    <input type="number" id="free-id" class="form-control" placeholder="e.g. 102 (will auto-assign if empty)">
+                </div>
+                <div class="form-group">
+                    <label for="free-name">Full Name</label>
+                    <input type="text" id="free-name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                </div>
+                <div class="form-group">
+                    <label for="free-email">Email Address</label>
+                    <input type="email" id="free-email" class="form-control" placeholder="e.g. rahul@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="free-phone">Phone Number</label>
+                    <input type="tel" id="free-phone" class="form-control" placeholder="e.g. 9876543210" required>
+                </div>
+                <div class="form-group">
+                    <label for="free-skills">Professional Skills (Comma separated)</label>
+                    <input type="text" id="free-skills" class="form-control" placeholder="e.g. Django, React, Python" required>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="free-experience">Years of Experience</label>
+                        <input type="number" id="free-experience" class="form-control" min="0" placeholder="e.g. 3" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="free-rate">Hourly Rate ($)</label>
+                        <input type="number" id="free-rate" class="form-control" min="1" placeholder="e.g. 20" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    Register as Freelancer <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <!-- Client Form (Hidden initially) -->
+            <form id="client-register-form" onsubmit="GigNexus.handleRegisterClient(event)" style="display: none;">
+                <div class="form-group">
+                    <label for="client-id">Client ID (Optional)</label>
+                    <input type="number" id="client-id" class="form-control" placeholder="e.g. 202 (will auto-assign if empty)">
+                </div>
+                <div class="form-group">
+                    <label for="client-company">Company Name</label>
+                    <input type="text" id="client-company" class="form-control" placeholder="e.g. Tech Solutions Pvt Ltd" required>
+                </div>
+                <div class="form-group">
+                    <label for="client-person">Contact Person</label>
+                    <input type="text" id="client-person" class="form-control" placeholder="e.g. Anjali Verma" required>
+                </div>
+                <div class="form-group">
+                    <label for="client-email">Business Email</label>
+                    <input type="email" id="client-email" class="form-control" placeholder="e.g. client@techsolutions.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="client-phone">Business Phone</label>
+                    <input type="tel" id="client-phone" class="form-control" placeholder="e.g. 9988776655" required>
+                </div>
+                <div class="form-group">
+                    <label for="client-location">Location (HQ)</label>
+                    <input type="text" id="client-location" class="form-control" placeholder="e.g. Bangalore" required>
+                </div>
+                <button type="submit" class="btn btn-secondary" style="width: 100%; margin-top: 1rem; border-color: var(--color-primary); color: var(--color-primary);">
+                    Register as Client <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 1.5rem; font-size: 0.85rem; color: var(--text-muted);">
+                Already have an account? <a href="login.html" style="color: var(--color-primary); text-decoration: none; font-weight: 600;">Sign in</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 GigNexus Inc. All rights reserved.</p>
+    </footer>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

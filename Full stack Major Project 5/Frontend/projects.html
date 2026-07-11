@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Projects | GigNexus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="ambient-bg">
+        <div class="ambient-glow-1"></div>
+        <div class="ambient-glow-2"></div>
+    </div>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                GigNexus <span class="logo-dot"></span>
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="projects.html" class="active">Browse Projects</a></li>
+                    <li id="nav-dashboard-link" style="display: none;"><a href="dashboard.html">Dashboard</a></li>
+                    <li id="nav-contracts-link" style="display: none;"><a href="contracts.html">Contracts</a></li>
+                </ul>
+            </nav>
+            <div class="nav-auth" id="nav-auth-section"></div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Client Only: Post Project Form -->
+        <section id="post-project-section" style="display: none; margin-bottom: 3rem;">
+            <div class="card">
+                <h2 style="border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 1.5rem;">
+                    <i class="fa-solid fa-file-circle-plus"></i> Post a New Freelance Project
+                </h2>
+                <form id="post-project-form" onsubmit="GigNexus.handleCreateProject(event)">
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="proj-id">Project ID (Optional)</label>
+                            <input type="number" id="proj-id" class="form-control" placeholder="e.g. 302 (will auto-assign if empty)">
+                        </div>
+                        <div class="form-group">
+                            <label for="proj-title">Project Title</label>
+                            <input type="text" id="proj-title" class="form-control" placeholder="e.g. Mobile Banking App" required>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="proj-category">Category</label>
+                            <select id="proj-category" class="form-control" required>
+                                <option value="" disabled selected>Select category</option>
+                                <option value="Web Development">Web Development</option>
+                                <option value="Mobile Development">Mobile Development</option>
+                                <option value="Graphic Design">Graphic Design</option>
+                                <option value="Content Writing">Content Writing</option>
+                                <option value="Digital Marketing">Digital Marketing</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="proj-budget">Project Budget ($)</label>
+                            <input type="number" id="proj-budget" class="form-control" min="1" placeholder="e.g. 50000" required>
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label for="proj-deadline">Deadline Date</label>
+                            <input type="date" id="proj-deadline" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="proj-client-name">Client Company Name (Reference)</label>
+                            <input type="text" id="proj-client-name" class="form-control" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="proj-desc">Detailed Project Description</label>
+                        <textarea id="proj-desc" class="form-control" placeholder="Describe the technical requirements, project timeline, and expected deliverables..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top: 0.5rem;">
+                        Publish Project Listing <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Search and Filter Panel -->
+        <section style="margin-bottom: 2rem;">
+            <h1 class="section-title">Explore Opportunities</h1>
+            <p class="section-subtitle">Find high-paying gigs posted by top agencies.</p>
+            
+            <div class="filter-bar">
+                <div class="search-input" style="position: relative;">
+                    <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-muted);">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                    <input type="text" id="search-query" class="form-control" placeholder="Search projects by title or description..." style="padding-left: 2.5rem;" oninput="GigNexus.searchAndFilterProjects()">
+                </div>
+                <div>
+                    <select id="filter-category" class="form-control" onchange="GigNexus.searchAndFilterProjects()">
+                        <option value="">All Categories</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="Mobile Development">Mobile Development</option>
+                        <option value="Graphic Design">Graphic Design</option>
+                        <option value="Content Writing">Content Writing</option>
+                        <option value="Digital Marketing">Digital Marketing</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Grid -->
+        <section>
+            <div class="grid-3" id="projects-list-container">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 GigNexus Inc. All rights reserved.</p>
+    </footer>
+
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Render projects and conditional fields
+            GigNexus.renderProjectsPage();
+        });
+    </script>
+</body>
+</html>
