@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Elegance Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Elegance <span>Store</span></a>
+            <a href="index.html" class="nav-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </nav>
+
+    <!-- REGISTER FORM -->
+    <div class="auth-wrapper">
+        <div class="auth-card glass-panel" id="register-form-container" style="max-width: 500px;">
+            <div class="auth-header">
+                <h1 class="auth-title">Create Account</h1>
+                <p class="auth-subtitle">Join us to manage orders and track purchases</p>
+            </div>
+            
+            <form id="register-form">
+                <div class="form-group">
+                    <label class="form-label" for="reg-name">Full Name</label>
+                    <input type="text" class="form-input" id="reg-name" placeholder="e.g. Rahul Sharma" required>
+                </div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div class="form-group">
+                        <label class="form-label" for="reg-email">Email Address</label>
+                        <input type="email" class="form-input" id="reg-email" placeholder="e.g. rahul@gmail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="reg-phone">Phone Number</label>
+                        <input type="text" class="form-input" id="reg-phone" placeholder="e.g. 9876543210" required>
+                    </div>
+                </div>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                    <div class="form-group">
+                        <label class="form-label" for="reg-address">Address</label>
+                        <input type="text" class="form-input" id="reg-address" placeholder="e.g. KPHB Colony" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="reg-city">City</label>
+                        <input type="text" class="form-input" id="reg-city" placeholder="e.g. Hyderabad" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="reg-password">Password</label>
+                    <input type="password" class="form-input" id="reg-password" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn-primary auth-submit-btn">Register</button>
+            </form>
+            
+            <div class="auth-footer">
+                Already registered? <a href="login.html" class="auth-link">Sign in here</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Elegance Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Elegance <span>Store</span></a>
+            <a href="index.html" class="nav-link"><i class="fas fa-arrow-left"></i> Back to Home</a>
+        </div>
+    </nav>
+
+    <!-- LOGIN FORM -->
+    <div class="auth-wrapper">
+        <div class="auth-card glass-panel" id="login-form-container">
+            <div class="auth-header">
+                <h1 class="auth-title">Welcome Back</h1>
+                <p class="auth-subtitle">Sign in to your luxury fashion wardrobe</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="login-email">Email Address</label>
+                    <input type="email" class="form-input" id="login-email" placeholder="e.g. rahul@gmail.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="login-password">Password</label>
+                    <input type="password" class="form-input" id="login-password" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="btn-primary auth-submit-btn">Sign In</button>
+            </form>
+            
+            <div class="auth-footer">
+                Don't have an account? <a href="register.html" class="auth-link">Register here</a>
+                <div style="margin-top:20px; font-size:12px; border-top: 1px solid var(--border-color); padding-top:16px;">
+                    <strong>Demo User Credentials:</strong><br>
+                    Customer: <code>rahul@gmail.com</code> / <code>password123</code><br>
+                    Administrator: <code>admin@gmail.com</code> / <code>admin123</code>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script src="script.js"></script>
+</body>
+</html>

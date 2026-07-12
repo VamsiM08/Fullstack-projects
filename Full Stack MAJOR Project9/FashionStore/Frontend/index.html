@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elegance - Premium Fashion Store</title>
+    <!-- CSS and Fonts -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- NAV BAR -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">
+                Elegance <span>Store</span>
+            </a>
+            
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="products.html" class="nav-link">Catalog</a></li>
+                <li><a href="orders.html" class="nav-link">My Orders</a></li>
+                <li><a href="dashboard.html" class="nav-link" id="nav-admin-link" style="display:none; color: var(--accent);">Admin Panel</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="cart.html" class="nav-btn" title="View Cart">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count" id="nav-cart-badge" style="display:none;">0</span>
+                </a>
+                
+                <a href="login.html" class="btn-secondary" id="nav-login-link" style="padding: 8px 16px; font-size: 12px;">Login</a>
+                <a href="register.html" class="btn-primary" id="nav-register-link" style="padding: 8px 16px; font-size: 12px; box-shadow:none;">Register</a>
+                
+                <div id="nav-profile-container" style="display:none;"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- BANNER SLIDER -->
+    <header class="hero-slider">
+        <!-- Slide 1 -->
+        <div class="slide active" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=1470&auto=format&fit=crop');">
+            <div class="slide-content">
+                <span class="slide-tag">Summer Collection 2026</span>
+                <h1 class="slide-title">Modern Essentials</h1>
+                <p class="slide-desc">Discover lightweight linen shirts, soft organic cottons, and relaxed streetwear silhouettes designed for comfort.</p>
+                <a href="products.html" class="btn-primary">Shop Collection <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        <!-- Slide 2 -->
+        <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=1412&auto=format&fit=crop');">
+            <div class="slide-content">
+                <span class="slide-tag">Premium Footwear</span>
+                <h1 class="slide-title">Step into Elegance</h1>
+                <p class="slide-desc">Browse handcrafted leather boots, minimalist white sneakers, and formal slip-ons designed to complete your premium look.</p>
+                <a href="products.html" class="btn-primary">Shop Footwear <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        <!-- Slide 3 -->
+        <div class="slide" style="background-image: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1483985988355-763728e1935b?q=80&w=1470&auto=format&fit=crop');">
+            <div class="slide-content">
+                <span class="slide-tag">Timeless Accessories</span>
+                <h1 class="slide-title">Complete The Look</h1>
+                <p class="slide-desc">Enhance your daily outfits with fossil chronograph watches, leather messenger bags, and sleek classic sunglasses.</p>
+                <a href="products.html" class="btn-primary">Shop Accessories <i class="fas fa-arrow-right"></i></a>
+            </div>
+        </div>
+        <div class="slider-dots"></div>
+    </header>
+
+    <!-- SEARCH SECTION -->
+    <section class="search-filter-section container">
+        <div class="search-wrapper">
+            <div class="search-input-container">
+                <i class="fas fa-search"></i>
+                <input type="text" class="search-input" id="search-bar" placeholder="Search for denim jackets, sneakers, watches, dresses..." onfocus="window.location.href='products.html'">
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="container" style="margin-bottom: 80px;">
+        <div class="text-center">
+            <h2 class="section-title">Shop by Category</h2>
+            <p class="section-subtitle">Curated categories tailored for all your fashion cravings</p>
+        </div>
+        <div class="categories-grid">
+            <div class="category-card glass-panel" onclick="window.location.href='products.html'">
+                <i class="fas fa-tshirt category-icon"></i>
+                <h3 class="category-name">Men's Clothing</h3>
+                <span class="category-count">Explore Jackets & Shirts</span>
+            </div>
+            <div class="category-card glass-panel" onclick="window.location.href='products.html'">
+                <i class="fas fa-female category-icon"></i>
+                <h3 class="category-name">Women's Clothing</h3>
+                <span class="category-count">Explore Dresses & Tops</span>
+            </div>
+            <div class="category-card glass-panel" onclick="window.location.href='products.html'">
+                <i class="fas fa-shoe-prints category-icon"></i>
+                <h3 class="category-name">Footwear</h3>
+                <span class="category-count">Explore Shoes & Boots</span>
+            </div>
+            <div class="category-card glass-panel" onclick="window.location.href='products.html'">
+                <i class="fas fa-glasses category-icon"></i>
+                <h3 class="category-name">Accessories</h3>
+                <span class="category-count">Explore Watches & Bags</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED PRODUCTS -->
+    <section class="container" style="margin-bottom: 80px;">
+        <div class="text-center">
+            <h2 class="section-title">Featured Styles</h2>
+            <p class="section-subtitle">A collection of our most popular and highly-requested items</p>
+        </div>
+        <div class="products-grid" id="featured-products">
+            <!-- Products loaded via JS -->
+            <div class="text-center" style="grid-column:1/-1; padding:40px;">
+                <i class="fas fa-spinner fa-spin fa-2x"></i>
+            </div>
+        </div>
+        <div class="text-center">
+            <a href="products.html" class="btn-secondary">View Entire Catalog <i class="fas fa-arrow-right" style="margin-left:8px;"></i></a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-about">
+                <a href="index.html" class="logo">Elegance <span>Store</span></a>
+                <p>An immersive virtual wardrobe bringing you premium fashion products, streetwear, classic accessories, and footwear with seamless delivery and payment options.</p>
+            </div>
+            <div>
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="products.html">Product Catalog</a></li>
+                    <li><a href="cart.html">Shopping Cart</a></li>
+                    <li><a href="orders.html">My Orders</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-title">Support</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Elegance Store. Developed for Full Stack Major Project 9. All Rights Reserved.
+        </div>
+    </footer>
+
+    <!-- Script -->
+    <script src="script.js"></script>
+</body>
+</html>

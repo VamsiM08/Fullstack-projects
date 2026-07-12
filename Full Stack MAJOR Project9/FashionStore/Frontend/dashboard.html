@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Elegance Store</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- NAV BAR -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">Elegance <span>Store</span></a>
+            
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="products.html" class="nav-link">Catalog</a></li>
+                <li><a href="orders.html" class="nav-link">My Orders</a></li>
+                <li><a href="dashboard.html" class="nav-link active" id="nav-admin-link" style="display:none; color: var(--accent);">Admin Panel</a></li>
+            </ul>
+            
+            <div class="nav-actions">
+                <a href="cart.html" class="nav-btn" title="View Cart">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="cart-count" id="nav-cart-badge" style="display:none;">0</span>
+                </a>
+                <a href="login.html" class="btn-secondary" id="nav-login-link" style="padding: 8px 16px; font-size: 12px;">Login</a>
+                <a href="register.html" class="btn-primary" id="nav-register-link" style="padding: 8px 16px; font-size: 12px; box-shadow:none;">Register</a>
+                <div id="nav-profile-container" style="display:none;"></div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT LAYOUT -->
+    <div class="container" style="margin-top: 48px; min-height: 550px;">
+        <h1 style="margin-bottom:32px; font-weight:700;">Administrator Control Board</h1>
+        
+        <div class="dashboard-layout" id="admin-dashboard-page">
+            
+            <!-- SIDEBAR CONTROL MENU -->
+            <aside class="dashboard-sidebar glass-panel">
+                <ul class="dashboard-menu">
+                    <li class="dashboard-menu-item active" data-section="products">
+                        <i class="fas fa-box-open"></i> Products Inventory
+                    </li>
+                    <li class="dashboard-menu-item" data-section="categories">
+                        <i class="fas fa-tags"></i> Categories Management
+                    </li>
+                    <li class="dashboard-menu-item" data-section="customers">
+                        <i class="fas fa-users"></i> Customer Profiles
+                    </li>
+                    <li class="dashboard-menu-item" data-section="orders">
+                        <i class="fas fa-clipboard-list"></i> Customer Orders
+                    </li>
+                </ul>
+            </aside>
+            
+            <!-- MAIN TABLE PANEL -->
+            <main class="dashboard-content-panel glass-panel">
+                <div class="dashboard-header">
+                    <h2 id="dashboard-section-title">Products Inventory</h2>
+                    <div id="dashboard-add-btn-container">
+                        <!-- Populated by script.js -->
+                    </div>
+                </div>
+                
+                <div class="table-wrapper">
+                    <table class="admin-table">
+                        <thead>
+                            <tr id="table-header-row">
+                                <!-- Headers populated via JS -->
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Rows populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </main>
+            
+        </div>
+    </div>
+
+    <!-- DIALOG POPUP MODAL -->
+    <div class="modal-backdrop" id="modal-backdrop">
+        <div class="modal-window glass-panel">
+            <div class="modal-header">
+                <h3 id="modal-title">Management Form</h3>
+                <span class="modal-close" id="modal-close"><i class="fas fa-times"></i></span>
+            </div>
+            <div id="modal-body">
+                <!-- Form inputs loaded via JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-about">
+                <a href="index.html" class="logo">Elegance <span>Store</span></a>
+                <p>An immersive virtual wardrobe bringing you premium fashion products, streetwear, classic accessories, and footwear with seamless delivery and payment options.</p>
+            </div>
+            <div>
+                <h4 class="footer-title">Quick Links</h4>
+                <ul class="footer-links">
+                    <li><a href="products.html">Product Catalog</a></li>
+                    <li><a href="cart.html">Shopping Cart</a></li>
+                    <li><a href="orders.html">My Orders</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="footer-title">Support</h4>
+                <ul class="footer-links">
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Shipping Policy</a></li>
+                    <li><a href="#">Terms & Conditions</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 Elegance Store. Developed for Full Stack Major Project 9. All Rights Reserved.
+        </div>
+    </footer>
+
+    <!-- Script -->
+    <script src="script.js"></script>
+</body>
+</html>
