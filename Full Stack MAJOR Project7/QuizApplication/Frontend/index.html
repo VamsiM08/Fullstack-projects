@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Q-Master | Premium Online Quiz Management System</title>
+    <meta name="description" content="Engage, evaluate, and learn with Q-Master. Explore high-quality quizzes in programming, science, and general knowledge, or manage exams seamlessly.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="home-page">
+
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo" id="logo-link">
+                <span>⚡</span> Q-Master
+            </a>
+            <ul class="nav-links" id="nav-right">
+                <!-- Populated dynamically by script.js -->
+                <li><a href="login.html" class="btn btn-secondary">Login</a></li>
+                <li><a href="register.html" class="btn btn-primary">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="hero">
+            <h1>Elevate Your Learning with <span>Q-Master</span></h1>
+            <p>Conduct assessments, test your skills, and get real-time evaluations with our ultra-fast and beautiful glassmorphic online quiz system.</p>
+            <div class="flex gap-1 text-center" style="justify-content: center;">
+                <a href="dashboard.html" class="btn btn-primary" id="explore-btn">Go to Dashboard</a>
+                <a href="register.html" class="btn btn-secondary" id="signup-btn">Create Free Account</a>
+            </div>
+        </section>
+
+        <section class="featured-section">
+            <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 2rem; text-align: center;">Featured Quizzes</h2>
+            
+            <div class="quizzes-grid" id="featured-quizzes-grid">
+                <!-- Loading fallback state -->
+                <div class="glass-card quiz-card" style="text-align: center; grid-column: 1 / -1;">
+                    <p style="color: var(--text-secondary);">Loading featured quizzes from the database...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Q-Master Quiz Systems. Developed for Online Assessments. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

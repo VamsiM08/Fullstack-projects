@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Q-Master Quiz Systems</title>
+    <meta name="description" content="Manage students, edit quizzes, create questions, and review quiz results from the administrative command center.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="admin-page">
+
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo" id="logo-link">
+                <span>⚡</span> Q-Master Admin
+            </a>
+            <ul class="nav-links" id="nav-right">
+                <!-- Populated dynamically by script.js -->
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container" style="max-width: 1300px;">
+        <div class="admin-layout">
+            
+            <!-- Admin Sidebar Tabs -->
+            <aside class="glass-card admin-sidebar" style="padding: 1.5rem;">
+                <h3 style="font-size: 1.1rem; text-transform: uppercase; color: var(--text-muted); margin-bottom: 1rem; padding-left: 0.5rem; letter-spacing: 1px;">Control Panel</h3>
+                <button class="admin-tab-btn active" data-tab="students" id="tab-students">
+                    <span>👥</span> Students
+                </button>
+                <button class="admin-tab-btn" data-tab="quizzes" id="tab-quizzes">
+                    <span>📋</span> Quizzes
+                </button>
+                <button class="admin-tab-btn" data-tab="questions" id="tab-questions">
+                    <span>❓</span> Questions
+                </button>
+                <button class="admin-tab-btn" data-tab="results" id="tab-results">
+                    <span>🎯</span> Quiz Results
+                </button>
+            </aside>
+
+            <!-- Admin Main Workspace -->
+            <section class="glass-card" style="padding: 2rem;">
+                
+                <!-- 1. STUDENTS MANAGEMENT TAB -->
+                <div class="admin-content-section active" id="students-section">
+                    <div class="admin-header">
+                        <h2 style="font-weight: 700; font-size: 1.8rem;">Manage Students</h2>
+                        <button class="btn btn-primary" onclick="openAddStudentModal()" id="add-student-btn">
+                            <span>+</span> Add Student
+                        </button>
+                    </div>
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Full Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>College</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-students-table-body">
+                                <!-- Populated dynamically by script.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 2. QUIZZES MANAGEMENT TAB -->
+                <div class="admin-content-section" id="quizzes-section">
+                    <div class="admin-header">
+                        <h2 style="font-weight: 700; font-size: 1.8rem;">Manage Quizzes</h2>
+                        <button class="btn btn-primary" onclick="openAddQuizModal()" id="add-quiz-btn">
+                            <span>+</span> Create Quiz
+                        </button>
+                    </div>
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Quiz Title</th>
+                                    <th>Category</th>
+                                    <th>Questions</th>
+                                    <th>Duration</th>
+                                    <th>Total Marks</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-quizzes-table-body">
+                                <!-- Populated dynamically by script.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 3. QUESTIONS MANAGEMENT TAB -->
+                <div class="admin-content-section" id="questions-section">
+                    <div class="admin-header">
+                        <h2 style="font-weight: 700; font-size: 1.8rem;">Manage Questions</h2>
+                        <button class="btn btn-primary" onclick="openAddQuestionModal()" id="add-question-btn">
+                            <span>+</span> Add Question
+                        </button>
+                    </div>
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Quiz Title</th>
+                                    <th>Question</th>
+                                    <th>Correct Answer</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-questions-table-body">
+                                <!-- Populated dynamically by script.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- 4. RESULTS VIEW TAB -->
+                <div class="admin-content-section" id="results-section">
+                    <div class="admin-header" style="margin-bottom: 1.5rem;">
+                        <h2 style="font-weight: 700; font-size: 1.8rem;">Quiz Performance Records</h2>
+                    </div>
+                    <div class="data-table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Result ID</th>
+                                    <th>Student Name</th>
+                                    <th>Quiz Title</th>
+                                    <th>Total Marks</th>
+                                    <th>Obtained Marks</th>
+                                    <th>Percentage</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-results-table-body">
+                                <!-- Populated dynamically by script.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </section>
+        </div>
+    </main>
+
+    <!-- ================= MODALS SECTION ================= -->
+
+    <!-- STUDENT ADD/EDIT MODAL -->
+    <div class="modal" id="student-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('student-modal')">&times;</span>
+            <div class="modal-title" id="student-modal-title">Add Student</div>
+            
+            <form id="admin-student-form" onsubmit="saveStudent(event)">
+                <div class="form-group" id="student-id-group">
+                    <label for="modal-student-id">Student ID (Leave blank to auto-generate)</label>
+                    <input type="number" id="modal-student-id" class="form-control" placeholder="e.g. 102">
+                </div>
+                <div class="form-group">
+                    <label for="modal-student-name">Full Name</label>
+                    <input type="text" id="modal-student-name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-student-email">Email</label>
+                    <input type="email" id="modal-student-email" class="form-control" placeholder="e.g. rahul@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-student-phone">Phone</label>
+                    <input type="tel" id="modal-student-phone" class="form-control" placeholder="e.g. 9876543210" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-student-college">College</label>
+                    <input type="text" id="modal-student-college" class="form-control" placeholder="e.g. ABC College" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-student-password">Password</label>
+                    <input type="text" id="modal-student-password" class="form-control" placeholder="e.g. rahul123" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="save-student-btn">Save Student</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- QUIZ ADD/EDIT MODAL -->
+    <div class="modal" id="quiz-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('quiz-modal')">&times;</span>
+            <div class="modal-title" id="quiz-modal-title">Create Quiz</div>
+            
+            <form id="admin-quiz-form" onsubmit="saveQuiz(event)">
+                <div class="form-group" id="quiz-id-group">
+                    <label for="modal-quiz-id">Quiz ID (Leave blank to auto-generate)</label>
+                    <input type="number" id="modal-quiz-id" class="form-control" placeholder="e.g. 202">
+                </div>
+                <div class="form-group">
+                    <label for="modal-quiz-title">Quiz Title</label>
+                    <input type="text" id="modal-quiz-title" class="form-control" placeholder="e.g. JavaScript Basics" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-quiz-category">Category</label>
+                    <input type="text" id="modal-quiz-category" class="form-control" placeholder="e.g. Programming" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-quiz-questions">Total Questions Count</label>
+                    <input type="number" id="modal-quiz-questions" class="form-control" placeholder="e.g. 10" required min="1">
+                </div>
+                <div class="form-group">
+                    <label for="modal-quiz-duration">Duration (Minutes)</label>
+                    <input type="number" id="modal-quiz-duration" class="form-control" placeholder="e.g. 20" required min="1">
+                </div>
+                <div class="form-group">
+                    <label for="modal-quiz-marks">Total Marks</label>
+                    <input type="number" id="modal-quiz-marks" class="form-control" placeholder="e.g. 100" required min="1">
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="save-quiz-btn">Save Quiz</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- QUESTION ADD/EDIT MODAL -->
+    <div class="modal" id="question-modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal('question-modal')">&times;</span>
+            <div class="modal-title" id="question-modal-title">Add Question</div>
+            
+            <form id="admin-question-form" onsubmit="saveQuestion(event)">
+                <div class="form-group" id="question-id-group">
+                    <label for="modal-question-id">Question ID (Leave blank to auto-generate)</label>
+                    <input type="number" id="modal-question-id" class="form-control" placeholder="e.g. 302">
+                </div>
+                <div class="form-group">
+                    <label for="modal-question-quiz">Select Quiz</label>
+                    <select id="modal-question-quiz" class="form-control" required>
+                        <!-- Populated by JS -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="modal-question-text">Question Prompt</label>
+                    <textarea id="modal-question-text" class="form-control" rows="3" placeholder="e.g. Which keyword is used to declare a variable?" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="modal-question-opt1">Option 1</label>
+                    <input type="text" id="modal-question-opt1" class="form-control" placeholder="e.g. int" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-question-opt2">Option 2</label>
+                    <input type="text" id="modal-question-opt2" class="form-control" placeholder="e.g. var" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-question-opt3">Option 3</label>
+                    <input type="text" id="modal-question-opt3" class="form-control" placeholder="e.g. string" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-question-opt4">Option 4</label>
+                    <input type="text" id="modal-question-opt4" class="form-control" placeholder="e.g. define" required>
+                </div>
+                <div class="form-group">
+                    <label for="modal-question-correct">Correct Option Value</label>
+                    <input type="text" id="modal-question-correct" class="form-control" placeholder="Must EXACTLY match one of the 4 options above" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="save-question-btn">Save Question</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Q-Master Quiz Systems. Administrative Command Center.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

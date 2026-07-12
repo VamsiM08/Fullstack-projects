@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attempt Quiz | Q-Master Quiz Systems</title>
+    <meta name="description" content="Attempt online quizzes, answer multiple-choice questions, and track remaining time.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="quiz-page">
+
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo" id="logo-link">
+                <span>⚡</span> Q-Master
+            </a>
+            <div class="timer" id="quiz-timer-container">
+                <span>⏱️</span> <span id="timer-countdown">00:00</span>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container" style="max-width: 800px;">
+        <div class="glass-card">
+            <div class="quiz-header">
+                <h2 id="active-quiz-title" style="font-weight: 700;">Quiz</h2>
+                <div class="question-counter">
+                    Question <span id="current-question-num">1</span> of <span id="total-questions-num">0</span>
+                </div>
+            </div>
+
+            <!-- Question container -->
+            <div class="question-section">
+                <p class="question-text" id="question-text">Loading question...</p>
+                
+                <div class="options-container" id="options-container">
+                    <!-- Option cards populated by JS -->
+                </div>
+            </div>
+
+            <div class="quiz-footer">
+                <button class="btn btn-secondary" id="prev-btn" onclick="prevQuestion()" disabled>
+                    <span>←</span> Previous
+                </button>
+                <button class="btn btn-primary" id="next-btn" onclick="nextQuestion()">
+                    Next <span>→</span>
+                </button>
+                <button class="btn btn-success" id="submit-btn" onclick="submitQuizAttempt()" style="display: none;">
+                    Submit Quiz <span>✓</span>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Q-Master Quiz Systems. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

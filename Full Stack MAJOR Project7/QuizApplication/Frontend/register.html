@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Q-Master Online Quiz Management System</title>
+    <meta name="description" content="Register an account with Q-Master and start attempting online quizzes and mock tests today.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="register-page">
+
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo" id="logo-link">
+                <span>⚡</span> Q-Master
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="login.html" class="btn btn-secondary">Login</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <div class="glass-card auth-form-container">
+            <h2>Student Registration</h2>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="fullName">Full Name</label>
+                    <input type="text" id="fullName" class="form-control" placeholder="Enter your full name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" class="form-control" placeholder="example@email.com" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" class="form-control" placeholder="10-digit number" pattern="[0-9]{10}" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="college">College / University Name</label>
+                    <input type="text" id="college" class="form-control" placeholder="Enter college name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" class="form-control" placeholder="Choose a strong password" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="submit-register-btn">Register</button>
+            </form>
+            
+            <div class="auth-links">
+                Already have an account? <a href="login.html">Login here</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Q-Master Quiz Systems. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

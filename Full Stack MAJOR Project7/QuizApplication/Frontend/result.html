@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results | Q-Master Quiz Systems</title>
+    <meta name="description" content="View your quiz summary, score percentage, pass/fail status, and details of your quiz attempt.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="result-page">
+
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo" id="logo-link">
+                <span>⚡</span> Q-Master
+            </a>
+            <ul class="nav-links" id="nav-right">
+                <!-- Populated by JS -->
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container" style="max-width: 700px;">
+        <div class="glass-card text-center">
+            <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 2rem;">Quiz Performance</h2>
+            
+            <div class="results-flex">
+                <!-- Circular Gauge -->
+                <div class="score-gauge-container">
+                    <svg class="svg-gauge">
+                        <defs>
+                            <linearGradient id="gauge-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stop-color="#6366f1" />
+                                <stop offset="100%" stop-color="#a855f7" />
+                            </linearGradient>
+                        </defs>
+                        <circle class="gauge-bg" cx="100" cy="100" r="90" />
+                        <circle class="gauge-progress" id="gauge-progress-stroke" cx="100" cy="100" r="90" 
+                                stroke-dasharray="565.48" stroke-dashoffset="565.48" />
+                    </svg>
+                    <div class="gauge-text">
+                        <span class="gauge-percentage" id="res-percentage-text">0%</span>
+                        <div class="gauge-label">Score</div>
+                    </div>
+                </div>
+
+                <!-- Result Details -->
+                <div class="results-details">
+                    <span class="results-status-badge badge-pass" id="res-status-badge">PASS</span>
+                    
+                    <table class="results-table">
+                        <tr>
+                            <td>Student Name</td>
+                            <td id="res-student-name">-</td>
+                        </tr>
+                        <tr>
+                            <td>Quiz Title</td>
+                            <td id="res-quiz-title">-</td>
+                        </tr>
+                        <tr>
+                            <td>Marks Secured</td>
+                            <td id="res-marks-summary">0 / 0</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div style="margin-top: 3rem; display: flex; gap: 1rem; justify-content: center;">
+                <a href="dashboard.html" class="btn btn-primary" id="dashboard-return-btn">Return to Dashboard</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Q-Master Quiz Systems. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
