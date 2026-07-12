@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Manager - EmpPay</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <a href="#" class="logo-container">
+                <div class="logo-icon">E</div>
+                <div class="logo-text">Emp<span>Pay</span></div>
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item admin-only" id="nav-dashboard"><a href="dashboard.html">📊 Dashboard</a></li>
+                <li class="nav-item" id="nav-employees"><a href="employees.html">👥 Employees</a></li>
+                <li class="nav-item admin-only" id="nav-departments"><a href="departments.html">🏢 Departments</a></li>
+                <li class="nav-item active" id="nav-attendance"><a href="attendance.html">📅 Attendance</a></li>
+                <li class="nav-item" id="nav-payroll"><a href="payroll.html">💰 Payroll</a></li>
+                <li class="nav-item" id="nav-payslips"><a href="payslips.html">📄 Salary Slips</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="user-profile-summary">
+                    <div class="avatar" id="sidebar-user-avatar">AD</div>
+                    <div class="user-info">
+                        <div class="user-name" id="sidebar-user-name">Loading...</div>
+                        <div class="user-role" id="sidebar-user-role">HR / Admin</div>
+                    </div>
+                </div>
+                <button class="btn-logout" id="btn-logout">↩ Log Out</button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="page-title">
+                    <h1>Attendance Management</h1>
+                    <p>Track daily punch logs, employee check-in times, and leaves.</p>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-primary admin-only" onclick="openModal('attendance-modal')">➕ Log Attendance</button>
+                    <button class="theme-toggle" id="theme-toggle">☀️</button>
+                </div>
+            </div>
+
+            <!-- Employee Quick Clock Panel -->
+            <div id="quick-clock-panel" class="glass-panel" style="max-width: 500px; margin-bottom: 2rem; display: none;">
+                <div class="panel-header">
+                    <h2>Quick Clock Punch</h2>
+                    <span id="quick-clock-date" style="font-size: 0.85rem; font-weight: 600; color: var(--primary);"></span>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Mark your check-in and check-out times for today.</p>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn btn-success" style="flex: 1; padding: 1rem; font-size: 1rem;" onclick="quickCheckIn()">🟢 Punch Check-In</button>
+                    <button class="btn btn-danger" style="flex: 1; padding: 1rem; font-size: 1rem;" onclick="quickCheckOut()">🔴 Punch Check-Out</button>
+                </div>
+            </div>
+
+            <!-- Log Table -->
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <h2 id="attendance-table-header">All Logs</h2>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Daily Punches</span>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Log ID</th>
+                                <th>Employee Name</th>
+                                <th>Date</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendance-table-body">
+                            <!-- Filled dynamically by script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Attendance (Admin Only) -->
+    <div class="modal-overlay" id="attendance-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Log Attendance Record</h3>
+                <button class="modal-close" onclick="closeModal('attendance-modal')">×</button>
+            </div>
+            <form id="add-attendance-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="att-emp-select">Select Employee</label>
+                        <select id="att-emp-select" name="employee_name" required>
+                            <!-- Filled dynamically by script.js -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="att-date">Attendance Date</label>
+                        <input type="date" id="att-date" name="attendance_date" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="att-checkin">Check-In Time</label>
+                            <input type="time" id="att-checkin" name="check_in" placeholder="09:00">
+                        </div>
+                        <div class="form-group">
+                            <label for="att-checkout">Check-Out Time</label>
+                            <input type="time" id="att-checkout" name="check_out" placeholder="18:00">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="att-status">Status</label>
+                        <select id="att-status" name="status" required>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                            <option value="Leave">Leave</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('attendance-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Attendance (Admin Only) -->
+    <div class="modal-overlay" id="edit-attendance-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Attendance Record</h3>
+                <button class="modal-close" onclick="closeModal('edit-attendance-modal')">×</button>
+            </div>
+            <form id="edit-attendance-form">
+                <input type="hidden" id="edit-att-id-key">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="edit-att-name">Employee Name</label>
+                        <input type="text" id="edit-att-name" name="employee_name" readonly style="opacity: 0.6; cursor: not-allowed;">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-att-date">Attendance Date</label>
+                        <input type="date" id="edit-att-date" name="attendance_date" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-att-checkin">Check-In Time</label>
+                            <input type="time" id="edit-att-checkin" name="check_in">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-att-checkout">Check-Out Time</label>
+                            <input type="time" id="edit-att-checkout" name="check_out">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edit-att-status">Status</label>
+                        <select id="edit-att-status" name="status" required>
+                            <option value="Present">Present</option>
+                            <option value="Absent">Absent</option>
+                            <option value="Leave">Leave</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-attendance-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Record</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const role = localStorage.getItem('role');
+            if (role === 'employee') {
+                document.getElementById('quick-clock-panel').style.display = 'block';
+                document.getElementById('attendance-table-header').textContent = 'My Attendance Log';
+                document.getElementById('quick-clock-date').textContent = new Date().toLocaleDateString('en-IN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+            } else {
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+            }
+        });
+    </script>
+</body>
+</html>

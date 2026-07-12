@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salary Slips Manager - EmpPay</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <a href="#" class="logo-container">
+                <div class="logo-icon">E</div>
+                <div class="logo-text">Emp<span>Pay</span></div>
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item admin-only" id="nav-dashboard"><a href="dashboard.html">📊 Dashboard</a></li>
+                <li class="nav-item" id="nav-employees"><a href="employees.html">👥 Employees</a></li>
+                <li class="nav-item admin-only" id="nav-departments"><a href="departments.html">🏢 Departments</a></li>
+                <li class="nav-item" id="nav-attendance"><a href="attendance.html">📅 Attendance</a></li>
+                <li class="nav-item" id="nav-payroll"><a href="payroll.html">💰 Payroll</a></li>
+                <li class="nav-item active" id="nav-payslips"><a href="payslips.html">📄 Salary Slips</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="user-profile-summary">
+                    <div class="avatar" id="sidebar-user-avatar">AD</div>
+                    <div class="user-info">
+                        <div class="user-name" id="sidebar-user-name">Loading...</div>
+                        <div class="user-role" id="sidebar-user-role">HR / Admin</div>
+                    </div>
+                </div>
+                <button class="btn-logout" id="btn-logout">↩ Log Out</button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="page-title">
+                    <h1>Salary Slip Management</h1>
+                    <p>Issue payslips, verify payments, track disbursements, and print receipts.</p>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-primary admin-only" onclick="openModal('payslip-modal')">➕ Issue Payslip</button>
+                    <button class="theme-toggle" id="theme-toggle">☀️</button>
+                </div>
+            </div>
+
+            <!-- Payslips Registry -->
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <h2 id="payslip-header">Salary Slips Registry</h2>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Receipt Records</span>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Payslip ID</th>
+                                <th>Employee Name</th>
+                                <th>Payment Date</th>
+                                <th>Payment Method</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="payslips-table-body">
+                            <!-- Filled dynamically by script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Issue Payslip (Admin Only) -->
+    <div class="modal-overlay" id="payslip-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Issue New Salary Slip</h3>
+                <button class="modal-close" onclick="closeModal('payslip-modal')">×</button>
+            </div>
+            <form id="add-payslip-form">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="payslip-emp-select">Select Employee</label>
+                        <select id="payslip-emp-select" name="employee_name" required>
+                            <!-- Filled dynamically by script.js -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="slip-date">Payment Date</label>
+                            <input type="date" id="slip-date" name="payment_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="slip-method">Payment Method</label>
+                            <select id="slip-method" name="payment_method" required>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Cash">Cash</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="slip-status">Payment Status</label>
+                            <select id="slip-status" name="payment_status" required>
+                                <option value="Paid">Paid</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="slip-remarks">Remarks</label>
+                            <input type="text" id="slip-remarks" name="remarks" placeholder="e.g. Salary credited successfully">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('payslip-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Issue Payslip</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Payslip Status (Admin Only) -->
+    <div class="modal-overlay" id="edit-payslip-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Payslip Details</h3>
+                <button class="modal-close" onclick="closeModal('edit-payslip-modal')">×</button>
+            </div>
+            <form id="edit-payslip-form">
+                <input type="hidden" id="edit-slip-id-key">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="edit-slip-name">Employee Name</label>
+                        <input type="text" id="edit-slip-name" name="employee_name" readonly style="opacity: 0.6; cursor: not-allowed;">
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-slip-date">Payment Date</label>
+                            <input type="date" id="edit-slip-date" name="payment_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-slip-method">Payment Method</label>
+                            <select id="edit-slip-method" name="payment_method" required>
+                                <option value="Bank Transfer">Bank Transfer</option>
+                                <option value="UPI">UPI</option>
+                                <option value="Cash">Cash</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-slip-status">Payment Status</label>
+                            <select id="edit-slip-status" name="payment_status" required>
+                                <option value="Paid">Paid</option>
+                                <option value="Pending">Pending</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-slip-remarks">Remarks</label>
+                            <input type="text" id="edit-slip-remarks" name="remarks">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-payslip-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Slip</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: View Visual Payslip Card (Printable Layout) -->
+    <div class="modal-overlay" id="payslip-view-modal">
+        <div id="payslip-viewer-container" style="width: 100%; max-width: 800px; padding: 1rem;">
+            <!-- Filled dynamically by script.js with visual details -->
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const role = localStorage.getItem('role');
+            if (role === 'employee') {
+                document.getElementById('payslip-header').textContent = 'My Salary Slips';
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+            } else {
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+            }
+        });
+    </script>
+</body>
+</html>

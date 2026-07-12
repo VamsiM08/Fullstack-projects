@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Directory - EmpPay</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <div class="sidebar">
+            <a href="#" class="logo-container">
+                <div class="logo-icon">E</div>
+                <div class="logo-text">Emp<span>Pay</span></div>
+            </a>
+            <ul class="nav-menu">
+                <li class="nav-item admin-only" id="nav-dashboard"><a href="dashboard.html">📊 Dashboard</a></li>
+                <li class="nav-item active" id="nav-employees"><a href="employees.html">👥 Employees</a></li>
+                <li class="nav-item admin-only" id="nav-departments"><a href="departments.html">🏢 Departments</a></li>
+                <li class="nav-item" id="nav-attendance"><a href="attendance.html">📅 Attendance</a></li>
+                <li class="nav-item" id="nav-payroll"><a href="payroll.html">💰 Payroll</a></li>
+                <li class="nav-item" id="nav-payslips"><a href="payslips.html">📄 Salary Slips</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <div class="user-profile-summary">
+                    <div class="avatar" id="sidebar-user-avatar">AD</div>
+                    <div class="user-info">
+                        <div class="user-name" id="sidebar-user-name">Loading...</div>
+                        <div class="user-role" id="sidebar-user-role">HR / Admin</div>
+                    </div>
+                </div>
+                <button class="btn-logout" id="btn-logout">↩ Log Out</button>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="page-title">
+                    <h1>Employee Management</h1>
+                    <p>Manage, add, update, and search team member records.</p>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-primary admin-only" onclick="openModal('employee-modal')">➕ Add Employee</button>
+                    <button class="theme-toggle" id="theme-toggle">☀️</button>
+                </div>
+            </div>
+
+            <!-- Admin Directory view -->
+            <div class="glass-panel admin-only" style="margin-bottom: 2rem;">
+                <div class="panel-header">
+                    <h2>All Employees</h2>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Active Registry</span>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name & Email</th>
+                                <th>Phone</th>
+                                <th>Department</th>
+                                <th>Designation</th>
+                                <th>Joining Date</th>
+                                <th>Basic Salary</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="employees-table-body">
+                            <!-- Filled dynamically by script.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Employee personal profile update form (Only displayed if role is employee) -->
+            <div id="employee-profile-section" class="glass-panel" style="max-width: 700px; display: none;">
+                <div class="panel-header">
+                    <h2>Personal Profile Details</h2>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">Update Contact Information</span>
+                </div>
+                
+                <form id="profile-update-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profile-id">Employee ID (Read-only)</label>
+                            <input type="text" id="profile-id" readonly style="opacity: 0.6; cursor: not-allowed;">
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-name">Full Name</label>
+                            <input type="text" id="profile-name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profile-email">Email Address</label>
+                            <input type="email" id="profile-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-phone">Phone Number</label>
+                            <input type="tel" id="profile-phone" placeholder="9876543210">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profile-dept">Department (Read-only)</label>
+                            <input type="text" id="profile-dept" readonly style="opacity: 0.6; cursor: not-allowed;">
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-desig">Designation (Read-only)</label>
+                            <input type="text" id="profile-desig" readonly style="opacity: 0.6; cursor: not-allowed;">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="profile-date">Joining Date (Read-only)</label>
+                            <input type="text" id="profile-date" readonly style="opacity: 0.6; cursor: not-allowed;">
+                        </div>
+                        <div class="form-group">
+                            <label for="profile-salary">Basic Salary (Read-only)</label>
+                            <input type="text" id="profile-salary" readonly style="opacity: 0.6; cursor: not-allowed;">
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="margin-top: 1rem;">Update Contact Info</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Add Employee -->
+    <div class="modal-overlay" id="employee-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Add New Employee</h3>
+                <button class="modal-close" onclick="closeModal('employee-modal')">×</button>
+            </div>
+            <form id="add-employee-form">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="emp-id">Employee ID (Numeric)</label>
+                            <input type="number" id="emp-id" name="employee_id" placeholder="e.g. 103" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="emp-name">Full Name</label>
+                            <input type="text" id="emp-name" name="full_name" placeholder="e.g. Rahul Sharma" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="emp-email">Email Address</label>
+                            <input type="email" id="emp-email" name="email" placeholder="e.g. rahul@company.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="emp-phone">Phone Number</label>
+                            <input type="tel" id="emp-phone" name="phone" placeholder="e.g. 9876543210" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="emp-dept">Department</label>
+                            <select id="emp-dept" name="department" required>
+                                <option value="Software Development">Software Development</option>
+                                <option value="Human Resources">Human Resources</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Marketing">Marketing</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="emp-desig">Designation</label>
+                            <input type="text" id="emp-desig" name="designation" placeholder="e.g. Python Developer" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="emp-joining">Joining Date</label>
+                            <input type="date" id="emp-joining" name="joining_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="emp-salary">Monthly Basic Salary (₹)</label>
+                            <input type="number" id="emp-salary" name="salary" placeholder="e.g. 60000" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('employee-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-success">Save Employee</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Edit Employee -->
+    <div class="modal-overlay" id="edit-employee-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Edit Employee Details</h3>
+                <button class="modal-close" onclick="closeModal('edit-employee-modal')">×</button>
+            </div>
+            <form id="edit-employee-form">
+                <input type="hidden" id="edit-emp-id-key">
+                <div class="modal-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-emp-id">Employee ID (Disabled)</label>
+                            <input type="text" id="edit-emp-id" readonly style="opacity: 0.6; cursor: not-allowed;">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-emp-name">Full Name</label>
+                            <input type="text" id="edit-emp-name" name="full_name" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-emp-email">Email Address</label>
+                            <input type="email" id="edit-emp-email" name="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-emp-phone">Phone Number</label>
+                            <input type="tel" id="edit-emp-phone" name="phone" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-emp-dept">Department</label>
+                            <select id="edit-emp-dept" name="department" required>
+                                <option value="Software Development">Software Development</option>
+                                <option value="Human Resources">Human Resources</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Marketing">Marketing</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-emp-desig">Designation</label>
+                            <input type="text" id="edit-emp-desig" name="designation" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="edit-emp-joining">Joining Date</label>
+                            <input type="date" id="edit-emp-joining" name="joining_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-emp-salary">Monthly Basic Salary (₹)</label>
+                            <input type="number" id="edit-emp-salary" name="salary" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('edit-employee-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Details</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Inline code to adjust views for employee role dynamically
+        document.addEventListener('DOMContentLoaded', () => {
+            const userStr = localStorage.getItem('user');
+            const role = localStorage.getItem('role');
+            if (role === 'employee') {
+                document.getElementById('employee-profile-section').style.display = 'block';
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'none');
+            } else {
+                document.querySelectorAll('.admin-only').forEach(el => el.style.display = 'block');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - EmpPay Portal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo-icon">E</div>
+                <div class="login-logo">Emp<span>Pay</span> Portal</div>
+                <p>Welcome! Please sign in to manage payroll & dashboard access.</p>
+            </div>
+            
+            <div class="login-tabs">
+                <div class="login-tab active" data-role="admin" onclick="toggleLoginRole('admin')">HR Admin Login</div>
+                <div class="login-tab" data-role="employee" onclick="toggleLoginRole('employee')">Employee Login</div>
+            </div>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label id="login-username-label" for="login-username">Admin Username</label>
+                    <input type="text" id="login-username" name="username" placeholder="e.g. admin" required autocomplete="username">
+                </div>
+                
+                <div class="form-group">
+                    <label id="login-password-label" for="login-password">Admin Secret Password</label>
+                    <input type="password" id="login-password" name="password" placeholder="••••••••" required autocomplete="current-password">
+                </div>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.85rem; margin-top: 0.5rem; font-size: 1rem;">
+                    Sign In to Portal
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
