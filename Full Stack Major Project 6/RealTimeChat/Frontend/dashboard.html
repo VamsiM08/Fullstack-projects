@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SyncLine</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container" style="max-width: 100%; justify-content: center; height: 100vh;">
+        <div class="dashboard-container">
+            
+            <!-- Sidebar Panel -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <div class="user-profile-summary" id="current-user-profile">
+                        <!-- Dynamic: Logged-in User Profile -->
+                        <div class="avatar-wrapper">
+                            <div class="user-avatar" id="current-user-avatar-placeholder"></div>
+                        </div>
+                        <div class="user-info">
+                            <span class="user-info-name" id="current-user-name">Loading...</span>
+                            <span class="user-info-username" id="current-user-username">@loading</span>
+                        </div>
+                    </div>
+                    <button class="btn-logout-icon" onclick="handleLogout()" title="Logout">
+                        <!-- Logout SVG Icon -->
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="sidebar-search">
+                    <input type="text" id="user-search-input" class="input-control" placeholder="Search users..." oninput="filterUsers()" style="padding: 10px 14px; font-size: 0.9rem; border-radius: 10px;">
+                </div>
+                
+                <div class="sidebar-list-container">
+                    <!-- Conversations List -->
+                    <div class="sidebar-section">
+                        <div class="sidebar-section-title">Conversations</div>
+                        <div id="conversations-list">
+                            <!-- Dynamic: Conversation History list -->
+                        </div>
+                    </div>
+                    
+                    <div class="sidebar-section" style="margin-top: 24px;">
+                        <div class="sidebar-section-title">All Users</div>
+                        <div id="users-list">
+                            <!-- Dynamic: Available users list -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chat Window Panel -->
+            <div class="chat-area">
+                <!-- Empty State (Shown when no chat selected) -->
+                <div class="chat-empty-state" id="chat-empty-state">
+                    <div class="empty-state-icon">💬</div>
+                    <h2>Welcome to SyncLine</h2>
+                    <p>Select a user from the sidebar to view conversation history and start messaging.</p>
+                </div>
+                
+                <!-- Chat Window (Shown when chat selected) -->
+                <div class="chat-empty-state" id="chat-active-state" style="display: none; align-items: stretch; text-align: left; padding: 0;">
+                    
+                    <!-- Chat Header -->
+                    <div class="chat-header">
+                        <div class="active-chat-user" id="active-chat-user-header">
+                            <!-- Dynamic active user info -->
+                        </div>
+                        <div class="active-chat-actions">
+                            <!-- Placeholder for header actions -->
+                        </div>
+                    </div>
+                    
+                    <!-- Messages Area -->
+                    <div class="chat-messages-container" id="chat-messages-box">
+                        <!-- Dynamic chats list -->
+                    </div>
+                    
+                    <!-- Chat Input -->
+                    <div class="chat-input-area">
+                        <div class="chat-input-wrapper">
+                            <input type="text" id="message-text-input" class="chat-text-input" placeholder="Type a message..." onkeydown="handleInputKeydown(event)">
+                        </div>
+                        <button class="btn-send" onclick="sendChatMessage()" id="btn-send-msg">
+                            <!-- Send SVG Icon -->
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="22" y1="2" x2="11" y2="13"></line>
+                                <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                            </svg>
+                        </button>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- Modal for Editing Message -->
+    <div class="modal-overlay" id="edit-message-modal">
+        <div class="modal-content">
+            <h3 class="modal-title">Edit Message</h3>
+            <div class="form-group">
+                <input type="text" id="edit-message-input" class="input-control" required>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn" style="background: transparent; border: 1px solid var(--panel-border); color: var(--text-secondary);" onclick="closeEditModal()">Cancel</button>
+                <button class="modal-btn" style="background: var(--primary-gradient); color: white;" onclick="saveEditedMessage()">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
