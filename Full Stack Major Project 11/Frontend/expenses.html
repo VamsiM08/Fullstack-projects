@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseTracker - Manage Expenses</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <main>
+        <div style="margin-bottom: 2rem;">
+            <h1 style="font-size: 2rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Expense Management</h1>
+            <p style="color: var(--text-secondary);">Log and analyze your daily outgoings, shopping bills, and monthly utilities.</p>
+        </div>
+
+        <div class="split-layout">
+            <!-- Add Expense Form -->
+            <div class="glass-panel" style="padding: 1.5rem;">
+                <h3 class="panel-title"><i class="fas fa-plus-circle"></i> Log New Expense</h3>
+                <div id="form-error" style="display: none; padding: 10px; border-radius: 8px; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger-color); color: var(--danger-color); font-size: 0.9rem; margin-bottom: 1rem;"></div>
+                
+                <form id="add-expense-form">
+                    <div class="form-group">
+                        <label for="exp-category">Category</label>
+                        <select id="exp-category" required>
+                            <!-- Dynamic Categories -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exp-amount">Amount (₹)</label>
+                        <input type="number" id="exp-amount" required min="1" step="any" placeholder="e.g. 450">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exp-date">Expense Date</label>
+                        <input type="date" id="exp-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exp-payment">Payment Method</label>
+                        <select id="exp-payment" required>
+                            <option value="Cash">Cash</option>
+                            <option value="UPI">UPI</option>
+                            <option value="Debit Card">Debit Card</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Net Banking">Net Banking</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exp-desc">Description</label>
+                        <textarea id="exp-desc" rows="2" placeholder="e.g. Lunch at Restaurant"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-danger" style="width: 100%;">
+                        Log Expense <i class="fas fa-credit-card"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Expenses History Panel -->
+            <div class="glass-panel history-card">
+                <div class="table-header-filters">
+                    <h3 class="panel-title" style="border-bottom: none; padding-bottom: 0; margin-bottom: 0;">
+                        <i class="fas fa-receipt"></i> Expense History
+                    </h3>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <label for="filter-category" style="font-size: 0.9rem; color: var(--text-secondary); white-space: nowrap;">Filter By:</label>
+                        <select id="filter-category" onchange="filterExpenses()" style="padding: 6px 12px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); color: var(--text-primary); border: 1px solid var(--card-border); font-size: 0.85rem;">
+                            <option value="All">All Categories</option>
+                            <!-- Dynamic filter options -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Amount</th>
+                                <th>Date</th>
+                                <th>Payment Mode</th>
+                                <th>Description</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="expense-table-body">
+                            <!-- Dynamic data -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Expense Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            <h3 class="panel-title"><i class="fas fa-edit"></i> Edit Expense</h3>
+            <div id="modal-error" style="display: none; padding: 10px; border-radius: 8px; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger-color); color: var(--danger-color); font-size: 0.9rem; margin-bottom: 1rem;"></div>
+            
+            <form id="edit-expense-form">
+                <input type="hidden" id="edit-exp-id">
+                <div class="form-group">
+                    <label for="edit-exp-category">Category</label>
+                    <select id="edit-exp-category" required>
+                        <!-- Dynamic Categories -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-exp-amount">Amount (₹)</label>
+                    <input type="number" id="edit-exp-amount" required min="1" step="any">
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-exp-date">Expense Date</label>
+                    <input type="date" id="edit-exp-date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-exp-payment">Payment Method</label>
+                    <select id="edit-exp-payment" required>
+                        <option value="Cash">Cash</option>
+                        <option value="UPI">UPI</option>
+                        <option value="Debit Card">Debit Card</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="Net Banking">Net Banking</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-exp-desc">Description</label>
+                    <textarea id="edit-exp-desc" rows="2"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-danger" style="width: 100%;">
+                    Update Expense <i class="fas fa-check-circle"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 ExpenseTracker. All rights reserved. Created for Python-FSD major project evaluation.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="script.js"></script>
+    <script>
+        let categoriesList = [];
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            // Default date
+            document.getElementById("exp-date").value = new Date().toISOString().split("T")[0];
+            
+            await loadCategoriesDropdowns();
+            await loadExpenses();
+        });
+
+        async function loadCategoriesDropdowns() {
+            try {
+                categoriesList = await apiCall("/categories/");
+                
+                const formSelect = document.getElementById("exp-category");
+                const modalSelect = document.getElementById("edit-exp-category");
+                const filterSelect = document.getElementById("filter-category");
+                
+                // Clear existing
+                formSelect.innerHTML = "";
+                modalSelect.innerHTML = "";
+                filterSelect.innerHTML = '<option value="All">All Categories</option>';
+                
+                categoriesList.forEach(c => {
+                    const optionHtml = `<option value="${escapeHtml(c.category_name)}">${escapeHtml(c.category_name)}</option>`;
+                    formSelect.innerHTML += optionHtml;
+                    modalSelect.innerHTML += optionHtml;
+                    filterSelect.innerHTML += optionHtml;
+                });
+            } catch (err) {
+                console.error("Failed to load categories:", err);
+            }
+        }
+
+        async function loadExpenses(categoryFilter = "All") {
+            const user = getCurrentUser();
+            if (!user) return;
+            
+            try {
+                let endpoint = `/expenses/?user_name=${encodeURIComponent(user.full_name)}`;
+                if (categoryFilter !== "All") {
+                    endpoint += `&category=${encodeURIComponent(categoryFilter)}`;
+                }
+                
+                const expenses = await apiCall(endpoint);
+                const tbody = document.getElementById("expense-table-body");
+                tbody.innerHTML = "";
+                
+                if (expenses.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-secondary);">No expenses logged matching this filter.</td></tr>`;
+                    return;
+                }
+                
+                expenses.forEach(exp => {
+                    tbody.innerHTML += `
+                        <tr id="row-exp-${exp.expense_id}">
+                            <td><span class="badge badge-info">${exp.category}</span></td>
+                            <td style="color: var(--danger-color); font-weight: 600;">- ₹${exp.amount.toLocaleString()}</td>
+                            <td>${exp.expense_date}</td>
+                            <td><span style="font-size: 0.9rem; color: var(--text-secondary);"><i class="fas fa-credit-card"></i> ${exp.payment_method}</span></td>
+                            <td style="color: var(--text-secondary); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${exp.description || '-'}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="edit-btn" onclick="openEditModal(${exp.expense_id}, '${escapeHtml(exp.category)}', ${exp.amount}, '${exp.expense_date}', '${escapeHtml(exp.payment_method)}', '${escapeHtml(exp.description || '')}')" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="delete-btn" onclick="deleteRecord(${exp.expense_id})" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Failed to load expenses:", err);
+            }
+        }
+
+        // Form Submit
+        document.getElementById("add-expense-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const user = getCurrentUser();
+            if (!user) return;
+            
+            const category = document.getElementById("exp-category").value;
+            const amount = document.getElementById("exp-amount").value;
+            const expense_date = document.getElementById("exp-date").value;
+            const payment_method = document.getElementById("exp-payment").value;
+            const description = document.getElementById("exp-desc").value.trim();
+            
+            const errorDiv = document.getElementById("form-error");
+            errorDiv.style.display = "none";
+            
+            const payload = {
+                expense_id: Math.floor(Math.random() * 900000) + 100000,
+                user_name: user.full_name,
+                category,
+                amount: parseFloat(amount),
+                expense_date,
+                payment_method,
+                description
+            };
+            
+            try {
+                // Check if category limit is exceeded
+                const categoryObj = categoriesList.find(c => c.category_name === category);
+                if (categoryObj) {
+                    // Calculate expenses for this user in this category
+                    const currentExpenses = await apiCall(`/expenses/?user_name=${encodeURIComponent(user.full_name)}&category=${encodeURIComponent(category)}`);
+                    const totalSpent = currentExpenses.reduce((sum, item) => sum + item.amount, 0) + parseFloat(amount);
+                    
+                    if (totalSpent > categoryObj.monthly_limit) {
+                        alert(`⚠️ Warning: You are exceeding your monthly limit of ₹${categoryObj.monthly_limit.toLocaleString()} for category "${category}"! (Total spent will be: ₹${totalSpent.toLocaleString()})`);
+                    }
+                }
+
+                await apiCall("/expenses/add/", "POST", payload);
+                document.getElementById("exp-amount").value = "";
+                document.getElementById("exp-desc").value = "";
+                
+                // Refresh list
+                const activeFilter = document.getElementById("filter-category").value;
+                await loadExpenses(activeFilter);
+                await recalculateBudgets();
+            } catch (err) {
+                errorDiv.textContent = err.message || "Failed to log expense.";
+                errorDiv.style.display = "block";
+            }
+        });
+
+        // Filter trigger
+        async function filterExpenses() {
+            const filterVal = document.getElementById("filter-category").value;
+            await loadExpenses(filterVal);
+        }
+
+        // Modal triggers
+        function openEditModal(id, category, amount, date, payment, desc) {
+            document.getElementById("edit-exp-id").value = id;
+            document.getElementById("edit-exp-category").value = category;
+            document.getElementById("edit-exp-amount").value = amount;
+            document.getElementById("edit-exp-date").value = date;
+            document.getElementById("edit-exp-payment").value = payment;
+            document.getElementById("edit-exp-desc").value = desc;
+            
+            document.getElementById("modal-error").style.display = "none";
+            document.getElementById("edit-modal").style.display = "flex";
+        }
+
+        function closeEditModal() {
+            document.getElementById("edit-modal").style.display = "none";
+        }
+
+        document.getElementById("edit-expense-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const user = getCurrentUser();
+            if (!user) return;
+            
+            const id = document.getElementById("edit-exp-id").value;
+            const category = document.getElementById("edit-exp-category").value;
+            const amount = document.getElementById("edit-exp-amount").value;
+            const expense_date = document.getElementById("edit-exp-date").value;
+            const payment_method = document.getElementById("edit-exp-payment").value;
+            const description = document.getElementById("edit-exp-desc").value.trim();
+            
+            const errorDiv = document.getElementById("modal-error");
+            errorDiv.style.display = "none";
+            
+            const payload = {
+                user_name: user.full_name,
+                category,
+                amount: parseFloat(amount),
+                expense_date,
+                payment_method,
+                description
+            };
+            
+            try {
+                await apiCall(`/expenses/update/${id}/`, "PUT", payload);
+                closeEditModal();
+                const activeFilter = document.getElementById("filter-category").value;
+                await loadExpenses(activeFilter);
+                await recalculateBudgets();
+            } catch (err) {
+                errorDiv.textContent = err.message || "Failed to update expense record.";
+                errorDiv.style.display = "block";
+            }
+        });
+
+        // Delete trigger
+        async function deleteRecord(id) {
+            if (confirm("Are you sure you want to delete this expense record?")) {
+                try {
+                    await apiCall(`/expenses/delete/${id}/`, "DELETE");
+                    const activeFilter = document.getElementById("filter-category").value;
+                    await loadExpenses(activeFilter);
+                    await recalculateBudgets();
+                } catch (err) {
+                    alert(err.message || "Failed to delete record.");
+                }
+            }
+        }
+
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>

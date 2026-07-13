@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseTracker - Budget Summaries</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <main>
+        <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1 style="font-size: 2rem; font-weight: 800; background: var(--primary-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Budget Management</h1>
+                <p style="color: var(--text-secondary);">Analyze your monthly income against expenses to see your savings rate and budget status.</p>
+            </div>
+            <div>
+                <button onclick="triggerRecalculate()" class="btn btn-primary"><i class="fas fa-arrows-rotate"></i> Sync & Recalculate</button>
+            </div>
+        </div>
+
+        <!-- Budget Ledger -->
+        <div class="glass-panel history-card" style="margin-bottom: 2rem;">
+            <h3 class="panel-title"><i class="fas fa-wallet"></i> Monthly Budget Summary</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Month</th>
+                            <th>Total Income</th>
+                            <th>Total Expense</th>
+                            <th>Net Savings</th>
+                            <th>Expense Ratio & Progress</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="budget-table-body">
+                        <!-- Dynamic items -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Budget Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content glass-panel">
+            <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            <h3 class="panel-title"><i class="fas fa-edit"></i> Edit Budget Record</h3>
+            <div id="modal-error" style="display: none; padding: 10px; border-radius: 8px; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger-color); color: var(--danger-color); font-size: 0.9rem; margin-bottom: 1rem;"></div>
+            
+            <form id="edit-budget-form">
+                <input type="hidden" id="edit-bud-id">
+                <input type="hidden" id="edit-bud-month">
+                <div class="form-group">
+                    <label for="edit-bud-income">Custom Total Income (₹)</label>
+                    <input type="number" id="edit-bud-income" required min="0" step="any">
+                </div>
+                
+                <div class="form-group">
+                    <label for="edit-bud-expense">Custom Total Expense (₹)</label>
+                    <input type="number" id="edit-bud-expense" required min="0" step="any">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">
+                    Update Budget <i class="fas fa-check-circle"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 ExpenseTracker. All rights reserved. Created for Python-FSD major project evaluation.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadBudgets();
+        });
+
+        async function loadBudgets() {
+            const user = getCurrentUser();
+            if (!user) return;
+            
+            try {
+                // Fetch budgets from api
+                const budgets = await apiCall(`/budgets/?user_name=${encodeURIComponent(user.full_name)}`);
+                const tbody = document.getElementById("budget-table-body");
+                tbody.innerHTML = "";
+                
+                if (budgets.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-secondary);">No budget summaries compiled. Try logging income and expenses first, then click "Sync & Recalculate".</td></tr>`;
+                    return;
+                }
+                
+                budgets.forEach(bud => {
+                    const savings = bud.total_income - bud.total_expense;
+                    const savingsColor = savings >= 0 ? "var(--success-color)" : "var(--danger-color)";
+                    
+                    // Progress bar calculation
+                    let ratio = 0;
+                    if (bud.total_income > 0) {
+                        ratio = Math.min((bud.total_expense / bud.total_income) * 100, 100);
+                    } else if (bud.total_expense > 0) {
+                        ratio = 100;
+                    }
+                    
+                    const progressColor = ratio > 90 
+                        ? "var(--danger-color)" 
+                        : ratio > 75 
+                            ? "var(--warning-color)" 
+                            : "var(--success-color)";
+                    
+                    const statusBadge = bud.budget_status === "Under Budget"
+                        ? `<span class="badge badge-success">Under Budget</span>`
+                        : `<span class="badge badge-danger">Over Budget</span>`;
+                        
+                    tbody.innerHTML += `
+                        <tr id="row-bud-${bud.budget_id}">
+                            <td><strong>${bud.month}</strong></td>
+                            <td style="color: var(--success-color); font-weight: 500;">₹${bud.total_income.toLocaleString()}</td>
+                            <td style="color: var(--danger-color); font-weight: 500;">₹${bud.total_expense.toLocaleString()}</td>
+                            <td style="color: ${savingsColor}; font-weight: 600;">₹${savings.toLocaleString()}</td>
+                            <td style="width: 250px;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 2px;">
+                                    <span>Spent</span>
+                                    <span>${ratio.toFixed(0)}%</span>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar" style="width: ${ratio}%; background-color: ${progressColor};"></div>
+                                </div>
+                            </td>
+                            <td>${statusBadge}</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="edit-btn" onclick="openEditModal(${bud.budget_id}, '${escapeHtml(bud.month)}', ${bud.total_income}, ${bud.total_expense})" title="Edit">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="delete-btn" onclick="deleteRecord(${bud.budget_id})" title="Delete">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+            } catch (err) {
+                console.error("Failed to load budgets:", err);
+            }
+        }
+
+        async function triggerRecalculate() {
+            const btn = document.querySelector("button[onclick='triggerRecalculate()']");
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
+            
+            await recalculateBudgets();
+            await loadBudgets();
+            
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-arrows-rotate"></i> Sync & Recalculate';
+        }
+
+        // Edit Modal handlers
+        function openEditModal(id, month, income, expense) {
+            document.getElementById("edit-bud-id").value = id;
+            document.getElementById("edit-bud-month").value = month;
+            document.getElementById("edit-bud-income").value = income;
+            document.getElementById("edit-bud-expense").value = expense;
+            
+            document.getElementById("modal-error").style.display = "none";
+            document.getElementById("edit-modal").style.display = "flex";
+        }
+
+        function closeEditModal() {
+            document.getElementById("edit-modal").style.display = "none";
+        }
+
+        document.getElementById("edit-budget-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const user = getCurrentUser();
+            if (!user) return;
+            
+            const id = document.getElementById("edit-bud-id").value;
+            const month = document.getElementById("edit-bud-month").value;
+            const income = document.getElementById("edit-bud-income").value;
+            const expense = document.getElementById("edit-bud-expense").value;
+            
+            const errorDiv = document.getElementById("modal-error");
+            errorDiv.style.display = "none";
+            
+            const savings = parseFloat(income) - parseFloat(expense);
+            const status = parseFloat(expense) > parseFloat(income) ? "Over Budget" : "Under Budget";
+            
+            const payload = {
+                user_name: user.full_name,
+                month: month,
+                total_income: parseFloat(income),
+                total_expense: parseFloat(expense),
+                savings: savings,
+                budget_status: status
+            };
+            
+            try {
+                await apiCall(`/budgets/update/${id}/`, "PUT", payload);
+                closeEditModal();
+                await loadBudgets();
+            } catch (err) {
+                errorDiv.textContent = err.message || "Failed to update budget record.";
+                errorDiv.style.display = "block";
+            }
+        });
+
+        // Delete Handler
+        async function deleteRecord(id) {
+            if (confirm("Are you sure you want to delete this monthly budget summary record?")) {
+                try {
+                    await apiCall(`/budgets/delete/${id}/`, "DELETE");
+                    await loadBudgets();
+                } catch (err) {
+                    alert(err.message || "Failed to delete budget record.");
+                }
+            }
+        }
+
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>

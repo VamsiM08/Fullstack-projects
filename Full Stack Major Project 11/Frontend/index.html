@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseTracker - Manage Personal & Business Expenses</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <main>
+        <div class="hero-section">
+            <h1>Take Control of Your Financial Life</h1>
+            <p>Track your income, monitor daily expenses, configure smart budgets, and gain detailed insights into your spending habits with our premium, easy-to-use Expense Tracker.</p>
+            
+            <div class="hero-buttons" id="hero-cta-container">
+                <!-- Dynamic buttons will load here -->
+                <a href="login.html" class="btn btn-primary">Get Started <i class="fas fa-arrow-right"></i></a>
+                <a href="register.html" class="btn btn-secondary">Create Account</a>
+            </div>
+        </div>
+
+        <!-- Dynamic Welcome / Summary Panel for Logged in Users -->
+        <div id="quick-summary-panel" class="glass-panel" style="display: none; padding: 2rem; max-width: 800px; margin: 2rem auto; text-align: center;">
+            <h2 style="font-size: 1.8rem; margin-bottom: 1rem; color: var(--primary-color);">Welcome back, <span id="summary-user-name">User</span>!</h2>
+            <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
+                Here is a quick overview of your financials. Take a look at your dashboard to see your detailed category breakdowns and monthly charts.
+            </p>
+            <div class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr); margin-bottom: 1.5rem;">
+                <div class="glass-panel" style="padding: 1rem;">
+                    <div style="color: var(--success-color); font-size: 1.5rem; font-weight: 700;" id="sum-income">₹0.00</div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary);">Total Income</div>
+                </div>
+                <div class="glass-panel" style="padding: 1rem;">
+                    <div style="color: var(--danger-color); font-size: 1.5rem; font-weight: 700;" id="sum-expense">₹0.00</div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary);">Total Expenses</div>
+                </div>
+                <div class="glass-panel" style="padding: 1rem;">
+                    <div style="color: var(--primary-color); font-size: 1.5rem; font-weight: 700;" id="sum-savings">₹0.00</div>
+                    <div style="font-size: 0.85rem; color: var(--text-secondary);">Net Savings</div>
+                </div>
+            </div>
+            <a href="dashboard.html" class="btn btn-primary">Go to Dashboard <i class="fas fa-chart-line"></i></a>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-box glass-panel">
+                <div class="feature-icon"><i class="fas fa-coins"></i></div>
+                <h3>Income Logging</h3>
+                <p>Track salary, freelance work, and investments easily. Record dates, sources, and detailed notes.</p>
+            </div>
+            <div class="feature-box glass-panel">
+                <div class="feature-icon"><i class="fas fa-credit-card"></i></div>
+                <h3>Expense Tracking</h3>
+                <p>Monitor your daily transactions. Categorize expenses and filter them by category and payment modes.</p>
+            </div>
+            <div class="feature-box glass-panel">
+                <div class="feature-icon"><i class="fas fa-chart-pie"></i></div>
+                <h3>Category Limits</h3>
+                <p>Define custom categories and set monthly limits. Stay warned when spending nears target thresholds.</p>
+            </div>
+            <div class="feature-box glass-panel">
+                <div class="feature-icon"><i class="fas fa-piggy-bank"></i></div>
+                <h3>Budget Summaries</h3>
+                <p>Observe automated budget summaries showing month-on-month status (Under Budget vs. Over Budget).</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ExpenseTracker. All rights reserved. Created for Python-FSD major project evaluation.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="script.js"></script>
+    <script>
+        // Check if user is logged in, and customize CTA
+        document.addEventListener("DOMContentLoaded", async () => {
+            const user = getCurrentUser();
+            const ctaContainer = document.getElementById("hero-cta-container");
+            const summaryPanel = document.getElementById("quick-summary-panel");
+            
+            if (user) {
+                // Adjust hero CTA buttons
+                ctaContainer.innerHTML = `
+                    <a href="dashboard.html" class="btn btn-primary">Go to Dashboard <i class="fas fa-chart-line"></i></a>
+                    <button class="btn btn-secondary" onclick="logoutUser()">Logout</button>
+                `;
+                
+                // Show financial summary panel
+                summaryPanel.style.display = "block";
+                document.getElementById("summary-user-name").textContent = user.full_name;
+                
+                try {
+                    // Fetch data to calculate basic totals
+                    const incomes = await apiCall(`/income/?user_name=${encodeURIComponent(user.full_name)}`);
+                    const expenses = await apiCall(`/expenses/?user_name=${encodeURIComponent(user.full_name)}`);
+                    
+                    const totalIncome = incomes.reduce((sum, inc) => sum + inc.amount, 0);
+                    const totalExpense = expenses.reduce((sum, exp) => sum + exp.amount, 0);
+                    const savings = totalIncome - totalExpense;
+                    
+                    document.getElementById("sum-income").textContent = `₹${totalIncome.toLocaleString()}`;
+                    document.getElementById("sum-expense").textContent = `₹${totalExpense.toLocaleString()}`;
+                    document.getElementById("sum-savings").textContent = `₹${savings.toLocaleString()}`;
+                } catch (err) {
+                    console.error("Failed to load hero financials:", err);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseTracker - Login</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <main>
+        <div class="form-card glass-panel">
+            <h2 class="form-title">Welcome Back</h2>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                Log in to access your financial dashboard and transactions.
+            </p>
+            
+            <div id="error-message" style="display: none; padding: 10px; border-radius: 8px; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger-color); color: var(--danger-color); font-size: 0.9rem; margin-bottom: 1rem; text-align: center;"></div>
+            <div id="success-message" style="display: none; padding: 10px; border-radius: 8px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success-color); color: var(--success-color); font-size: 0.9rem; margin-bottom: 1rem; text-align: center;"></div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email"><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="login-email" required placeholder="rahul@gmail.com">
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    Sign In <i class="fas fa-sign-in-alt"></i>
+                </button>
+            </form>
+
+            <div class="form-footer">
+                Don't have an account? <a href="register.html">Register here</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ExpenseTracker. All rights reserved. Created for Python-FSD major project evaluation.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="script.js"></script>
+    <script>
+        document.getElementById("login-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById("login-email").value.trim();
+            const password = document.getElementById("login-password").value.trim();
+            
+            const errorDiv = document.getElementById("error-message");
+            const successDiv = document.getElementById("success-message");
+            
+            errorDiv.style.display = "none";
+            successDiv.style.display = "none";
+            
+            try {
+                // Fetch all users to verify credentials
+                const users = await apiCall("/users/", "GET");
+                const matchedUser = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+                
+                if (matchedUser) {
+                    successDiv.textContent = "Login successful! Redirecting...";
+                    successDiv.style.display = "block";
+                    
+                    // Save user to localStorage
+                    setCurrentUser(matchedUser);
+                    
+                    // Recalculate budgets in background to sync totals
+                    recalculateBudgets();
+                    
+                    setTimeout(() => {
+                        window.location.href = "dashboard.html";
+                    }, 1500);
+                } else {
+                    throw new Error("Invalid email or password. Please try again.");
+                }
+            } catch (err) {
+                errorDiv.textContent = err.message || "Failed to authenticate. Server might be offline.";
+                errorDiv.style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>

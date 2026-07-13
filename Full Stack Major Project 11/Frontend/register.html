@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseTracker - Create Account</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <main>
+        <div class="form-card glass-panel">
+            <h2 class="form-title">Join ExpenseTracker</h2>
+            <p style="text-align: center; color: var(--text-secondary); margin-bottom: 1.5rem; font-size: 0.95rem;">
+                Create a secure account to start organizing your personal budget and expenses.
+            </p>
+            
+            <div id="error-message" style="display: none; padding: 10px; border-radius: 8px; background: rgba(239, 68, 68, 0.1); border: 1px solid var(--danger-color); color: var(--danger-color); font-size: 0.9rem; margin-bottom: 1rem; text-align: center;"></div>
+            <div id="success-message" style="display: none; padding: 10px; border-radius: 8px; background: rgba(16, 185, 129, 0.1); border: 1px solid var(--success-color); color: var(--success-color); font-size: 0.9rem; margin-bottom: 1rem; text-align: center;"></div>
+
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-name"><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="reg-name" required placeholder="Rahul Sharma">
+                </div>
+                
+                <div class="form-group">
+                    <label for="reg-email"><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="reg-email" required placeholder="rahul@gmail.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-phone"><i class="fas fa-phone"></i> Phone Number</label>
+                    <input type="tel" id="reg-phone" placeholder="9876543210">
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-password"><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="reg-password" required placeholder="••••••••">
+                </div>
+
+                <div class="form-group">
+                    <label for="reg-city"><i class="fas fa-map-marker-alt"></i> City</label>
+                    <input type="text" id="reg-city" placeholder="Hyderabad">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">
+                    Sign Up <i class="fas fa-user-plus"></i>
+                </button>
+            </form>
+
+            <div class="form-footer">
+                Already have an account? <a href="login.html">Login here</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 ExpenseTracker. All rights reserved. Created for Python-FSD major project evaluation.</p>
+    </footer>
+
+    <!-- JS -->
+    <script src="script.js"></script>
+    <script>
+        document.getElementById("register-form").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const fullName = document.getElementById("reg-name").value.trim();
+            const email = document.getElementById("reg-email").value.trim();
+            const phone = document.getElementById("reg-phone").value.trim();
+            const password = document.getElementById("reg-password").value.trim();
+            const city = document.getElementById("reg-city").value.trim();
+            
+            const errorDiv = document.getElementById("error-message");
+            const successDiv = document.getElementById("success-message");
+            
+            errorDiv.style.display = "none";
+            successDiv.style.display = "none";
+            
+            // Auto generate a random user ID
+            const userId = Math.floor(Math.random() * 900) + 100; // 100-999
+            
+            const payload = {
+                user_id: userId,
+                full_name: fullName,
+                email: email,
+                phone: phone,
+                password: password,
+                city: city
+            };
+            
+            try {
+                const result = await apiCall("/users/add/", "POST", payload);
+                successDiv.textContent = "Registration successful! Redirecting to login...";
+                successDiv.style.display = "block";
+                
+                // Clear form
+                document.getElementById("register-form").reset();
+                
+                // Redirect after 2s
+                setTimeout(() => {
+                    window.location.href = "login.html";
+                }, 2000);
+            } catch (err) {
+                errorDiv.textContent = err.message || "Failed to register. Email may already be in use.";
+                errorDiv.style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>
