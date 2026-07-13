@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - HopeWell Hospital</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN for premium interactive charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- --- SIDEBAR NAVIGATION --- -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-brand">
+                <i data-lucide="heart-pulse"></i>
+                <span>HopeWell</span>
+            </a>
+            <span class="sidebar-brand-status"></span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html" class="sidebar-link"><i data-lucide="home"></i> <span>Home</span></a></li>
+            <li><a href="dashboard.html" class="sidebar-link active"><i data-lucide="layout-dashboard"></i> <span>Dashboard</span></a></li>
+            <li><a href="patients.html" class="sidebar-link"><i data-lucide="users"></i> <span>Patients</span></a></li>
+            <li><a href="doctors.html" class="sidebar-link"><i data-lucide="activity"></i> <span>Doctors</span></a></li>
+            <li><a href="appointments.html" class="sidebar-link"><i data-lucide="calendar"></i> <span>Appointments</span></a></li>
+            <li><a href="records.html" class="sidebar-link"><i data-lucide="clipboard"></i> <span>Medical Records</span></a></li>
+            <li><a href="billing.html" class="sidebar-link"><i data-lucide="credit-card"></i> <span>Billing</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-avatar">SA</div>
+            <div class="sidebar-user-info">
+                <span class="sidebar-user-name">Staff Admin</span>
+                <span class="sidebar-user-role">Administrator</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- --- MAIN WORKSPACE --- -->
+    <div class="main-wrapper">
+        <header class="top-bar">
+            <div class="top-bar-title">Hospital Administrative Control Center</div>
+            <div class="top-bar-meta">
+                <div class="top-bar-meta-item">
+                    <i data-lucide="check-circle"></i>
+                    <span>All systems operational</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="container">
+            <div class="page-header">
+                <h1 class="page-title">Executive Dashboard</h1>
+            </div>
+
+            <!-- KPI Summary Counters -->
+            <section class="dashboard-kpis">
+                <!-- Total Patients -->
+                <div class="card kpi-card">
+                    <div class="kpi-icon blue">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <div>
+                        <div id="kpi-total-patients" class="kpi-value">0</div>
+                        <div class="kpi-label">Total Patients</div>
+                    </div>
+                </div>
+
+                <!-- Total Doctors -->
+                <div class="card kpi-card">
+                    <div class="kpi-icon teal">
+                        <i data-lucide="activity"></i>
+                    </div>
+                    <div>
+                        <div id="kpi-total-doctors" class="kpi-value">0</div>
+                        <div class="kpi-label">Total Doctors</div>
+                    </div>
+                </div>
+
+                <!-- Today's Appointments -->
+                <div class="card kpi-card">
+                    <div class="kpi-icon amber">
+                        <i data-lucide="calendar"></i>
+                    </div>
+                    <div>
+                        <div id="kpi-today-appointments" class="kpi-value">0</div>
+                        <div class="kpi-label">Today's Appointments</div>
+                    </div>
+                </div>
+
+                <!-- Total Revenue -->
+                <div class="card kpi-card">
+                    <div class="kpi-icon emerald">
+                        <i data-lucide="trending-up"></i>
+                    </div>
+                    <div>
+                        <div id="kpi-total-revenue" class="kpi-value">₹0</div>
+                        <div class="kpi-label">Revenue (Paid)</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <div class="grid-2" style="margin-bottom: 2.5rem;">
+                <!-- Appointment Status chart -->
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <h3 class="card-title">
+                        <i data-lucide="pie-chart"></i>
+                        Appointments Ratios
+                    </h3>
+                    <div style="position: relative; width: 100%; height: 260px; display: flex; justify-content: center; align-items: center; margin-top: 1rem;">
+                        <canvas id="appointmentsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Billing Summary chart -->
+                <div class="card" style="display: flex; flex-direction: column;">
+                    <h3 class="card-title">
+                        <i data-lucide="bar-chart-3"></i>
+                        Invoices Collections (Paid vs Pending)
+                    </h3>
+                    <div style="position: relative; width: 100%; height: 260px; display: flex; justify-content: center; align-items: center; margin-top: 1rem;">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom list and stats panels -->
+            <div class="grid-2" style="grid-template-columns: 1.7fr 1fr;">
+                <!-- Today's schedule -->
+                <section class="card">
+                    <h2 class="card-title">
+                        <i data-lucide="clock"></i>
+                        Today's Scheduled Consultations
+                    </h2>
+                    <div class="table-responsive" style="margin-top: 1rem;">
+                        <table class="table" id="today-appointments-table">
+                            <thead>
+                                <tr>
+                                    <th>Patient Name</th>
+                                    <th>Doctor Name</th>
+                                    <th>Scheduled Time</th>
+                                    <th>Current Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="today-appointments-list">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: var(--text-muted);">Scanning appointments calendar...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Statistics panel -->
+                <section class="card">
+                    <h2 class="card-title">
+                        <i data-lucide="bar-chart"></i>
+                        General Diagnostics
+                    </h2>
+                    <div style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;">
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                            <span style="color: var(--text-muted); font-weight: 600; font-size: 0.9rem;">Medical Records Count:</span>
+                            <strong id="summary-records-count" style="color: var(--text-main);">0</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                            <span style="color: var(--text-muted); font-weight: 600; font-size: 0.9rem;">Pending Invoices:</span>
+                            <strong id="summary-pending-bills" style="color: var(--danger);">0</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">
+                            <span style="color: var(--text-muted); font-weight: 600; font-size: 0.9rem;">Staff Avg. Experience:</span>
+                            <strong id="summary-avg-exp" style="color: var(--text-main);">0 yrs</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; padding-bottom: 0.5rem;">
+                            <span style="color: var(--text-muted); font-weight: 600; font-size: 0.9rem;">Patient Avg. Age:</span>
+                            <strong id="summary-avg-age" style="color: var(--text-main);">0 yrs</strong>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 HopeWell Hospital. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

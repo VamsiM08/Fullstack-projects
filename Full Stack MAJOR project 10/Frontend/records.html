@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Records - HopeWell Hospital</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- --- SIDEBAR NAVIGATION --- -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-brand">
+                <i data-lucide="heart-pulse"></i>
+                <span>HopeWell</span>
+            </a>
+            <span class="sidebar-brand-status"></span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html" class="sidebar-link"><i data-lucide="home"></i> <span>Home</span></a></li>
+            <li><a href="dashboard.html" class="sidebar-link"><i data-lucide="layout-dashboard"></i> <span>Dashboard</span></a></li>
+            <li><a href="patients.html" class="sidebar-link"><i data-lucide="users"></i> <span>Patients</span></a></li>
+            <li><a href="doctors.html" class="sidebar-link"><i data-lucide="activity"></i> <span>Doctors</span></a></li>
+            <li><a href="appointments.html" class="sidebar-link"><i data-lucide="calendar"></i> <span>Appointments</span></a></li>
+            <li><a href="records.html" class="sidebar-link active"><i data-lucide="clipboard"></i> <span>Medical Records</span></a></li>
+            <li><a href="billing.html" class="sidebar-link"><i data-lucide="credit-card"></i> <span>Billing</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-avatar">SA</div>
+            <div class="sidebar-user-info">
+                <span class="sidebar-user-name">Staff Admin</span>
+                <span class="sidebar-user-role">Administrator</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- --- MAIN WORKSPACE --- -->
+    <div class="main-wrapper">
+        <header class="top-bar">
+            <div class="top-bar-title">Clinical Medical Histories</div>
+            <div class="top-bar-meta">
+                <div class="top-bar-meta-item">
+                    <i data-lucide="award"></i>
+                    <span>Diagnoses Workspace</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="container">
+            <div class="page-header">
+                <h1 class="page-title">Patient Medical Records</h1>
+            </div>
+
+            <div class="grid-2" style="grid-template-columns: 360px 1fr; align-items: start;">
+                <!-- Record Entry Form -->
+                <section class="card">
+                    <h2 class="card-title">
+                        <i data-lucide="file-plus"></i>
+                        Add Medical Record
+                    </h2>
+                    <form id="record-registration-form">
+                        <div class="form-group">
+                            <label for="record-id">Record ID (Optional)</label>
+                            <input type="number" id="record-id" class="form-control" placeholder="e.g. 401 (or auto-assigned)">
+                        </div>
+                        <div class="form-group">
+                            <label for="record-patient-name">Patient Name *</label>
+                            <select id="record-patient-name" class="form-control" required>
+                                <option value="">Select Registered Patient</option>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="record-doctor-name">Attending Doctor *</label>
+                            <select id="record-doctor-name" class="form-control" required>
+                                <option value="">Select Doctor</option>
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="record-diagnosis">Diagnosis</label>
+                            <input type="text" id="record-diagnosis" class="form-control" placeholder="e.g. High Blood Pressure">
+                        </div>
+                        <div class="form-group">
+                            <label for="record-prescription">Prescription</label>
+                            <textarea id="record-prescription" class="form-control" placeholder="e.g. Tablet A - Once Daily"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="record-treatment">Treatment Details</label>
+                            <textarea id="record-treatment" class="form-control" placeholder="e.g. Regular Monitoring"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="record-visit-date">Visit Date *</label>
+                            <input type="date" id="record-visit-date" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+                            <i data-lucide="check"></i> Save Record
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Medical Records Directory Table -->
+                <section class="card">
+                    <h2 class="card-title">
+                        <i data-lucide="clipboard-list"></i>
+                        Clinical History Directory
+                    </h2>
+                    <div class="table-responsive">
+                        <table class="table" id="records-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Patient Name</th>
+                                    <th>Doctor Name</th>
+                                    <th>Diagnosis</th>
+                                    <th>Prescription</th>
+                                    <th>Treatment</th>
+                                    <th>Visit Date</th>
+                                    <th style="text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="records-list">
+                                <tr>
+                                    <td colspan="8" style="text-align: center; color: var(--text-muted);">Loading medical history logs...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 HopeWell Hospital. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- --- EDIT RECORD MODAL --- -->
+    <div id="edit-record-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Medical Record</h3>
+                <button class="modal-close" onclick="closeEditModal('edit-record-modal')">&times;</button>
+            </div>
+            <form id="edit-record-form">
+                <input type="hidden" id="edit-record-id">
+                <div class="form-group">
+                    <label for="edit-record-patient-name">Patient Name *</label>
+                    <select id="edit-record-patient-name" class="form-control" required>
+                        <option value="">Select Registered Patient</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-record-doctor-name">Attending Doctor *</label>
+                    <select id="edit-record-doctor-name" class="form-control" required>
+                        <option value="">Select Doctor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-record-diagnosis">Diagnosis</label>
+                    <input type="text" id="edit-record-diagnosis" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="edit-record-prescription">Prescription</label>
+                    <textarea id="edit-record-prescription" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-record-treatment">Treatment Details</label>
+                    <textarea id="edit-record-treatment" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-record-visit-date">Visit Date *</label>
+                    <input type="date" id="edit-record-visit-date" class="form-control" required>
+                </div>
+                <div class="btn-group" style="margin-top: 1.5rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal('edit-record-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

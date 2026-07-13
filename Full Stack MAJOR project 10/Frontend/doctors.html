@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctors - HopeWell Hospital</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- --- SIDEBAR NAVIGATION --- -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-brand">
+                <i data-lucide="heart-pulse"></i>
+                <span>HopeWell</span>
+            </a>
+            <span class="sidebar-brand-status"></span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html" class="sidebar-link"><i data-lucide="home"></i> <span>Home</span></a></li>
+            <li><a href="dashboard.html" class="sidebar-link"><i data-lucide="layout-dashboard"></i> <span>Dashboard</span></a></li>
+            <li><a href="patients.html" class="sidebar-link"><i data-lucide="users"></i> <span>Patients</span></a></li>
+            <li><a href="doctors.html" class="sidebar-link active"><i data-lucide="activity"></i> <span>Doctors</span></a></li>
+            <li><a href="appointments.html" class="sidebar-link"><i data-lucide="calendar"></i> <span>Appointments</span></a></li>
+            <li><a href="records.html" class="sidebar-link"><i data-lucide="clipboard"></i> <span>Medical Records</span></a></li>
+            <li><a href="billing.html" class="sidebar-link"><i data-lucide="credit-card"></i> <span>Billing</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-avatar">SA</div>
+            <div class="sidebar-user-info">
+                <span class="sidebar-user-name">Staff Admin</span>
+                <span class="sidebar-user-role">Administrator</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- --- MAIN WORKSPACE --- -->
+    <div class="main-wrapper">
+        <header class="top-bar">
+            <div class="top-bar-title">Medical Staff Management</div>
+            <div class="top-bar-meta">
+                <div class="top-bar-meta-item">
+                    <i data-lucide="briefcase"></i>
+                    <span>Department Directory</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="container">
+            <div class="page-header">
+                <h1 class="page-title">Doctor Registry</h1>
+            </div>
+
+            <div class="grid-2" style="grid-template-columns: 360px 1fr; align-items: start;">
+                <!-- Add Doctor Form Card -->
+                <section class="card">
+                    <h2 class="card-title">
+                        <i data-lucide="user-plus"></i>
+                        Add Doctor Profile
+                    </h2>
+                    <form id="doctor-registration-form">
+                        <div class="form-group">
+                            <label for="doctor-id">Doctor ID (Optional)</label>
+                            <input type="number" id="doctor-id" class="form-control" placeholder="e.g. 201 (or auto-assigned)">
+                        </div>
+                        <div class="form-group">
+                            <label for="doctor-name">Doctor Name *</label>
+                            <input type="text" id="doctor-name" class="form-control" placeholder="e.g. Dr. Priya Reddy" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctor-specialization">Specialization</label>
+                            <input type="text" id="doctor-specialization" class="form-control" placeholder="e.g. Cardiologist">
+                        </div>
+                        <div class="form-group">
+                            <label for="doctor-department">Department</label>
+                            <select id="doctor-department" class="form-control">
+                                <option value="">Select Department</option>
+                                <option value="Cardiology">Cardiology</option>
+                                <option value="Neurology">Neurology</option>
+                                <option value="Orthopedics">Orthopedics</option>
+                                <option value="Pediatrics">Pediatrics</option>
+                                <option value="Dermatology">Dermatology</option>
+                                <option value="General Medicine">General Medicine</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="doctor-experience">Experience (Years)</label>
+                            <input type="number" id="doctor-experience" class="form-control" placeholder="e.g. 10" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="doctor-phone">Phone Number</label>
+                            <input type="tel" id="doctor-phone" class="form-control" placeholder="e.g. 9988776655">
+                        </div>
+                        <div class="form-group">
+                            <label for="doctor-fee">Consultation Fee (₹)</label>
+                            <input type="number" id="doctor-fee" class="form-control" placeholder="e.g. 800" min="0">
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+                            <i data-lucide="check"></i> Add Doctor
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Doctors Card List Grid -->
+                <section style="background-color: transparent; border: none; box-shadow: none; padding: 0;">
+                    <h2 class="card-title" style="margin-left: 0.5rem; margin-bottom: 1.5rem;">
+                        <i data-lucide="users"></i> Active Doctors Profiles
+                    </h2>
+                    <div class="doctors-grid" id="doctors-list">
+                        <!-- Populated dynamically via script.js -->
+                        <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); background: white; padding: 2rem; border-radius: var(--radius-lg); border: 1px solid var(--border-card);">
+                            Loading doctor profiles...
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 HopeWell Hospital. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- --- EDIT DOCTOR MODAL --- -->
+    <div id="edit-doctor-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Doctor Details</h3>
+                <button class="modal-close" onclick="closeEditModal('edit-doctor-modal')">&times;</button>
+            </div>
+            <form id="edit-doctor-form">
+                <input type="hidden" id="edit-doctor-id">
+                <div class="form-group">
+                    <label for="edit-doctor-name">Doctor Name *</label>
+                    <input type="text" id="edit-doctor-name" class="form-control" required>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="edit-doctor-specialization">Specialization</label>
+                        <input type="text" id="edit-doctor-specialization" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-doctor-department">Department</label>
+                        <select id="edit-doctor-department" class="form-control">
+                            <option value="">Select Department</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="General Medicine">General Medicine</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-3">
+                    <div class="form-group">
+                        <label for="edit-doctor-experience">Experience (Yrs)</label>
+                        <input type="number" id="edit-doctor-experience" class="form-control" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-doctor-fee">Fee (₹)</label>
+                        <input type="number" id="edit-doctor-fee" class="form-control" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-doctor-phone">Phone</label>
+                        <input type="tel" id="edit-doctor-phone" class="form-control">
+                    </div>
+                </div>
+                <div class="btn-group" style="margin-top: 1.5rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal('edit-doctor-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patients Registry - HopeWell Hospital</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- --- SIDEBAR NAVIGATION --- -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-brand">
+                <i data-lucide="heart-pulse"></i>
+                <span>HopeWell</span>
+            </a>
+            <span class="sidebar-brand-status"></span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html" class="sidebar-link"><i data-lucide="home"></i> <span>Home</span></a></li>
+            <li><a href="dashboard.html" class="sidebar-link"><i data-lucide="layout-dashboard"></i> <span>Dashboard</span></a></li>
+            <li><a href="patients.html" class="sidebar-link active"><i data-lucide="users"></i> <span>Patients</span></a></li>
+            <li><a href="doctors.html" class="sidebar-link"><i data-lucide="activity"></i> <span>Doctors</span></a></li>
+            <li><a href="appointments.html" class="sidebar-link"><i data-lucide="calendar"></i> <span>Appointments</span></a></li>
+            <li><a href="records.html" class="sidebar-link"><i data-lucide="clipboard"></i> <span>Medical Records</span></a></li>
+            <li><a href="billing.html" class="sidebar-link"><i data-lucide="credit-card"></i> <span>Billing</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-avatar">SA</div>
+            <div class="sidebar-user-info">
+                <span class="sidebar-user-name">Staff Admin</span>
+                <span class="sidebar-user-role">Administrator</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- --- MAIN WORKSPACE --- -->
+    <div class="main-wrapper">
+        <header class="top-bar">
+            <div class="top-bar-title">Patient Management System</div>
+            <div class="top-bar-meta">
+                <div class="top-bar-meta-item">
+                    <i data-lucide="shield-check"></i>
+                    <span>Secure Database</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="container">
+            <div class="page-header">
+                <h1 class="page-title">Patient Registry</h1>
+            </div>
+
+            <div class="grid-2" style="grid-template-columns: 360px 1fr; align-items: start;">
+                <!-- Registration Form -->
+                <section class="card">
+                    <h2 class="card-title">
+                        <i data-lucide="user-plus"></i>
+                        Register Patient
+                    </h2>
+                    <form id="patient-registration-form">
+                        <div class="form-group">
+                            <label for="patient-id">Patient ID (Optional)</label>
+                            <input type="number" id="patient-id" class="form-control" placeholder="e.g. 101 (or auto-assigned)">
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-name">Patient Name *</label>
+                            <input type="text" id="patient-name" class="form-control" placeholder="Full legal name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-age">Age</label>
+                            <input type="number" id="patient-age" class="form-control" placeholder="Years" min="0" max="120">
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-gender">Gender</label>
+                            <select id="patient-gender" class="form-control">
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-phone">Phone Number</label>
+                            <input type="tel" id="patient-phone" class="form-control" placeholder="10-digit number">
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-email">Email Address</label>
+                            <input type="email" id="patient-email" class="form-control" placeholder="name@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-blood-group">Blood Group</label>
+                            <select id="patient-blood-group" class="form-control">
+                                <option value="">Select Blood Group</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-address">Home Address</label>
+                            <textarea id="patient-address" class="form-control" placeholder="Residential address"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 0.5rem;">
+                            <i data-lucide="check"></i> Register Patient
+                        </button>
+                    </form>
+                </section>
+
+                <!-- Patient Directory Table -->
+                <section class="card">
+                    <h2 class="card-title">
+                        <i data-lucide="folder-open"></i>
+                        Registered Patients Directory
+                    </h2>
+                    <div class="table-responsive">
+                        <table class="table" id="patients-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Age / Gender</th>
+                                    <th>Contact Details</th>
+                                    <th>Blood</th>
+                                    <th>Address</th>
+                                    <th style="text-align: center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patients-list">
+                                <!-- Populated dynamically -->
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted);">Loading patient records...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 HopeWell Hospital. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- --- EDIT PATIENT MODAL --- -->
+    <div id="edit-patient-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Patient Details</h3>
+                <button class="modal-close" onclick="closeEditModal('edit-patient-modal')">&times;</button>
+            </div>
+            <form id="edit-patient-form">
+                <input type="hidden" id="edit-patient-id">
+                <div class="form-group">
+                    <label for="edit-patient-name">Patient Name *</label>
+                    <input type="text" id="edit-patient-name" class="form-control" required>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="edit-patient-age">Age</label>
+                        <input type="number" id="edit-patient-age" class="form-control" min="0" max="120">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-patient-gender">Gender</label>
+                        <select id="edit-patient-gender" class="form-control">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label for="edit-patient-phone">Phone Number</label>
+                        <input type="tel" id="edit-patient-phone" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-patient-email">Email Address</label>
+                        <input type="email" id="edit-patient-email" class="form-control">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="edit-patient-blood-group">Blood Group</label>
+                    <select id="edit-patient-blood-group" class="form-control">
+                        <option value="">Select Blood Group</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-patient-address">Address</label>
+                    <textarea id="edit-patient-address" class="form-control"></textarea>
+                </div>
+                <div class="btn-group" style="margin-top: 1.5rem; justify-content: flex-end;">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal('edit-patient-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast alerts -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="script.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

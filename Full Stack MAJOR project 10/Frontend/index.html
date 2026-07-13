@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - HopeWell Hospital</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons CDN for ultra-clean UI icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- --- SIDEBAR NAVIGATION --- -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-brand">
+                <i data-lucide="heart-pulse"></i>
+                <span>HopeWell</span>
+            </a>
+            <span class="sidebar-brand-status"></span>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html" class="sidebar-link active"><i data-lucide="home"></i> <span>Home</span></a></li>
+            <li><a href="dashboard.html" class="sidebar-link"><i data-lucide="layout-dashboard"></i> <span>Dashboard</span></a></li>
+            <li><a href="patients.html" class="sidebar-link"><i data-lucide="users"></i> <span>Patients</span></a></li>
+            <li><a href="doctors.html" class="sidebar-link"><i data-lucide="activity"></i> <span>Doctors</span></a></li>
+            <li><a href="appointments.html" class="sidebar-link"><i data-lucide="calendar"></i> <span>Appointments</span></a></li>
+            <li><a href="records.html" class="sidebar-link"><i data-lucide="clipboard"></i> <span>Medical Records</span></a></li>
+            <li><a href="billing.html" class="sidebar-link"><i data-lucide="credit-card"></i> <span>Billing</span></a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <div class="sidebar-avatar">SA</div>
+            <div class="sidebar-user-info">
+                <span class="sidebar-user-name">Staff Admin</span>
+                <span class="sidebar-user-role">Administrator</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- --- MAIN WORKSPACE --- -->
+    <div class="main-wrapper">
+        <header class="top-bar">
+            <div class="top-bar-title">HopeWell Hospital Portal</div>
+            <div class="top-bar-meta">
+                <div class="top-bar-meta-item">
+                    <i data-lucide="clock"></i>
+                    <span>24/7 Operations</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="container">
+            <!-- Hero Banner -->
+            <section class="hero">
+                <h1>Caring for Life, Leading in Health Care</h1>
+                <p>Welcome to HopeWell Hospital's Digital Portal. Experience advanced healthcare combined with digital convenience. Manage appointments, patient registrations, prescriptions, and billing seamlessly.</p>
+                <div style="margin-top: 1.5rem; display: flex; gap: 0.75rem;">
+                    <a href="dashboard.html" class="btn btn-secondary">Enter Admin Dashboard</a>
+                    <a href="appointments.html" class="btn btn-primary" style="background-color: white; color: var(--primary);">Book Appointment</a>
+                </div>
+            </section>
+
+            <!-- Main Info Grid -->
+            <div class="grid-2">
+                <!-- About Hospital -->
+                <section class="card" id="about">
+                    <h2 class="card-title">
+                        <i data-lucide="info"></i>
+                        About HopeWell Hospital
+                    </h2>
+                    <p style="margin-bottom: 1rem; color: var(--text-muted); font-size: 0.95rem;">
+                        Established in 2010, HopeWell Hospital is a premier multi-specialty healthcare institution dedicated to providing compassionate care, world-class medical expertise, and cutting-edge facilities. We strive to improve the health and well-being of the communities we serve through excellence in patient care, education, and research.
+                    </p>
+                    <p style="color: var(--text-muted); font-size: 0.95rem;">
+                        Our hospital is equipped with state-of-the-art diagnostic imaging, advanced surgical theatres, fully integrated critical care units, and a modern, high-tech electronic healthcare tracking environment.
+                    </p>
+                </section>
+
+                <!-- Contact Info -->
+                <section class="card" id="contact">
+                    <h2 class="card-title">
+                        <i data-lucide="map-pin"></i>
+                        Contact Information
+                    </h2>
+                    <ul style="list-style: none; display: flex; flex-direction: column; gap: 0.85rem; color: var(--text-muted); font-size: 0.95rem;">
+                        <li style="display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                            <strong style="color: var(--text-main); min-width: 100px;">Address:</strong>
+                            <span>101 Care Avenue, Health City, Hyderabad, 500081</span>
+                        </li>
+                        <li style="display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                            <strong style="color: var(--text-main); min-width: 100px;">Phone:</strong>
+                            <span>+91 40 8877 6655, +91 40 9876 5432</span>
+                        </li>
+                        <li style="display: flex; gap: 0.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.5rem;">
+                            <strong style="color: var(--text-main); min-width: 100px;">Email:</strong>
+                            <span>support@hopewellhospital.com</span>
+                        </li>
+                        <li style="display: flex; gap: 0.5rem;">
+                            <strong style="color: var(--text-main); min-width: 100px;">Hours:</strong>
+                            <span>24/7 Inpatient. Outpatient: 9:00 AM - 8:00 PM</span>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 HopeWell Hospital. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Trigger Lucide to render icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
