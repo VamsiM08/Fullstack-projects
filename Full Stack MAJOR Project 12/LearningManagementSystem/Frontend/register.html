@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration | AURA Academy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-gradient-glow glow-1"></div>
+    <div class="bg-gradient-glow glow-2"></div>
+
+    <header></header>
+
+    <main>
+        <div class="glass-card form-container" style="max-width: 520px; margin: 3rem auto;">
+            <div class="form-header">
+                <h2>Create Account</h2>
+                <p>Register as a student to enroll in elite bootcamps</p>
+            </div>
+
+            <form id="register-form">
+                <div class="form-group">
+                    <label class="form-label" for="reg-name">Full Name</label>
+                    <input type="text" class="form-input" id="reg-name" placeholder="e.g. Rahul Sharma" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reg-email">Email Address</label>
+                    <input type="email" class="form-input" id="reg-email" placeholder="e.g. rahul@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reg-phone">Phone Number</label>
+                    <input type="tel" class="form-input" id="reg-phone" placeholder="e.g. 9876543210" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reg-qualification">Highest Qualification</label>
+                    <input type="text" class="form-input" id="reg-qualification" placeholder="e.g. B.Tech / M.Sc" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="reg-password">Password</label>
+                    <input type="password" class="form-input" id="reg-password" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="nav-btn btn-full">Register Account</button>
+            </form>
+
+            <div class="form-footer">
+                Already registered? <a href="login.html">Sign In here</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 Aura Learning Academy (LMS). Built with Django & Vanilla Web Tech.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

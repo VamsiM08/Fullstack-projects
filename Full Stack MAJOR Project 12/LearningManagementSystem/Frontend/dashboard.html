@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | AURA Academy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-gradient-glow glow-1"></div>
+    <div class="bg-gradient-glow glow-2"></div>
+
+    <header></header>
+
+    <main>
+        <div style="margin-bottom: 2.5rem;">
+            <h2 class="section-title">My Learning Console</h2>
+            <p style="color: var(--text-secondary); margin-top: 0.5rem;">Welcome to your personalized portal. Keep track of metrics and completion status here.</p>
+        </div>
+
+        <!-- Dashboard Statistics Cards -->
+        <div class="stats-grid">
+            <div class="glass-card stat-card">
+                <div class="stat-val" id="total-courses">-</div>
+                <div class="stat-label">Enrolled Programs</div>
+            </div>
+            <div class="glass-card stat-card">
+                <div class="stat-val" id="active-courses">-</div>
+                <div class="stat-label">Active Bootcamps</div>
+            </div>
+            <div class="glass-card stat-card">
+                <div class="stat-val" id="completed-courses">-</div>
+                <div class="stat-label">Programs Graduated</div>
+            </div>
+            <div class="glass-card stat-card">
+                <div class="stat-val" id="completed-assignments">-</div>
+                <div class="stat-label">Tasks Completed</div>
+            </div>
+        </div>
+
+        <!-- Dashboard Layout Split -->
+        <div class="dashboard-layout">
+            <!-- Progress Section (Bonus Feature) -->
+            <div class="glass-card">
+                <h3 style="font-family: var(--font-heading); margin-bottom: 1.5rem;">Overall Syllabus Mastery</h3>
+                <div class="progress-container" style="margin: 2rem 0;">
+                    <div class="progress-header" style="font-size: 1.1rem; margin-bottom: 0.8rem;">
+                        <span>Average Course Completion Percentage</span>
+                        <span id="overall-progress-text" style="color: var(--primary); font-weight: 700;">-%</span>
+                    </div>
+                    <div class="progress-bar-bg" style="height: 14px; border-radius: 7px;">
+                        <div class="progress-bar-fill" id="overall-progress-fill" style="height:100%; border-radius:7px; width: 0%;"></div>
+                    </div>
+                </div>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5;">
+                    Your syllabus completion score is compiled dynamically by aggregating your completed task submissions against the curriculum assigned within each of your active enrolled courses. Complete outstanding tasks to increase this score.
+                </p>
+            </div>
+
+            <!-- Tasks Summary Section -->
+            <div class="glass-card">
+                <h3 style="font-family: var(--font-heading); margin-bottom: 1rem;">Task Status</h3>
+                <ul id="dashboard-tasks-summary" style="list-style: none; display: flex; flex-direction: column;">
+                    <li style="color: var(--text-secondary); padding: 1rem 0;">Loading tasks list...</li>
+                </ul>
+                <a href="assignments.html" class="nav-btn btn-full" style="text-align:center; justify-content:center; margin-top: 1.5rem; text-decoration: none;">Go to Tasks Workspace</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 Aura Learning Academy (LMS). Built with Django & Vanilla Web Tech.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

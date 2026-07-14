@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard Console | AURA Academy</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-gradient-glow glow-1"></div>
+    <div class="bg-gradient-glow glow-2"></div>
+
+    <header></header>
+
+    <main>
+        <div class="admin-header-row">
+            <div>
+                <h2 class="section-title" id="admin-tab-title">LMS Administration</h2>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem;">System-wide console to manage users, courses, assignments, and payments.</p>
+            </div>
+            <button onclick="openCreateModal()" class="nav-btn" id="btn-add-entity">+ Add New Record</button>
+        </div>
+
+        <!-- Admin Table Tabs Navigation -->
+        <div class="admin-tab-nav">
+            <button class="admin-tab-btn active" id="tab-btn-students">Students Portal</button>
+            <button class="admin-tab-btn" id="tab-btn-instructors">Instructors List</button>
+            <button class="admin-tab-btn" id="tab-btn-courses">Courses Catalog</button>
+            <button class="admin-tab-btn" id="tab-btn-enrollments">Enrollment Records</button>
+            <button class="admin-tab-btn" id="tab-btn-assignments">Deliverables Tracker</button>
+        </div>
+
+        <!-- Responsive Records List Table -->
+        <div class="glass-card table-responsive">
+            <table class="admin-table">
+                <thead>
+                    <tr id="table-header-row">
+                        <!-- Headings dynamically populated by script.js -->
+                        <th>Loading Headings...</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Rows dynamically populated by script.js -->
+                    <tr>
+                        <td style="text-align: center; padding: 2rem;">Loading administrative table data...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Unified CRUD Modal Dialog -->
+    <div id="admin-modal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">×</button>
+            <h3 id="modal-title" style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 1.5rem;">Add / Edit Record</h3>
+            <form id="admin-form">
+                <!-- Inputs fields are dynamically rendered here by script.js -->
+                <div id="modal-fields"></div>
+                <button type="submit" class="nav-btn btn-full" style="justify-content:center;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Aura Learning Academy (LMS). Built with Django & Vanilla Web Tech.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

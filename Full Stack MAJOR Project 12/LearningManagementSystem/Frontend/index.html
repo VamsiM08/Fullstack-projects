@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AURA Academy | Learning Management System</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- jsPDF CDN for PDF Certificate Generation (Bonus) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <!-- Decorative Ambient Glows -->
+    <div class="bg-gradient-glow glow-1"></div>
+    <div class="bg-gradient-glow glow-2"></div>
+
+    <!-- Navigation Header -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-container">
+                <span class="logo-icon">▲</span>
+                <span class="logo-text">AURA ACADEMY</span>
+            </a>
+            <!-- Fallback static items (replaced by script.js dynamically) -->
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="courses.html" class="nav-link">Courses</a></li>
+                <li><a href="login.html" class="nav-btn">Sign In</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main style="padding-top: 3rem;">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-tag">Elevate Your Engineering Mind</div>
+            <h1>Empowering Minds with <br><span>Next-Gen Learning</span></h1>
+            <p>Master python development, web architectures, and server orchestration with industry-level curriculums designed by world-class trainers.</p>
+            <div class="hero-actions">
+                <a href="courses.html" class="nav-btn" style="font-size:1.05rem; padding: 0.8rem 1.8rem;">Explore Courses</a>
+                <a href="register.html" class="nav-btn" style="font-size:1.05rem; padding: 0.8rem 1.8rem; background:transparent; border: 1px solid var(--primary); color: var(--primary);">Join As Student</a>
+            </div>
+        </section>
+
+        <!-- Featured Courses Section -->
+        <section style="margin: 4rem 0;">
+            <h2 class="section-title">Featured Curriculums</h2>
+            <div id="featured-courses-grid" class="course-grid" style="margin-top: 2rem;">
+                <!-- Skeleton loader before script.js injects API results -->
+                <div class="glass-card course-card" style="text-align: center; justify-content: center; height: 320px;">
+                    <div style="color: var(--text-secondary);">Connecting to API backend...</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="glass-card" style="margin: 6rem 0 3rem 0; padding: 3rem;">
+            <div style="max-width: 800px; margin: 0 auto; text-align: center;">
+                <span class="course-cat">Who We Are</span>
+                <h2 style="font-family: var(--font-heading); font-size: 2.2rem; margin: 0.8rem 0 1.5rem 0;">About Aura Learning Academy</h2>
+                <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+                    Aura Academy is a premium state-of-the-art educational platform offering high-fidelity coding bootcamps, instructor management, course progress trackers, and authenticated student portals. We combine modern engineering with clean design principles.
+                </p>
+                <div style="display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap;">
+                    <div>
+                        <h4 style="font-family: var(--font-heading); font-size: 2rem; color: var(--primary);">12K+</h4>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Active Students</p>
+                    </div>
+                    <div>
+                        <h4 style="font-family: var(--font-heading); font-size: 2rem; color: var(--secondary);">85+</h4>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Expert Mentors</p>
+                    </div>
+                    <div>
+                        <h4 style="font-family: var(--font-heading); font-size: 2rem; color: var(--accent-emerald);">99.4%</h4>
+                        <p style="color: var(--text-muted); font-size: 0.9rem;">Completion Rate</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 Aura Learning Academy (LMS). Built with Django & Vanilla Web Tech.</p>
+    </footer>
+
+    <!-- Global Application Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
