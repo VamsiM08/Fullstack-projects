@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Explore AetherShop product catalog. Filter by category, price range, and search products. Add items to cart.">
+    <title>Products Catalogue - AetherShop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar" id="main-navbar">
+            <a href="index.html" class="logo" id="nav-logo">
+                ⚡ <span>Aether</span>Shop
+            </a>
+            <ul class="nav-links" id="nav-links"></ul>
+            <div class="nav-right" id="nav-right"></div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1 style="font-size:2.2rem; font-weight:800; margin-bottom:1.5rem;">Explore Catalog</h1>
+        
+        <!-- Search and Filters bar -->
+        <section class="search-filter-section" id="products-filter-section">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Search by name, brand...">
+            </div>
+            
+            <select class="filter-select" id="filter-category">
+                <option value="">All Categories</option>
+                <!-- Categories loaded dynamically -->
+            </select>
+            
+            <select class="filter-select" id="filter-price">
+                <option value="">All Prices</option>
+                <option value="0-5000">Under ₹5,000</option>
+                <option value="5000-25000">₹5,000 to ₹25,000</option>
+                <option value="25000-80000">₹25,000 to ₹80,000</option>
+                <option value="80000-150000">₹80,000 to ₹1,50,000</option>
+                <option value="150000-">Over ₹1,50,000</option>
+            </select>
+        </section>
+
+        <!-- Products List -->
+        <section id="products-list-section">
+            <div class="products-grid" id="products-grid">
+                <!-- Products loaded dynamically -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 AetherShop Inc. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign in to your AetherShop customer account or administrative console.">
+    <title>Sign In - AetherShop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar" id="main-navbar">
+            <a href="index.html" class="logo" id="nav-logo">
+                ⚡ <span>Aether</span>Shop
+            </a>
+            <ul class="nav-links" id="nav-links"></ul>
+            <div class="nav-right" id="nav-right"></div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="form-card" id="login-section">
+            <h1 class="form-title">Welcome Back</h1>
+            
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="text" id="login-email" placeholder="e.g. rahul@gmail.com or admin" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" class="form-submit-btn" id="login-submit-btn">Sign In</button>
+            </form>
+            
+            <div class="form-footer">
+                <p>New to AetherShop? <a href="register.html">Create an Account</a></p>
+                <p style="margin-top: 1rem; font-size: 0.8rem; color: var(--text-muted);">Admin Demo: User: admin | Pass: admin</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 AetherShop Inc. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('login-form');
+            if (form) {
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const email = document.getElementById('login-email').value.trim();
+                    const password = document.getElementById('login-password').value;
+                    
+                    try {
+                        // Check for Admin bypass
+                        if ((email === 'admin@ecommerce.com' || email === 'admin') && password === 'admin') {
+                            const adminUser = {
+                                customer_id: 100,
+                                full_name: "Administrator",
+                                email: "admin@ecommerce.com",
+                                phone: "0000000000",
+                                address: "Main Office"
+                            };
+                            setCurrentUser(adminUser);
+                            showToast('Welcome, Administrator!', 'success');
+                            setTimeout(() => {
+                                window.location.href = 'dashboard.html';
+                            }, 1000);
+                            return;
+                        }
+                        
+                        // Query database for matching customer
+                        const customers = await apiCall(`/customers/?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`);
+                        if (customers && customers.length > 0) {
+                            setCurrentUser(customers[0]);
+                            showToast('Logged in successfully!', 'success');
+                            setTimeout(() => {
+                                window.location.href = 'index.html';
+                            }, 1000);
+                        } else {
+                            showToast('Invalid email or password', 'error');
+                        }
+                    } catch (err) {
+                        console.error(err);
+                    }
+                };
+            }
+        });
+    </script>
+</body>
+</html>

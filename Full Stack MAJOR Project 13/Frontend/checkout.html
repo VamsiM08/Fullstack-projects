@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Specify shipping address and choose a payment method to place your order.">
+    <title>Checkout Order - AetherShop</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <nav class="navbar" id="main-navbar">
+            <a href="index.html" class="logo" id="nav-logo">
+                ⚡ <span>Aether</span>Shop
+            </a>
+            <ul class="nav-links" id="nav-links"></ul>
+            <div class="nav-right" id="nav-right"></div>
+        </nav>
+    </header>
+
+    <main class="container">
+        <h1 style="font-size:2.2rem; font-weight:800; margin-bottom:2rem;">Checkout Details</h1>
+        
+        <div class="cart-layout" id="checkout-layout">
+            <!-- Left Side: Forms -->
+            <form id="checkout-form" class="cart-items-container" style="gap:1rem;">
+                <h3 style="margin-bottom:0.5rem; border-bottom:1px solid var(--glass-border); padding-bottom:0.5rem;">Delivery & Payment Information</h3>
+                
+                <div class="form-group">
+                    <label for="checkout-address">Delivery Shipping Address</label>
+                    <textarea id="checkout-address" placeholder="Write full delivery address with pin code" required style="height:100px;"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="checkout-payment-method">Payment Method</label>
+                    <select id="checkout-payment-method" required>
+                        <option value="UPI">UPI (Google Pay, PhonePe, Paytm)</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="Debit Card">Debit Card</option>
+                        <option value="Net Banking">Net Banking</option>
+                        <option value="Cash on Delivery">Cash on Delivery (COD)</option>
+                    </select>
+                </div>
+            </form>
+            
+            <!-- Right Side: Order Summary -->
+            <div class="cart-summary" id="checkout-summary-box">
+                <h3 style="margin-bottom:1.5rem; border-bottom:1px solid var(--glass-border); padding-bottom:0.5rem;">Order Summary</h3>
+                <div id="checkout-summary-list" style="margin-bottom:1.5rem;">
+                    <!-- Items listed dynamically -->
+                </div>
+                
+                <div class="summary-row" style="margin-bottom:0.5rem;">
+                    <span>Price Subtotal</span>
+                    <span id="checkout-subtotal">₹0</span>
+                </div>
+                <div class="summary-row" style="margin-bottom:0.5rem;">
+                    <span>Delivery Charges</span>
+                    <span id="checkout-delivery">₹0</span>
+                </div>
+                <div class="summary-row total" style="margin-bottom:1.5rem;">
+                    <span>Total Amount</span>
+                    <span id="checkout-total">₹0</span>
+                </div>
+                
+                <button type="submit" form="checkout-form" class="form-submit-btn" id="place-order-btn">Place Order</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 AetherShop Inc. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
