@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View items in your shopping cart. Adjust quantities or proceed to checkout.">
+    <title>Shopping Cart - FoodExpress</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="cart">
+
+    <header id="main-header"></header>
+
+    <main class="container">
+        <div class="section-header" style="margin-bottom: 30px;">
+            <h2>Your Shopping Cart</h2>
+        </div>
+
+        <div class="cart-layout">
+            <!-- Left Side: Cart Items List -->
+            <div class="cart-items-wrapper" id="cart-items-list">
+                <!-- Injected dynamically by script.js -->
+            </div>
+
+            <!-- Right Side: Order Summary Card -->
+            <div class="cart-summary-card">
+                <h3 style="font-size: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">Bill Details</h3>
+                
+                <div class="summary-row">
+                    <span>Subtotal</span>
+                    <span id="cart-subtotal" style="color: white; font-weight: 600;">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery & Taxes</span>
+                    <span id="cart-tax" style="color: white; font-weight: 600;">₹30</span>
+                </div>
+                
+                <div class="summary-row total">
+                    <span>Grand Total</span>
+                    <span id="cart-grandtotal" style="color: var(--primary);">₹0</span>
+                </div>
+
+                <button class="btn btn-primary btn-block" style="margin-top: 24px;" onclick="window.location.href='checkout.html'" id="cart-checkout-btn">
+                    Proceed to Checkout <i class="fas fa-arrow-right" style="margin-left: 8px;"></i>
+                </button>
+                
+                <a href="restaurants.html" class="btn btn-outline btn-block" style="margin-top: 12px; font-size:13px;">
+                    <i class="fas fa-plus" style="margin-right: 6px;"></i> Add More Items
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="logo"><i class="fas fa-hamburger"></i> Food<span>Express</span></div>
+            <p>&copy; 2026 FoodExpress. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

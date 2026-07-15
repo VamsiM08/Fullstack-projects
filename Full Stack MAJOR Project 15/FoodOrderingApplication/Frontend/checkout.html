@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Provide delivery address and complete payment details to place your order.">
+    <title>Checkout - FoodExpress</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="checkout">
+
+    <header id="main-header"></header>
+
+    <main class="container">
+        <div class="section-header" style="margin-bottom: 30px;">
+            <h2>Secure Checkout</h2>
+        </div>
+
+        <div class="cart-layout">
+            <!-- Left: Delivery & Payment Details -->
+            <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 30px;">
+                <form id="checkout-form">
+                    <h3 style="font-size: 20px; margin-bottom: 20px; color: white;"><i class="fas fa-map-marked-alt" style="color:var(--primary);margin-right:8px;"></i> Delivery Information</h3>
+                    
+                    <div class="form-group" style="margin-bottom: 30px;">
+                        <label for="checkout-address">Delivery Address</label>
+                        <textarea id="checkout-address" rows="3" placeholder="Enter full address (e.g. Flat, Street, City)" required></textarea>
+                        <span style="font-size:12px;color:var(--text-muted);">This address will be updated in your profile.</span>
+                    </div>
+
+                    <h3 style="font-size: 20px; margin-bottom: 20px; color: white; border-top: 1px solid var(--border); padding-top: 25px;"><i class="fas fa-credit-card" style="color:var(--primary);margin-right:8px;"></i> Payment Method</h3>
+                    
+                    <div class="form-group">
+                        <label for="checkout-payment-method">Select Payment Method</label>
+                        <select id="checkout-payment-method" required>
+                            <option value="UPI">UPI (Google Pay / PhonePe / Paytm)</option>
+                            <option value="Credit Card">Credit Card</option>
+                            <option value="Debit Card">Debit Card</option>
+                            <option value="Cash on Delivery">Cash on Delivery (COD)</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block" style="margin-top: 30px;" id="place-order-submit-btn">
+                        <i class="fas fa-receipt"></i> Place Order
+                    </button>
+                </form>
+            </div>
+
+            <!-- Right: Order Summary -->
+            <div class="cart-summary-card">
+                <h3 style="font-size: 20px; margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">Order Summary</h3>
+                
+                <div id="checkout-summary-list" style="margin-bottom: 20px;">
+                    <!-- Dynamically populated cart items -->
+                </div>
+                
+                <div class="summary-row" style="border-top: 1px solid var(--border); padding-top: 12px;">
+                    <span>Delivery Charge</span>
+                    <span style="color: white; font-weight: 600;">₹30</span>
+                </div>
+                
+                <div class="summary-row total">
+                    <span>Total Amount</span>
+                    <span id="checkout-grand-total" style="color: var(--primary);">₹0</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="logo"><i class="fas fa-hamburger"></i> Food<span>Express</span></div>
+            <p>&copy; 2026 FoodExpress. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

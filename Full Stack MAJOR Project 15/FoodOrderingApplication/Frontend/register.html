@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Register a customer account with FoodExpress. Enjoy swift deliveries.">
+    <title>Customer Registration - FoodExpress</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="register">
+
+    <header id="main-header"></header>
+
+    <main class="container auth-wrapper">
+        <div class="auth-card" style="max-width: 500px;">
+            <div class="auth-header">
+                <h2>Create Account</h2>
+                <p>Register as a new customer to place orders</p>
+            </div>
+
+            <form id="register-form">
+                <div class="form-group">
+                    <label for="reg-name">Full Name</label>
+                    <input type="text" id="reg-name" placeholder="e.g. Rahul Sharma" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-email">Email Address</label>
+                    <input type="email" id="reg-email" placeholder="e.g. rahul@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-phone">Phone Number</label>
+                    <input type="tel" id="reg-phone" placeholder="e.g. 9876543210" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-address">Delivery Address</label>
+                    <input type="text" id="reg-address" placeholder="e.g. Hyderabad, TS" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px;" id="register-submit-btn">
+                    Create Account
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 14px;">
+                Already have an account? <a href="login.html" style="color: var(--primary); font-weight: 600;">Sign in</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="logo"><i class="fas fa-hamburger"></i> Food<span>Express</span></div>
+            <p>&copy; 2026 FoodExpress. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

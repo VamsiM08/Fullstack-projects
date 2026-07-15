@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="View the menu of your favorite restaurant. Add items directly to your cart.">
+    <title>Restaurant Menu - FoodExpress</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="menu">
+
+    <header id="main-header"></header>
+
+    <main class="container">
+        <!-- Restaurant Header Card -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 24px; padding: 40px 30px; margin-bottom: 40px; position: relative; overflow: hidden;">
+            <div style="position: relative; z-index: 2;">
+                <h1 id="menu-restaurant-title" style="font-size: 40px; margin-bottom: 12px;">Restaurant Name</h1>
+                <p id="menu-restaurant-desc" style="color: var(--text-muted); font-size: 16px; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <!-- Injected dynamically: Cuisine, rating, location -->
+                </p>
+            </div>
+            <!-- Background glow decoration -->
+            <div style="position: absolute; right: -50px; top: -50px; width: 250px; height: 250px; background: rgba(255, 94, 54, 0.08); filter: blur(50px); border-radius: 50%;"></div>
+        </div>
+
+        <!-- Menu Categories Scroll -->
+        <div style="margin-bottom: 30px;">
+            <div class="categories-scroll">
+                <span class="category-chip active" data-category="All"><i class="fas fa-utensils"></i> All Items</span>
+                <span class="category-chip" data-category="Main Course"><i class="fas fa-hot-tub"></i> Main Course</span>
+                <span class="category-chip" data-category="Starters"><i class="fas fa-fire"></i> Starters</span>
+                <span class="category-chip" data-category="Fast Food"><i class="fas fa-hamburger"></i> Fast Food</span>
+                <span class="category-chip" data-category="Sides"><i class="fas fa-cookie"></i> Sides</span>
+                <span class="category-chip" data-category="Dessert"><i class="fas fa-ice-cream"></i> Desserts</span>
+            </div>
+        </div>
+
+        <div class="grid-layout" id="menu-foods-grid">
+            <!-- Food menu items injected here by script.js -->
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="logo"><i class="fas fa-hamburger"></i> Food<span>Express</span></div>
+            <p>&copy; 2026 FoodExpress. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

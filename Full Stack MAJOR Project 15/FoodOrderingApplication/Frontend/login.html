@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sign in to your FoodExpress account. Experience fine dining delivered.">
+    <title>Login - FoodExpress</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="login">
+
+    <header id="main-header"></header>
+
+    <main class="container auth-wrapper">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2>Welcome Back</h2>
+                <p>Choose your role and sign in to continue</p>
+            </div>
+            
+            <div class="role-selector">
+                <button type="button" class="role-btn active" data-role="customer" id="role-select-customer">Customer</button>
+                <button type="button" class="role-btn" data-role="restaurant" id="role-select-restaurant">Owner</button>
+                <button type="button" class="role-btn" data-role="admin" id="role-select-admin">Admin</button>
+            </div>
+
+            <form id="login-form">
+                <!-- Customer Login Fields -->
+                <div id="customer-login-fields">
+                    <div class="form-group">
+                        <label for="cust-email">Email Address</label>
+                        <input type="email" id="cust-email" placeholder="e.g. rahul@gmail.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="cust-password">Password</label>
+                        <input type="password" id="cust-password" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <!-- Restaurant Owner Login Fields (Hidden by default) -->
+                <div id="restaurant-login-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="rest-login-name">Registered Restaurant Name</label>
+                        <input type="text" id="rest-login-name" placeholder="e.g. Spicy Kitchen">
+                    </div>
+                    <div class="form-group">
+                        <label for="rest-owner-name">Owner's Full Name</label>
+                        <input type="text" id="rest-owner-name" placeholder="e.g. Anil Kumar">
+                    </div>
+                </div>
+
+                <!-- Admin Login Fields (Hidden by default) -->
+                <div id="admin-login-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="admin-username">Admin Username</label>
+                        <input type="text" id="admin-username" placeholder="e.g. admin">
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-password">Admin Password</label>
+                        <input type="password" id="admin-password" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" style="margin-top: 10px;" id="login-submit-btn">
+                    Sign In
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 24px; color: var(--text-muted); font-size: 14px;">
+                New customer? <a href="register.html" style="color: var(--primary); font-weight: 600;">Create an account</a>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="logo"><i class="fas fa-hamburger"></i> Food<span>Express</span></div>
+            <p>&copy; 2026 FoodExpress. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

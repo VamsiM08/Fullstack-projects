@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Savor premium meals delivered to your doorstep. Browse top-rated restaurants, customize orders, and track deliveries.">
+    <title>FoodExpress - Gourmet Food Delivery</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="home">
+
+    <!-- Global Header -->
+    <header id="main-header"></header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Savor Premium Cuisine<br><span>Delivered In Minutes</span></h1>
+            <p>Experience gourmet dining from your favorite restaurants without leaving your home. Fast, fresh, and exceptionally delicious.</p>
+            
+            <div class="search-bar-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="home-search-input" placeholder="Search restaurants by name or location... (Press Enter)">
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section" style="margin-bottom: 50px;">
+        <div class="container">
+            <div class="categories-scroll">
+                <span class="category-chip active" data-category="All"><i class="fas fa-utensils"></i> All Items</span>
+                <span class="category-chip" data-category="Biryani"><i class="fas fa-drumstick-bite"></i> Biryani</span>
+                <span class="category-chip" data-category="Pizza"><i class="fas fa-pizza-slice"></i> Pizza</span>
+                <span class="category-chip" data-category="Burger"><i class="fas fa-hamburger"></i> Burger</span>
+                <span class="category-chip" data-category="Breakfast"><i class="fas fa-egg"></i> South Indian</span>
+                <span class="category-chip" data-category="Dessert"><i class="fas fa-ice-cream"></i> Desserts</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Restaurants -->
+    <section class="featured-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Featured Restaurants</h2>
+                <a href="restaurants.html" class="btn btn-outline">View All <i class="fas fa-arrow-right" style="margin-left:6px;"></i></a>
+            </div>
+            <div class="grid-layout" id="featured-restaurants-grid">
+                <!-- Injected dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Food Items -->
+    <section class="popular-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Popular Dishes</h2>
+            </div>
+            <div class="grid-layout" id="popular-foods-grid">
+                <!-- Injected dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Global Footer -->
+    <footer>
+        <div class="container footer-content">
+            <div class="logo"><i class="fas fa-hamburger"></i> Food<span>Express</span></div>
+            <p>&copy; 2026 FoodExpress. All rights reserved. Premium Food Delivery App.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

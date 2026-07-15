@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Super Admin Control Panel. Manage customers, restaurants, menus, carts, and order details.">
+    <title>Admin Dashboard - FoodExpress</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="admin-dashboard">
+
+    <header id="main-header"></header>
+
+    <main class="container">
+        <div class="section-header" style="margin-bottom: 35px;">
+            <h2>Admin Master Control</h2>
+            <span style="background:var(--accent-grad);padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;">Super Administrator</span>
+        </div>
+
+        <!-- Master Tabs Row -->
+        <div style="display: flex; gap: 10px; margin-bottom: 30px; overflow-x: auto; padding-bottom: 10px; border-bottom: 1px solid var(--border);">
+            <button class="btn btn-outline admin-tab-btn active" data-tab="customers"><i class="fas fa-users"></i> Customers</button>
+            <button class="btn btn-outline admin-tab-btn" data-tab="restaurants"><i class="fas fa-utensils"></i> Restaurants</button>
+            <button class="btn btn-outline admin-tab-btn" data-tab="foods"><i class="fas fa-pizza-slice"></i> Food Menu</button>
+            <button class="btn btn-outline admin-tab-btn" data-tab="cart"><i class="fas fa-shopping-cart"></i> Cart Items</button>
+            <button class="btn btn-outline admin-tab-btn" data-tab="orders"><i class="fas fa-receipt"></i> Orders List</button>
+        </div>
+
+        <!-- 1. CUSTOMERS SECTION -->
+        <div class="admin-section" id="admin-section-customers">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="color:white; font-size:20px;">Registered Customers</h3>
+                <button class="btn btn-primary btn-sm" id="admin-add-customer-btn"><i class="fas fa-plus"></i> Add Customer</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Address</th>
+                            <th>Password</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-customers-table-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. RESTAURANTS SECTION -->
+        <div class="admin-section" id="admin-section-restaurants" style="display: none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="color:white; font-size:20px;">Registered Restaurants</h3>
+                <button class="btn btn-primary btn-sm" id="admin-add-restaurant-btn"><i class="fas fa-plus"></i> Add Restaurant</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Restaurant Name</th>
+                            <th>Owner Name</th>
+                            <th>Cuisine</th>
+                            <th>Location</th>
+                            <th>Contact</th>
+                            <th>Rating</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-restaurants-table-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. FOODS SECTION -->
+        <div class="admin-section" id="admin-section-foods" style="display: none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="color:white; font-size:20px;">Menu Food Registry</h3>
+                <button class="btn btn-primary btn-sm" id="admin-add-food-btn"><i class="fas fa-plus"></i> Add Food Item</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Food Name</th>
+                            <th>Restaurant</th>
+                            <th>Category</th>
+                            <th>Price</th>
+                            <th>Availability</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-foods-table-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 4. CART SECTION -->
+        <div class="admin-section" id="admin-section-cart" style="display: none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="color:white; font-size:20px;">Active Shopping Carts</h3>
+                <button class="btn btn-primary btn-sm" id="admin-add-cart-btn"><i class="fas fa-plus"></i> Add Cart Item</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Cart ID</th>
+                            <th>Customer Name</th>
+                            <th>Food Name</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-cart-table-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 5. ORDERS SECTION -->
+        <div class="admin-section" id="admin-section-orders" style="display: none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h3 style="color:white; font-size:20px;">Customer Orders Database</h3>
+                <button class="btn btn-primary btn-sm" id="admin-add-order-btn"><i class="fas fa-plus"></i> Create Order</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer</th>
+                            <th>Restaurant</th>
+                            <th>Order Date</th>
+                            <th>Bill Amount</th>
+                            <th>Method</th>
+                            <th>Payment</th>
+                            <th>Order Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-orders-table-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- ADMIN MASTER FORM MODAL -->
+    <div class="modal" id="admin-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="admin-modal-title" style="color: white; font-size: 22px;">Add Record</h3>
+                <button class="modal-close" id="close-admin-modal">&times;</button>
+            </div>
+            
+            <div id="admin-form-container">
+                <!-- Form injected dynamically based on selected tab by script.js -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="logo"><i class="fas fa-hamburger"></i> Food<span>Express</span></div>
+            <p>&copy; 2026 FoodExpress. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

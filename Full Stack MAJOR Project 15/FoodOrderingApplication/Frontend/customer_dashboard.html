@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Manage your customer profile, view statistics, and manage delivery addresses.">
+    <title>Customer Dashboard - FoodExpress</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="customer-dashboard">
+
+    <header id="main-header"></header>
+
+    <main class="container">
+        <div class="section-header" style="margin-bottom: 30px;">
+            <h2>Customer Dashboard</h2>
+        </div>
+
+        <!-- Dashboard Statistics Grid -->
+        <div class="dashboard-grid">
+            <div class="stat-card">
+                <div class="stat-title">Total Orders</div>
+                <div class="stat-value primary-glow" id="stat-total-orders">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Active Orders</div>
+                <div class="stat-value" style="color: var(--warning);" id="stat-active-orders">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-title">Delivered Orders</div>
+                <div class="stat-value" style="color: var(--success);" id="stat-delivered-orders">0</div>
+            </div>
+        </div>
+
+        <!-- Profile Update Section -->
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px; padding: 35px; max-width: 700px;">
+            <h3 style="font-size: 22px; margin-bottom: 24px; color: white;"><i class="fas fa-user-edit" style="color:var(--primary);margin-right:8px;"></i> Manage Profile</h3>
+            
+            <form id="profile-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    <div class="form-group">
+                        <label for="dash-name">Full Name</label>
+                        <input type="text" id="dash-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dash-email">Email Address</label>
+                        <input type="email" id="dash-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dash-phone">Phone Number</label>
+                        <input type="text" id="dash-phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dash-password">Password</label>
+                        <input type="password" id="dash-password" required>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 10px;">
+                    <label for="dash-address">Delivery Address</label>
+                    <textarea id="dash-address" rows="3" required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="margin-top: 10px;" id="profile-submit-btn">
+                    Update Profile Details
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="logo"><i class="fas fa-hamburger"></i> Food<span>Express</span></div>
+            <p>&copy; 2026 FoodExpress. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
