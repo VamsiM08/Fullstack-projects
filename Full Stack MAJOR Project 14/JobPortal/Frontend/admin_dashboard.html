@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - JobPortal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav id="global-nav"></nav>
+
+    <main>
+        <div class="dashboard-header">
+            <div>
+                <h2>Administrator Control Center</h2>
+                <p style="color: var(--text-muted-dark);">Complete CRUD management of database records</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="admin-tabs">
+            <div class="admin-tab active" data-module="candidates">Candidates</div>
+            <div class="admin-tab" data-module="employers">Employers</div>
+            <div class="admin-tab" data-module="jobs">Jobs</div>
+            <div class="admin-tab" data-module="applications">Applications</div>
+            <div class="admin-tab" data-module="interviews">Interviews</div>
+        </div>
+
+        <!-- Table Listing Card -->
+        <section class="card" style="padding: 1.5rem; display: block; overflow: visible;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                <h3 id="admin-table-title">Records List</h3>
+                <button class="btn btn-primary btn-sm" id="admin-add-btn" onclick="openAdminAddModal()">Add Record</button>
+            </div>
+
+            <div class="table-container" style="margin-bottom: 0;">
+                <table>
+                    <thead id="admin-table-head">
+                        <!-- Loaded dynamically -->
+                    </thead>
+                    <tbody id="admin-table-body">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Admin CRUD Edit/Add Modal -->
+        <div class="modal-overlay" id="admin-modal">
+            <div class="modal" style="max-height: 90vh; overflow-y: auto;">
+                <span class="modal-close" onclick="closeModal('admin-modal')">&times;</span>
+                <h3 style="margin-bottom: 1.5rem;" id="modal-title">Record Form</h3>
+                <form id="admin-form">
+                    <!-- Dynamic Fields Injected Here -->
+                    <div id="admin-fields-container"></div>
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem; justify-content: flex-end;">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('admin-modal')">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JobPortal Application. Admin Console. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

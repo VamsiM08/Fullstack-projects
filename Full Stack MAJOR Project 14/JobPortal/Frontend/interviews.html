@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interviews - JobPortal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav id="global-nav"></nav>
+
+    <main>
+        <div class="dashboard-header">
+            <div>
+                <h2>Scheduled Interviews</h2>
+                <p style="color: var(--text-muted-dark);">View upcoming video conferences and offline sessions</p>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Interview ID</th>
+                        <th>Name</th>
+                        <th>Interview Date</th>
+                        <th>Interview Time</th>
+                        <th>Interview Mode</th>
+                        <th>Interview Status</th>
+                    </tr>
+                </thead>
+                <tbody id="interviews-table-body">
+                    <!-- Loaded dynamically via script.js -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JobPortal Application. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

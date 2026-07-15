@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - JobPortal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav id="global-nav"></nav>
+
+    <main>
+        <div class="dashboard-header">
+            <div>
+                <h2>My Applied Positions</h2>
+                <p style="color: var(--text-muted-dark);">Track the current progress of your job applications</p>
+            </div>
+            <a href="jobs.html" class="btn btn-primary">Find More Jobs</a>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead id="applications-table-head">
+                    <tr>
+                        <th>Application ID</th>
+                        <th>Job Title</th>
+                        <th>Company Name</th>
+                        <th>Applied Date</th>
+                        <th>Resume File</th>
+                        <th>Application Status</th>
+                    </tr>
+                </thead>
+                <tbody id="applications-table-body">
+                    <!-- Loaded dynamically via script.js -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JobPortal Application. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

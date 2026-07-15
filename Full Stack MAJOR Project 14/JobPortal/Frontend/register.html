@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - JobPortal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav id="global-nav"></nav>
+
+    <main>
+        <div class="form-container" style="max-width: 600px;">
+            <h2 class="form-title">Create Account</h2>
+            <p class="form-subtitle">Join us to post jobs or apply for positions</p>
+
+            <div class="form-tabs">
+                <div class="form-tab active" data-role="candidate">Candidate</div>
+                <div class="form-tab" data-role="employer">Employer</div>
+            </div>
+
+            <form id="register-form">
+                <!-- CANDIDATE SPECIFIC FIELDS -->
+                <div id="candidate-fields">
+                    <div class="form-group">
+                        <label for="c_id">Candidate ID (Number) *</label>
+                        <input type="number" id="c_id" placeholder="e.g. 102">
+                    </div>
+                    <div class="form-group">
+                        <label for="c_name">Full Name *</label>
+                        <input type="text" id="c_name" placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="c_email">Email Address *</label>
+                        <input type="email" id="c_email" placeholder="john@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="c_phone">Phone Number</label>
+                        <input type="text" id="c_phone" placeholder="9876543210">
+                    </div>
+                    <div class="form-group">
+                        <label for="c_qual">Qualification</label>
+                        <input type="text" id="c_qual" placeholder="B.Tech, MBA, etc.">
+                    </div>
+                    <div class="form-group">
+                        <label for="c_skills">Skills (Comma Separated)</label>
+                        <input type="text" id="c_skills" placeholder="Python, Django, JavaScript">
+                    </div>
+                    <div class="form-group">
+                        <label for="c_exp">Experience (Years)</label>
+                        <input type="number" id="c_exp" placeholder="e.g. 2">
+                    </div>
+                    <div class="form-group">
+                        <label for="c_pass">Password *</label>
+                        <input type="password" id="c_pass" placeholder="••••••••">
+                    </div>
+                </div>
+
+                <!-- EMPLOYER SPECIFIC FIELDS -->
+                <div id="employer-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="e_id">Employer ID (Number) *</label>
+                        <input type="number" id="e_id" placeholder="e.g. 202">
+                    </div>
+                    <div class="form-group">
+                        <label for="e_company">Company Name *</label>
+                        <input type="text" id="e_company" placeholder="Google LLC">
+                    </div>
+                    <div class="form-group">
+                        <label for="e_hr">HR Representative Name</label>
+                        <input type="text" id="e_hr" placeholder="Sarah Connor">
+                    </div>
+                    <div class="form-group">
+                        <label for="e_email">Company / HR Email *</label>
+                        <input type="email" id="e_email" placeholder="hr@google.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="e_phone">Contact Phone</label>
+                        <input type="text" id="e_phone" placeholder="9988776655">
+                    </div>
+                    <div class="form-group">
+                        <label for="e_loc">Location</label>
+                        <input type="text" id="e_loc" placeholder="Bangalore, Hybrid, Remote">
+                    </div>
+                    <div class="form-group">
+                        <label for="e_ind">Industry</label>
+                        <input type="text" id="e_ind" placeholder="e.g. Tech, Finance, Health">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">Register Now</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted-dark);">
+                Already have an account? <a href="login.html" style="color: var(--primary); text-decoration: none; font-weight: 600;">Login Here</a>
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JobPortal Application. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

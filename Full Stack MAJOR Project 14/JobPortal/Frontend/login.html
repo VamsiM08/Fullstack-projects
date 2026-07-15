@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - JobPortal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav id="global-nav"></nav>
+
+    <main>
+        <div class="form-container">
+            <h2 class="form-title">Welcome Back</h2>
+            <p class="form-subtitle">Choose your login type and enter your credentials</p>
+
+            <div class="form-tabs">
+                <div class="form-tab active" data-role="candidate">Candidate</div>
+                <div class="form-tab" data-role="employer">Employer / Admin</div>
+            </div>
+
+            <form id="login-form">
+                <input type="hidden" id="login-role" value="candidate">
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" placeholder="email@example.com" required>
+                </div>
+
+                <div class="form-group" id="password-group">
+                    <label for="password">Password *</label>
+                    <input type="password" id="password" placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Login</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted-dark);">
+                Don't have an account? <a href="register.html" style="color: var(--primary); text-decoration: none; font-weight: 600;">Register Here</a>
+            </p>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JobPortal Application. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

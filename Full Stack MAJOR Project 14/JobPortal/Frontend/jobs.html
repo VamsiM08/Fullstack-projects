@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Jobs - JobPortal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav id="global-nav"></nav>
+
+    <main>
+        <div class="hero" style="padding: 2rem 0 1rem 0;">
+            <h1>Search Available Positions</h1>
+            <p>Use the filters below to find positions matching your expertise.</p>
+        </div>
+
+        <!-- Search Bar & Filters -->
+        <div class="search-container">
+            <div class="search-input-group">
+                <label for="search-title">Keywords / Company</label>
+                <input type="text" id="search-title" placeholder="e.g. Python Developer, Infosys">
+            </div>
+            <div class="search-input-group">
+                <label for="search-location">Location</label>
+                <input type="text" id="search-location" placeholder="e.g. Bangalore, Remote">
+            </div>
+            <div class="search-input-group">
+                <label for="filter-type">Job Type</label>
+                <select id="filter-type">
+                    <option value="">All Types</option>
+                    <option value="Full Time">Full Time</option>
+                    <option value="Part Time">Part Time</option>
+                    <option value="Internship">Internship</option>
+                    <option value="Remote">Remote</option>
+                </select>
+            </div>
+            <div class="search-input-group">
+                <label for="filter-experience">Max Experience Required</label>
+                <input type="number" id="filter-experience" placeholder="e.g. 5" min="0">
+            </div>
+            <div class="search-btn-container">
+                <button id="search-btn" class="btn btn-primary" style="height: 42px;">Search Jobs</button>
+            </div>
+        </div>
+
+        <!-- Job Listings -->
+        <section>
+            <h2 class="section-title">Job Openings</h2>
+            <div id="job-listings-grid" class="section-grid">
+                <!-- Dynamically Rendered Job Cards -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JobPortal Application. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Dashboard - JobPortal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav id="global-nav"></nav>
+
+    <main>
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div>
+                <h2>Candidate Portal</h2>
+                <p style="color: var(--text-muted-dark);">Manage your profile, check applications, and view interview slots</p>
+            </div>
+            <a href="jobs.html" class="btn btn-primary">Find Jobs</a>
+        </div>
+
+        <!-- Profile Details -->
+        <section style="margin-bottom: 2rem;">
+            <h3 class="section-title">My Profile</h3>
+            <div class="profile-card">
+                <div class="profile-detail">
+                    <span class="label">Full Name</span>
+                    <span class="value" id="profile-name">Loading...</span>
+                </div>
+                <div class="profile-detail">
+                    <span class="label">Email Address</span>
+                    <span class="value" id="profile-email">Loading...</span>
+                </div>
+                <div class="profile-detail">
+                    <span class="label">Phone</span>
+                    <span class="value" id="profile-phone">Loading...</span>
+                </div>
+                <div class="profile-detail">
+                    <span class="label">Qualification</span>
+                    <span class="value" id="profile-qual">Loading...</span>
+                </div>
+                <div class="profile-detail">
+                    <span class="label">Skills</span>
+                    <span class="value" id="profile-skills">Loading...</span>
+                </div>
+                <div class="profile-detail">
+                    <span class="label">Work Experience</span>
+                    <span class="value" id="profile-exp">Loading...</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Row -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: var(--primary-light); color: var(--primary);">📝</div>
+                <div class="stat-info">
+                    <div class="num" id="stat-applied">0</div>
+                    <div class="label">Jobs Applied</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: var(--warning-light); color: var(--warning);">⭐</div>
+                <div class="stat-info">
+                    <div class="num" id="stat-shortlisted">0</div>
+                    <div class="label">Shortlisted</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: var(--success-light); color: var(--success);">📅</div>
+                <div class="stat-info">
+                    <div class="num" id="stat-interviews">0</div>
+                    <div class="label">Interviews Scheduled</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dynamic Content Rows -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); gap: 1.5rem;">
+            <!-- Applications Summary -->
+            <section class="card" style="padding: 1.5rem; display: block; overflow: visible;">
+                <h3 class="section-title" style="font-size: 1.3rem;">Recent Applications</h3>
+                <div class="table-container" style="margin-bottom: 0;">
+                    <table style="min-width: 400px;">
+                        <thead>
+                            <tr>
+                                <th>Job</th>
+                                <th>Company</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-apps-body">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 1rem; text-align: right;">
+                    <a href="applications.html" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem;">View All Applications &rarr;</a>
+                </div>
+            </section>
+
+            <!-- Interviews Summary -->
+            <section class="card" style="padding: 1.5rem; display: block; overflow: visible;">
+                <h3 class="section-title" style="font-size: 1.3rem;">Upcoming Interviews</h3>
+                <div class="table-container" style="margin-bottom: 0;">
+                    <table style="min-width: 400px;">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Mode</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboard-ints-body">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top: 1rem; text-align: right;">
+                    <a href="interviews.html" style="color: var(--primary); text-decoration: none; font-weight: 600; font-size: 0.9rem;">View All Schedule &rarr;</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JobPortal Application. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

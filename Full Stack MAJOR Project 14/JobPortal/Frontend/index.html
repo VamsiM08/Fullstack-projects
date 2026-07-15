@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobPortal - Connect, Search & Apply</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav id="global-nav"></nav>
+
+    <main>
+        <section class="hero">
+            <h1>Discover Your Next Career Move</h1>
+            <p>Connect with top companies worldwide. We bridge the gap between talented job seekers and industry leaders.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center;">
+                <a href="jobs.html" class="btn btn-primary">Browse Jobs</a>
+                <a href="register.html" class="btn btn-secondary">Create Account</a>
+            </div>
+        </section>
+
+        <!-- Featured Companies Section -->
+        <section style="margin-bottom: 4rem;">
+            <h2 class="section-title">Featured Companies</h2>
+            <div class="section-grid">
+                <div class="card" style="align-items: center; text-align: center; gap: 0.5rem; justify-content: center; padding: 2rem;">
+                    <div style="font-size: 2.5rem;">🏢</div>
+                    <h3>Infosys</h3>
+                    <p style="color: var(--text-muted-dark); font-size: 0.85rem;">Information Technology</p>
+                    <span class="badge badge-selected">Partner</span>
+                </div>
+                <div class="card" style="align-items: center; text-align: center; gap: 0.5rem; justify-content: center; padding: 2rem;">
+                    <div style="font-size: 2.5rem;">🌐</div>
+                    <h3>Wipro</h3>
+                    <p style="color: var(--text-muted-dark); font-size: 0.85rem;">Consulting Services</p>
+                    <span class="badge badge-selected">Partner</span>
+                </div>
+                <div class="card" style="align-items: center; text-align: center; gap: 0.5rem; justify-content: center; padding: 2rem;">
+                    <div style="font-size: 2.5rem;">⚡</div>
+                    <h3>Tata Consultancy</h3>
+                    <p style="color: var(--text-muted-dark); font-size: 0.85rem;">Software Solutions</p>
+                    <span class="badge badge-selected">Partner</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Jobs Section -->
+        <section>
+            <h2 class="section-title">Latest Job Openings</h2>
+            <div id="latest-jobs-grid" class="section-grid">
+                <!-- Dynamically loaded latest 3 jobs -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JobPortal Application. Built using Django REST APIs and Vanilla HTML/CSS/JS. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

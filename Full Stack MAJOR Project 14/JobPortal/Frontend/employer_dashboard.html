@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employer Dashboard - JobPortal</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav id="global-nav"></nav>
+
+    <main>
+        <!-- Header -->
+        <div class="dashboard-header">
+            <div>
+                <h2>Employer Console</h2>
+                <p style="color: var(--text-muted-dark);">Manage vacancies, screen applications, and coordinate interviews</p>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: var(--primary-light); color: var(--primary);">💼</div>
+                <div class="stat-info">
+                    <div class="num" id="stat-emp-jobs">0</div>
+                    <div class="label">Posted Jobs</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: var(--warning-light); color: var(--warning);">📥</div>
+                <div class="stat-info">
+                    <div class="num" id="stat-emp-apps">0</div>
+                    <div class="label">Applications</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: var(--success-light); color: var(--success);">⏰</div>
+                <div class="stat-info">
+                    <div class="num" id="stat-emp-ints">0</div>
+                    <div class="label">Interviews Scheduled</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background-color: var(--success-light); color: var(--success);">🏆</div>
+                <div class="stat-info">
+                    <div class="num" id="stat-emp-sel">0</div>
+                    <div class="label">Hires Selected</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Two Column Content -->
+        <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; align-items: start; margin-bottom: 2rem;">
+            <!-- Left: Post a Job Form -->
+            <section class="card" style="padding: 1.5rem; display: block;">
+                <h3 class="section-title" style="font-size: 1.3rem; margin-bottom: 1rem;">Post a New Job</h3>
+                <form id="post-job-form">
+                    <div class="form-group">
+                        <label for="job-id">Job ID (Number) *</label>
+                        <input type="number" id="job-id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="job-title">Job Title *</label>
+                        <input type="text" id="job-title" placeholder="e.g. Python Backend Developer" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="job-location">Location</label>
+                        <input type="text" id="job-location" placeholder="e.g. Bangalore, Hybrid">
+                    </div>
+                    <div class="form-group">
+                        <label for="job-type">Job Type *</label>
+                        <select id="job-type">
+                            <option value="Full Time">Full Time</option>
+                            <option value="Part Time">Part Time</option>
+                            <option value="Internship">Internship</option>
+                            <option value="Remote">Remote</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="job-exp">Required Experience (Years)</label>
+                        <input type="number" id="job-exp" placeholder="e.g. 2" min="0">
+                    </div>
+                    <div class="form-group">
+                        <label for="job-salary">Salary (INR per Annum) *</label>
+                        <input type="number" id="job-salary" placeholder="e.g. 800000" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="job-last-date">Last Date to Apply</label>
+                        <input type="date" id="job-last-date" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Publish Job</button>
+                </form>
+            </section>
+
+            <!-- Right: Posted Jobs List -->
+            <section class="card" style="padding: 1.5rem; display: block; overflow: visible;">
+                <h3 class="section-title" style="font-size: 1.3rem; margin-bottom: 1rem;">My Posted Vacancies</h3>
+                <div class="table-container">
+                    <table style="min-width: 500px;">
+                        <thead>
+                            <tr>
+                                <th>Job ID</th>
+                                <th>Title</th>
+                                <th>Location</th>
+                                <th>Type</th>
+                                <th>Salary</th>
+                                <th>Deadline</th>
+                            </tr>
+                        </thead>
+                        <tbody id="posted-jobs-body">
+                            <!-- Filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Full Width Received Applications Table -->
+        <section class="card" style="padding: 1.5rem; display: block; overflow: visible; margin-bottom: 2rem;">
+            <h3 class="section-title" style="font-size: 1.3rem; margin-bottom: 1rem;">Job Applications Received</h3>
+            <div class="table-container" style="margin-bottom: 0;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>App ID</th>
+                            <th>Candidate</th>
+                            <th>Job Title</th>
+                            <th>Applied Date</th>
+                            <th>Resume</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="received-apps-body">
+                        <!-- Filled dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Scheduled Interviews Table -->
+        <section class="card" style="padding: 1.5rem; display: block; overflow: visible;">
+            <h3 class="section-title" style="font-size: 1.3rem; margin-bottom: 1rem;">My Scheduled Interviews</h3>
+            <div class="table-container" style="margin-bottom: 0;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Int ID</th>
+                            <th>Candidate</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Mode</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scheduled-interviews-body">
+                        <!-- Filled dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Schedule Interview Modal Overlay -->
+        <div class="modal-overlay" id="schedule-modal">
+            <div class="modal">
+                <span class="modal-close" onclick="closeModal('schedule-modal')">&times;</span>
+                <h3 style="margin-bottom: 1.5rem;" id="schedule-title">Schedule Interview Slot</h3>
+                <form id="schedule-interview-form">
+                    <div class="form-group">
+                        <label for="int-id">Interview ID (Number) *</label>
+                        <input type="number" id="int-id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="int-candidate-name">Candidate Name *</label>
+                        <input type="text" id="int-candidate-name" readonly required>
+                    </div>
+                    <div class="form-group">
+                        <label for="int-date">Interview Date *</label>
+                        <input type="date" id="int-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="int-time">Interview Time (HH:MM) *</label>
+                        <input type="text" id="int-time" placeholder="e.g. 14:30" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="int-mode">Interview Mode *</label>
+                        <select id="int-mode">
+                            <option value="Online">Online (Video Meet)</option>
+                            <option value="Offline">Offline (Office)</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Confirm Interview</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 JobPortal Application. All Rights Reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
