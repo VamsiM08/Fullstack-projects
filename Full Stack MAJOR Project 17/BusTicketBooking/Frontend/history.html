@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking History - Antigravity Bus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar" id="navbar-container"></header>
+
+    <main>
+        <section class="hero" style="padding: 2rem 1rem; margin-bottom: 2rem;">
+            <h1>My Booking <span>History</span></h1>
+            <p>View upcoming reservations, cancel tickets, check payment refund details, and download digital tickets.</p>
+        </section>
+
+        <!-- Booking History Panel -->
+        <section class="glass-panel">
+            <h3 class="glass-panel-title"><i class="fas fa-history"></i> Passenger Journey Log</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Bus Name</th>
+                            <th>Route</th>
+                            <th>Journey Date</th>
+                            <th>Seat No</th>
+                            <th>Price</th>
+                            <th>Booking Status</th>
+                            <th>Payment Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <!-- Loaded dynamically by script.js -->
+                        <tr><td colspan="9" style="text-align:center"><div class="spinner"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Antigravity Bus Booking App. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', initHistoryPage);
+    </script>
+</body>
+</html>

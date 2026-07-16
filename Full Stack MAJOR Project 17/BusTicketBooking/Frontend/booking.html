@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Seats - Antigravity Bus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar" id="navbar-container"></header>
+
+    <main>
+        <section class="hero" style="padding: 1.5rem 1rem; margin-bottom: 1.5rem;">
+            <h2>Interactive Seat Selection</h2>
+            <p>Choose your preferred seats from the real-time cabin map. Maximum of 6 seats per transaction.</p>
+        </section>
+
+        <div class="booking-grid">
+            <!-- Seat Selection Cabin -->
+            <div class="seat-layout-card">
+                <!-- Status Legend -->
+                <div class="seat-map-header">
+                    <div class="legend-item">
+                        <div class="legend-box available"></div>
+                        <span>Available</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box selected"></div>
+                        <span>Selected</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-box occupied"></div>
+                        <span>Occupied / Booked</span>
+                    </div>
+                </div>
+                
+                <!-- Bus Cabin Representation -->
+                <div class="bus-cabin">
+                    <div class="seats-grid" id="seats-grid-layout">
+                        <!-- Loaded dynamically by script.js -->
+                        <div class="spinner" style="grid-column: 1/-1;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checkout Details Form and Summary -->
+            <div class="checkout-sidebar">
+                <div id="booking-summary-container">
+                    <!-- Loaded dynamically by script.js -->
+                    <div class="spinner"></div>
+                </div>
+                
+                <div style="border-top: 1px solid var(--border-color); margin-top: 1.5rem; padding-top: 1.5rem;">
+                    <h4 style="font-size: 0.95rem; margin-bottom: 0.85rem; color: var(--text-primary);">Passenger Verification</h4>
+                    
+                    <div class="form-group" style="margin-bottom: 0.75rem;">
+                        <label for="pass_name" style="font-size: 0.75rem;">Full Name</label>
+                        <input type="text" id="pass_name" class="form-input" style="padding-left: 1rem;" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="pass_email" style="font-size: 0.75rem;">Email Address</label>
+                        <input type="email" id="pass_email" class="form-input" style="padding-left: 1rem;" disabled>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Antigravity Bus Booking App. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', initBookingPage);
+    </script>
+</body>
+</html>

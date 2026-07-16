@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Buses - Antigravity Bus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .time-slots-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.5rem;
+        }
+        .time-slot-btn {
+            background: rgba(15, 23, 42, 0.4);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition-fast);
+        }
+        .time-slot-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        .time-slot-btn.active {
+            background: var(--primary);
+            color: var(--text-dark);
+            border-color: var(--primary);
+        }
+        .time-slot-btn i {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar" id="navbar-container"></header>
+
+    <main>
+        <!-- Horizontal Search Bar (For refinement) -->
+        <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem;">
+            <form id="buses-search-form">
+                <div class="search-form-grid" style="margin-bottom: 0;">
+                    <div class="form-group">
+                        <label for="search_source">From</label>
+                        <div class="input-container">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <input type="text" id="search_source" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="search_destination">To</label>
+                        <div class="input-container">
+                            <i class="fas fa-map-pin"></i>
+                            <input type="text" id="search_destination" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="search_date">Journey Date</label>
+                        <div class="input-container">
+                            <i class="far fa-calendar-alt"></i>
+                            <input type="date" id="search_date" class="form-input" required>
+                        </div>
+                    </div>
+                    <div class="form-group" style="justify-content: flex-end;">
+                        <button type="submit" class="btn-search" style="min-height: 48px;">
+                            Modify Search <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="buses-container">
+            <!-- Sidebar Filters -->
+            <aside class="filter-sidebar">
+                <div class="filter-section">
+                    <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-sliders-h"></i> Filters
+                    </h3>
+                </div>
+
+                <!-- Price Range Filter -->
+                <div class="filter-section">
+                    <h4>Max Ticket Price</h4>
+                    <input type="range" id="price-range" min="500" max="3000" step="100" value="3000" class="filter-range">
+                    <div class="range-labels">
+                        <span>₹500</span>
+                        <span id="price-val" style="color: var(--primary); font-weight: 700;">₹3000</span>
+                        <span>₹3000</span>
+                    </div>
+                </div>
+
+                <!-- Bus Type Filter -->
+                <div class="filter-section">
+                    <h4>Bus Type</h4>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" id="filter-ac-sleeper">
+                        <span>AC Sleeper</span>
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" id="filter-non-ac-sleeper">
+                        <span>Non-AC Sleeper</span>
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" id="filter-ac-seater">
+                        <span>AC Seater</span>
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" id="filter-non-ac-seater">
+                        <span>Non-AC Seater</span>
+                    </label>
+                    <label class="filter-checkbox">
+                        <input type="checkbox" id="filter-luxury">
+                        <span>Luxury</span>
+                    </label>
+                </div>
+
+                <!-- Departure Timing Filter -->
+                <div class="filter-section">
+                    <h4>Departure Time</h4>
+                    <div class="time-slots-container">
+                        <div class="time-slot-btn" data-time="morning">
+                            <i class="fas fa-sun"></i> Morning<br>(6 AM - 12 PM)
+                        </div>
+                        <div class="time-slot-btn" data-time="afternoon">
+                            <i class="fas fa-cloud-sun"></i> Afternoon<br>(12 PM - 5 PM)
+                        </div>
+                        <div class="time-slot-btn" data-time="evening">
+                            <i class="fas fa-moon"></i> Evening<br>(5 PM - 9 PM)
+                        </div>
+                        <div class="time-slot-btn" data-time="night">
+                            <i class="fas fa-cloud-moon"></i> Night<br>(9 PM - 6 AM)
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sort By Select -->
+                <div class="filter-section">
+                    <h4>Sort Results</h4>
+                    <select id="sort-by" class="form-input" style="padding-left: 1rem;">
+                        <option value="none">Default</option>
+                        <option value="price-low">Price: Low to High</option>
+                        <option value="price-high">Price: High to Low</option>
+                        <option value="time-early">Departure: Earliest</option>
+                    </select>
+                </div>
+            </aside>
+
+            <!-- Buses List Area -->
+            <section class="bus-list" id="bus-list-container">
+                <!-- Dynamically loaded by script.js -->
+                <div class="spinner"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Antigravity Bus Booking App. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', initBusesPage);
+    </script>
+</body>
+</html>

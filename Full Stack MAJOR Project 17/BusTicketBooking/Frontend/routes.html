@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Network & Schedules - Antigravity Bus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar" id="navbar-container"></header>
+
+    <main>
+        <section class="hero" style="padding: 2rem 1rem;">
+            <h1>Our Route <span>Network</span></h1>
+            <p>Explore our active travel connections, departure schedules, and pricing across major destinations.</p>
+        </section>
+
+        <!-- Route Search & Catalogue -->
+        <div class="glass-panel" style="margin-bottom: 2rem; padding: 1.5rem;">
+            <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                <div class="form-group" style="flex: 1; min-width: 250px;">
+                    <label for="route-search-input">Search Route Network</label>
+                    <div class="input-container">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="route-search-input" placeholder="Type source or destination..." class="form-input" style="padding-left: 2.5rem;">
+                    </div>
+                </div>
+                <div class="form-group" style="justify-content: flex-end;">
+                    <button onclick="clearSearch()" class="btn-action" style="height: 48px; border-radius: var(--radius-md); padding: 0 1.5rem;">Clear</button>
+                </div>
+            </div>
+        </div>
+
+        <section class="glass-panel">
+            <h3 class="glass-panel-title"><i class="fas fa-route"></i> All Scheduled Connections</h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Route ID</th>
+                            <th>Bus Name</th>
+                            <th>From (Source)</th>
+                            <th>To (Destination)</th>
+                            <th>Departure</th>
+                            <th>Arrival</th>
+                            <th>Fare</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="routes-table-body">
+                        <!-- Loaded dynamically -->
+                        <tr><td colspan="8" style="text-align:center"><div class="spinner"></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Antigravity Bus Booking App. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let allNetworkRoutes = [];
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            renderNavbar();
+            await loadNetworkRoutes();
+            
+            // Search filter binding
+            const input = document.getElementById('route-search-input');
+            if (input) {
+                input.addEventListener('input', filterNetworkTable);
+            }
+        });
+        
+        async function loadNetworkRoutes() {
+            try {
+                allNetworkRoutes = await apiFetch('/routes/');
+                renderNetworkTable(allNetworkRoutes);
+            } catch (err) {
+                document.getElementById('routes-table-body').innerHTML = 
+                    `<tr><td colspan="8" style="text-align:center; color:var(--accent);">Failed to load routes: ${err.message}</td></tr>`;
+            }
+        }
+        
+        function renderNetworkTable(routes) {
+            const tbody = document.getElementById('routes-table-body');
+            if (!tbody) return;
+            
+            if (routes.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">No scheduled routes found matching query.</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = routes.map(r => `
+                <tr>
+                    <td>#${r.route_id}</td>
+                    <td><strong>${r.bus_name}</strong></td>
+                    <td>${r.source}</td>
+                    <td>${r.destination}</td>
+                    <td>${r.departure_time}</td>
+                    <td>${r.arrival_time}</td>
+                    <td><strong style="color:var(--primary)">₹${r.fare}</strong></td>
+                    <td>
+                        <button onclick="bookNetworkRoute('${r.source}', '${r.destination}')" class="btn-action" style="background:var(--primary); color:var(--text-dark); border-color:var(--primary);">
+                            Book Now <i class="fas fa-ticket-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        function filterNetworkTable() {
+            const query = document.getElementById('route-search-input').value.toLowerCase().trim();
+            if (!query) {
+                renderNetworkTable(allNetworkRoutes);
+                return;
+            }
+            
+            const filtered = allNetworkRoutes.filter(r => 
+                r.source.toLowerCase().includes(query) || 
+                r.destination.toLowerCase().includes(query) ||
+                r.bus_name.toLowerCase().includes(query)
+            );
+            
+            renderNetworkTable(filtered);
+        }
+        
+        function clearSearch() {
+            const input = document.getElementById('route-search-input');
+            if (input) {
+                input.value = '';
+                renderNetworkTable(allNetworkRoutes);
+            }
+        }
+        
+        function bookNetworkRoute(source, destination) {
+            const today = new Date().toISOString().split('T')[0];
+            window.location.href = `buses.html?source=${encodeURIComponent(source)}&destination=${encodeURIComponent(destination)}&date=${today}`;
+        }
+    </script>
+</body>
+</html>

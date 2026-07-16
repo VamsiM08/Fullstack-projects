@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Antigravity Bus - Premium Bus Ticket Booking</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Dynamic Navbar -->
+    <header class="navbar" id="navbar-container"></header>
+
+    <main>
+        <!-- Hero & Bus Search Section -->
+        <section class="hero">
+            <h1>Travel in Comfort, <br>Book with <span>Antigravity</span></h1>
+            <p>Compare and book bus tickets at the best prices with premium operators, secure payments, and instant downloads.</p>
+            
+            <!-- Search Form Panel -->
+            <div class="glass-panel" style="text-align: left; max-width: 900px; margin: 0 auto;">
+                <h3 class="glass-panel-title">
+                    <i class="fas fa-search-location"></i> Find Your Journey
+                </h3>
+                <form id="home-search-form">
+                    <div class="search-form-grid">
+                        <div class="form-group">
+                            <label for="source">From (Source)</label>
+                            <div class="input-container">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <input type="text" id="source" placeholder="e.g. Hyderabad" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="destination">To (Destination)</label>
+                            <div class="input-container">
+                                <i class="fas fa-map-pin"></i>
+                                <input type="text" id="destination" placeholder="e.g. Bangalore" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="journey_date">Journey Date</label>
+                            <div class="input-container">
+                                <i class="far fa-calendar-alt"></i>
+                                <input type="date" id="journey_date" class="form-input" required>
+                            </div>
+                        </div>
+                        <div class="form-group" style="justify-content: flex-end;">
+                            <button type="submit" class="btn-search">
+                                Search Buses <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Offers Banner Section -->
+        <section>
+            <h2 class="section-title"><i class="fas fa-tags"></i> Special Offers for You</h2>
+            <div class="offers-slider">
+                <!-- Offer 1 -->
+                <div class="offer-card">
+                    <div class="offer-icon"><i class="fas fa-wallet"></i></div>
+                    <div class="offer-info">
+                        <h4>Save up to ₹250</h4>
+                        <p>Get flat 15% off on your first bus booking today.</p>
+                        <span class="offer-code">CODE: FIRST250</span>
+                    </div>
+                </div>
+                <!-- Offer 2 -->
+                <div class="offer-card">
+                    <div class="offer-icon"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="offer-info">
+                        <h4>UPI Cashback</h4>
+                        <p>Pay using UPI and get assured cashback up to ₹100.</p>
+                        <span class="offer-code">CODE: UPISAVE</span>
+                    </div>
+                </div>
+                <!-- Offer 3 -->
+                <div class="offer-card">
+                    <div class="offer-icon"><i class="fas fa-hotel"></i></div>
+                    <div class="offer-info">
+                        <h4>Weekend Getaway</h4>
+                        <p>Get special travel vouchers for weekend departures.</p>
+                        <span class="offer-code">CODE: WEEKEND</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Routes Section -->
+        <section style="margin-bottom: 4rem;">
+            <h2 class="section-title"><i class="fas fa-route"></i> Popular Routes</h2>
+            <div class="routes-grid" id="popular-routes-grid">
+                <!-- Loaded dynamically by script.js -->
+                <div class="spinner"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="nav-logo" style="margin-bottom: 0.5rem;">
+                <i class="fas fa-bus-alt"></i> Antigravity Bus
+            </div>
+            <p>Fast, secure, and luxury bus reservations at your fingertips.</p>
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="buses.html">Search Buses</a>
+                <a href="routes.html">Route Network</a>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.8rem;">&copy; 2026 Antigravity Bus Booking App. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', initHomePage);
+    </script>
+</body>
+</html>

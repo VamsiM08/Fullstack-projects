@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Payment - Antigravity Bus</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar" id="navbar-container"></header>
+
+    <main>
+        <section class="hero" style="padding: 1.5rem 1rem; margin-bottom: 2.5rem;">
+            <h2>Secure Payment Gateway</h2>
+            <p>Select your payment method below to complete the ticket reservation. Transactions are 100% encrypted.</p>
+        </section>
+
+        <div class="booking-grid" style="grid-template-columns: 1fr 400px;">
+            <!-- Payment Methods Form -->
+            <div class="glass-panel" style="padding: 2rem;">
+                <h3 class="glass-panel-title"><i class="fas fa-wallet"></i> Choose Payment Method</h3>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1.5rem;">Select one of our secure payment gateways to proceed with transaction:</p>
+                
+                <div class="payments-grid">
+                    <!-- UPI -->
+                    <div class="payment-method-card" data-method="UPI">
+                        <i class="fas fa-qrcode"></i>
+                        <h5>UPI / QR</h5>
+                    </div>
+                    <!-- Credit Card -->
+                    <div class="payment-method-card" data-method="Credit Card">
+                        <i class="far fa-credit-card"></i>
+                        <h5>Credit Card</h5>
+                    </div>
+                    <!-- Debit Card -->
+                    <div class="payment-method-card" data-method="Debit Card">
+                        <i class="fas fa-credit-card"></i>
+                        <h5>Debit Card</h5>
+                    </div>
+                    <!-- Net Banking -->
+                    <div class="payment-method-card" data-method="Net Banking">
+                        <i class="fas fa-university"></i>
+                        <h5>Net Banking</h5>
+                    </div>
+                    <!-- Wallet -->
+                    <div class="payment-method-card" data-method="Wallet">
+                        <i class="fas fa-wallet"></i>
+                        <h5>Wallet</h5>
+                    </div>
+                </div>
+
+                <div style="background: rgba(20, 184, 166, 0.05); border: 1px solid rgba(20, 184, 166, 0.15); padding: 1.25rem; border-radius: var(--radius-md); display: flex; gap: 1rem; align-items: flex-start;">
+                    <i class="fas fa-shield-alt" style="color: var(--primary); font-size: 1.5rem; margin-top: 0.15rem;"></i>
+                    <div style="font-size: 0.85rem;">
+                        <strong style="color: var(--text-primary); display: block; margin-bottom: 0.25rem;">Safe &amp; Secure Checkout</strong>
+                        Your billing information is encrypted. Cancellation policies apply in accordance with the operator.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking Summary Sidebar -->
+            <div class="checkout-sidebar">
+                <h3>Booking Details</h3>
+                <div id="payment-summary-list" class="summary-list">
+                    <!-- Dynamically populated by script.js -->
+                    <div class="spinner"></div>
+                </div>
+                
+                <div class="summary-total" style="margin-top: 1.5rem; padding-top: 1rem; font-size: 1.3rem;">
+                    <span>Total Fare</span>
+                    <span id="payment-total-fare" class="summary-val">₹0</span>
+                </div>
+                
+                <button id="confirm-payment-btn" class="btn-checkout" style="margin-top: 1.5rem;" disabled>
+                    Confirm Payment &amp; Book <i class="fas fa-check-double"></i>
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2026 Antigravity Bus Booking App. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', initPaymentPage);
+    </script>
+</body>
+</html>
