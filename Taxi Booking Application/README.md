@@ -7,17 +7,17 @@ A complete, professional, and visually stunning Taxi Booking Web Application dev
 ## 🎨 Project Visuals
 
 ### Hero Banner
-![Hero Banner](readme/hero_taxi.png)
+![Hero Banner](Frontend/images/hero_taxi.png)
 
 ### Vehicle Fleet Options
 | Hatchback | Sedan | SUV | Luxury |
 | :---: | :---: | :---: | :---: |
-| ![Hatchback](readme/hatchback.png) | ![Sedan](readme/sedan.png) | ![SUV](readme/suv.png) | ![Luxury](readme/luxury.png) |
+| ![Hatchback](Frontend/images/hatchback.png) | ![Sedan](Frontend/images/sedan.png) | ![SUV](Frontend/images/suv.png) | ![Luxury](Frontend/images/luxury.png) |
 
 ### System Page Previews
 | Login Page | Booking Page | Admin Console |
 | :---: | :---: | :---: |
-| ![Login Page](readme/login_page.png) | ![Booking Page](readme/booking_page.png) | ![Admin Console](readme/admin_page.png) |
+| ![Login Page](Frontend/images/login_page.png) | ![Booking Page](Frontend/images/booking_page.png) | ![Admin Console](Frontend/images/admin_page.png) |
 
 ---
 
