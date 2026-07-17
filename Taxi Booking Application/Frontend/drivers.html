@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiGo - Drivers</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sticky Navbar -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Taxi<span>Go</span></a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="booking.html" class="customer-only auth-only">Book Ride</a>
+                <a href="drivers.html" class="active">Drivers</a>
+                <a href="ride_history.html">Ride History</a>
+                <a href="customer_dashboard.html" class="customer-only auth-only">Dashboard</a>
+                <a href="driver_dashboard.html" class="driver-only auth-only">Dashboard</a>
+                <a href="#" onclick="clearSession()">Logout</a>
+            </nav>
+            <div class="nav-buttons">
+                <button class="theme-toggle" id="theme-toggle-btn">☀️</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search/Filter Controls -->
+    <div class="section" style="padding-bottom:1rem;">
+        <div class="glass-card" style="padding: 1.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+            <div style="flex:1; min-width:300px; display:flex; gap:1rem;">
+                <input type="text" id="search-input" class="form-input" placeholder="Search driver name, license..." style="flex:1;" oninput="fetchDrivers()">
+                <select id="avail-filter" class="form-input" onchange="fetchDrivers()">
+                    <option value="">All Availability</option>
+                    <option value="Available">Available</option>
+                    <option value="Busy">Busy</option>
+                    <option value="Offline">Offline</option>
+                </select>
+            </div>
+            <h3>Drivers Network</h3>
+        </div>
+    </div>
+
+    <!-- Drivers Grid -->
+    <section class="section" style="padding-top:1rem;">
+        <div class="features-grid" id="drivers-grid">
+            <!-- Loader Spinner -->
+            <div class="glass-card" style="text-align:center; grid-column: 1/-1;">
+                <div class="spinner" style="margin: 2rem auto;"></div>
+                <p>Retrieving active drivers list...</p>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+    <script>
+        const auth = getSession();
+        if (!auth.isLoggedIn) {
+            showToast("Access Denied. Please login to view drivers.", "error");
+            setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+        }
+
+        async function fetchDrivers() {
+            const query = document.getElementById('search-input').value;
+            const availability = document.getElementById('avail-filter').value;
+            
+            let url = `/drivers/?q=${encodeURIComponent(query)}`;
+            if (availability) {
+                url += `&availability=${availability}`;
+            }
+
+            try {
+                const drivers = await apiFetch(url);
+                renderDrivers(drivers);
+            } catch (err) {
+                document.getElementById('drivers-grid').innerHTML = `
+                    <div class="glass-card" style="text-align:center; grid-column: 1/-1; border-color:var(--danger-red);">
+                        <p style="color:var(--danger-red);">Error loading driver network profiles.</p>
+                    </div>
+                `;
+            }
+        }
+
+        function renderDrivers(drivers) {
+            const grid = document.getElementById('drivers-grid');
+            if (drivers.length === 0) {
+                grid.innerHTML = `
+                    <div class="glass-card" style="text-align:center; grid-column: 1/-1; padding:3rem;">
+                        <p>No matching drivers found in the network.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = drivers.map(d => {
+                let badgeClass = 'badge-requested';
+                if (d.availability === 'Available') badgeClass = 'badge-completed';
+                if (d.availability === 'Busy') badgeClass = 'badge-accepted';
+                if (d.availability === 'Offline') badgeClass = 'badge-cancelled';
+
+                const avatar = d.profile_pic || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150';
+                const rating = d.rating !== undefined ? d.rating.toFixed(2) : '5.00';
+                const rides = d.total_rides !== undefined ? d.total_rides : 0;
+
+                return `
+                    <div class="glass-card" style="text-align:left; display:flex; flex-direction:column; justify-content:space-between; gap:1.2rem; padding: 1.8rem;">
+                        <div>
+                            <!-- Header Info -->
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                                <span class="badge ${badgeClass}">${d.availability}</span>
+                                <span style="font-size:0.75rem; color:var(--text-muted); font-weight:700;">${d.driver_id}</span>
+                            </div>
+                            
+                            <!-- Profile Row -->
+                            <div style="display:flex; gap:1rem; align-items:center; margin-bottom:1rem;">
+                                <img src="${avatar}" alt="${d.driver_name}" style="width:60px; height:60px; border-radius:50%; object-fit:cover; border:2px solid var(--glass-border); box-shadow:var(--accent-glow);">
+                                <div>
+                                    <h3 style="font-size:1.15rem; margin-bottom:0.15rem;">${d.driver_name}</h3>
+                                    <span style="font-size:0.85rem; color:var(--primary-orange); font-weight:700;">⭐ ${rating}</span>
+                                </div>
+                            </div>
+
+                            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.3rem;">📧 ${d.email}</p>
+                            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.3rem;">📱 ${d.phone}</p>
+                            <p style="font-size:0.85rem; color:var(--text-secondary); margin-bottom:0.3rem;">🪪 License: <strong>${d.license_number}</strong></p>
+                            <p style="font-size:0.85rem; color:var(--text-secondary);">📅 Expiry: <strong style="color:var(--danger-red);">${d.license_expiry || 'N/A'}</strong></p>
+                        </div>
+                        
+                        <!-- Footer details -->
+                        <div style="border-top:1px solid var(--glass-border); padding-top:0.8rem; display:flex; justify-content:space-between; align-items:center; font-size:0.85rem;">
+                            <div>
+                                <span style="color:var(--text-muted);">Trips:</span>
+                                <strong>${rides} Completed</strong>
+                            </div>
+                            <div>
+                                <span style="color:var(--text-muted);">Experience:</span>
+                                <strong>${d.experience} Years</strong>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        window.onload = () => {
+            fetchDrivers();
+        };
+    </script>
+</body>
+</html>

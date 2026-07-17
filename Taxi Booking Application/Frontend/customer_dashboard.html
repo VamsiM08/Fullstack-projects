@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiGo - Customer Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sticky Navbar -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Taxi<span>Go</span></a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="booking.html">Book Ride</a>
+                <a href="drivers.html">Drivers</a>
+                <a href="ride_history.html">Ride History</a>
+                <a href="customer_dashboard.html" class="active">Dashboard</a>
+                <a href="#" onclick="clearSession()">Logout</a>
+            </nav>
+            <div class="nav-buttons">
+                <button class="theme-toggle" id="theme-toggle-btn">☀️</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="glass-card dashboard-sidebar" style="padding: 1.8rem;">
+            <div style="text-align:center; padding-bottom:1.5rem; border-bottom:1px solid var(--glass-border);">
+                <img id="sidebar-user-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150" alt="Avatar" style="width:90px; height:90px; border-radius:50%; object-fit:cover; margin-bottom:1rem; border:2px solid var(--glass-border); box-shadow:var(--accent-glow);">
+                <h3 id="sidebar-user-name">Customer Name</h3>
+                <p id="sidebar-user-role" style="font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; margin-top:0.2rem;">Customer</p>
+                <small id="sidebar-user-since" style="font-size:0.75rem; color:var(--text-muted); display:block; margin-top:0.3rem;">Since --</small>
+            </div>
+            
+            <ul class="sidebar-nav">
+                <li class="sidebar-link active" onclick="switchSection('overview', this)">📊 Overview Stats</li>
+                <li class="sidebar-link" onclick="switchSection('profile', this)">⚙️ Edit Profile</li>
+                <li class="sidebar-link" onclick="clearSession()" style="color:var(--danger-red); margin-top:2rem;">🚪 Log Out</li>
+            </ul>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="dashboard-main">
+            <!-- Section 1: Overview Dashboard -->
+            <section id="sec-overview" class="db-section">
+                <h2>Overview Analytics</h2>
+                <p style="color:var(--text-secondary); margin-bottom:1.5rem;">Quick preview of your booking details and payments status.</p>
+
+                <!-- Statistics Grid -->
+                <div class="stats-grid">
+                    <div class="glass-card stat-card">
+                        <div>
+                            <div class="stat-label">Total Bookings</div>
+                            <h2 id="stat-total" style="font-size:2rem; margin-top:0.4rem;">0</h2>
+                        </div>
+                        <div class="stat-icon">🚕</div>
+                    </div>
+                    <div class="glass-card stat-card">
+                        <div>
+                            <div class="stat-label">Completed Rides</div>
+                            <h2 id="stat-completed" style="font-size:2rem; margin-top:0.4rem;">0</h2>
+                        </div>
+                        <div class="stat-icon">✅</div>
+                    </div>
+                    <div class="glass-card stat-card">
+                        <div>
+                            <div class="stat-label">Upcoming Rides</div>
+                            <h2 id="stat-upcoming" style="font-size:2rem; margin-top:0.4rem;">0</h2>
+                        </div>
+                        <div class="stat-icon">⏳</div>
+                    </div>
+                    <div class="glass-card stat-card">
+                        <div>
+                            <div class="stat-label">Cancelled Rides</div>
+                            <h2 id="stat-cancelled" style="font-size:2rem; margin-top:0.4rem;">0</h2>
+                        </div>
+                        <div class="stat-icon">❌</div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings Table -->
+                <div class="glass-card" style="margin-top:2rem;">
+                    <h3>Recent Bookings</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Pickup</th>
+                                    <th>Drop-off</th>
+                                    <th>Fare</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-bookings-body">
+                                <tr>
+                                    <td colspan="5" style="text-align:center; padding:2rem;">No recent bookings available.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Payment History Table -->
+                <div class="glass-card" style="margin-top:2rem;">
+                    <h3>Recent Payments</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Payment ID</th>
+                                    <th>Booking ID</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="payment-history-body">
+                                <tr>
+                                    <td colspan="5" style="text-align:center; padding:2rem;">No transaction receipts logged.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Edit Profile -->
+            <section id="sec-profile" class="db-section" style="display:none;">
+                <div class="glass-card" style="max-width:680px;">
+                    <h2>Account Settings</h2>
+                    <p style="color:var(--text-secondary); margin-bottom:2rem;">Modify your registration details or change password credentials</p>
+
+                    <form id="profile-form" onsubmit="updateProfile(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="prof-name">Full Name</label>
+                                <input type="text" id="prof-name" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-avatar">Profile Picture (URL)</label>
+                                <input type="url" id="prof-avatar" class="form-input">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="prof-email">Email Address</label>
+                                <input type="email" id="prof-email" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-phone">Phone Number</label>
+                                <input type="tel" id="prof-phone" class="form-input" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="prof-gender">Gender</label>
+                                <select id="prof-gender" class="form-input">
+                                    <option value="Male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Other">Other</option>
+                                    <option value="Prefer Not to Say">Prefer Not to Say</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-dob">Date of Birth</label>
+                                <input type="date" id="prof-dob" class="form-input">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="prof-emergency">Emergency Contact</label>
+                                <input type="tel" id="prof-emergency" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-password">New Password (Leave blank to keep same)</label>
+                                <input type="password" id="prof-password" class="form-input" placeholder="••••••••">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="prof-address">Residential Address</label>
+                            <input type="text" id="prof-address" class="form-input" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-top:1.5rem;">Save Settings</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        const auth = getSession();
+        if (!auth.isLoggedIn || auth.role !== 'customer') {
+            showToast("Unauthorized page view access.", "error");
+            setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+        }
+
+        document.getElementById('sidebar-user-name').innerText = auth.userName;
+
+        function switchSection(sectionId, element) {
+            document.querySelectorAll('.db-section').forEach(sec => sec.style.display = 'none');
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+            
+            document.getElementById(`sec-${sectionId}`).style.display = 'block';
+            element.classList.add('active');
+            
+            if (sectionId === 'profile') {
+                loadProfileForm();
+            } else {
+                fetchStats();
+            }
+        }
+
+        async function fetchStats() {
+            try {
+                const stats = await apiFetch(`/customer/dashboard-stats/${encodeURIComponent(auth.userName)}/`);
+                
+                document.getElementById('stat-total').innerText = stats.total_rides;
+                document.getElementById('stat-completed').innerText = stats.completed_rides;
+                document.getElementById('stat-upcoming').innerText = stats.upcoming_rides;
+                document.getElementById('stat-cancelled').innerText = stats.cancelled_rides;
+
+                // Sidebar items load
+                const customersList = await apiFetch(`/customers/?q=${encodeURIComponent(auth.email)}`);
+                if (customersList.length > 0) {
+                    const prof = customersList[0];
+                    document.getElementById('sidebar-user-avatar').src = prof.profile_pic || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150';
+                    document.getElementById('sidebar-user-since').innerText = `Since ${prof.member_since || '2024'}`;
+                }
+
+                // Render bookings table
+                const bBody = document.getElementById('recent-bookings-body');
+                if (stats.recent_bookings.length === 0) {
+                    bBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:2rem;">No bookings found.</td></tr>`;
+                } else {
+                    bBody.innerHTML = stats.recent_bookings.map(b => {
+                        let badgeClass = 'badge-requested';
+                        if (b.ride_status === 'Requested') badgeClass = 'badge-requested';
+                        if (b.ride_status === 'Accepted') badgeClass = 'badge-accepted';
+                        if (b.ride_status === 'In Progress') badgeClass = 'badge-progress';
+                        if (b.ride_status === 'Completed') badgeClass = 'badge-completed';
+                        if (b.ride_status === 'Cancelled') badgeClass = 'badge-cancelled';
+
+                        return `
+                            <tr>
+                                <td><strong>${b.booking_id}</strong></td>
+                                <td>${b.pickup_location.length > 25 ? b.pickup_location.substring(0,25)+'...' : b.pickup_location}</td>
+                                <td>${b.drop_location.length > 25 ? b.drop_location.substring(0,25)+'...' : b.drop_location}</td>
+                                <td><strong>$${b.fare.toFixed(2)}</strong></td>
+                                <td><span class="badge ${badgeClass}">${b.ride_status}</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+
+                // Render payments table
+                const pBody = document.getElementById('payment-history-body');
+                if (stats.payment_history.length === 0) {
+                    pBody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:2rem;">No payments logged.</td></tr>`;
+                } else {
+                    pBody.innerHTML = stats.payment_history.map(p => `
+                        <tr>
+                            <td><strong>${p.payment_id}</strong></td>
+                            <td>${p.booking_id}</td>
+                            <td><strong>$${p.amount.toFixed(2)}</strong></td>
+                            <td>${p.payment_method}</td>
+                            <td><span class="badge badge-completed">${p.payment_status}</span></td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (err) {}
+        }
+
+        async function loadProfileForm() {
+            try {
+                const customers = await apiFetch(`/customers/?q=${encodeURIComponent(auth.email)}`);
+                if (customers.length > 0) {
+                    const profile = customers[0];
+                    
+                    document.getElementById('prof-name').value = profile.full_name;
+                    document.getElementById('prof-email').value = profile.email;
+                    document.getElementById('prof-phone').value = profile.phone;
+                    document.getElementById('prof-address').value = profile.address;
+                    document.getElementById('prof-avatar').value = profile.profile_pic || '';
+                    document.getElementById('prof-gender').value = profile.gender || 'Male';
+                    document.getElementById('prof-dob').value = profile.dob || '';
+                    document.getElementById('prof-emergency').value = profile.emergency_contact || '';
+                }
+            } catch (err) {
+                showToast("Failed to fetch profile info.", "error");
+            }
+        }
+
+        async function updateProfile(e) {
+            e.preventDefault();
+
+            const full_name = document.getElementById('prof-name').value;
+            const email = document.getElementById('prof-email').value;
+            const phone = document.getElementById('prof-phone').value;
+            const address = document.getElementById('prof-address').value;
+            const profile_pic = document.getElementById('prof-avatar').value;
+            const gender = document.getElementById('prof-gender').value;
+            const dob = document.getElementById('prof-dob').value;
+            const emergency_contact = document.getElementById('prof-emergency').value;
+            const password = document.getElementById('prof-password').value;
+
+            if (!validateEmail(email)) {
+                showToast("Please enter a valid email.", "error");
+                return;
+            }
+
+            const payload = {
+                full_name,
+                email,
+                phone,
+                address,
+                profile_pic,
+                gender,
+                dob,
+                emergency_contact
+            };
+            if (password.trim() !== '') {
+                if (password.length < 6) {
+                    showToast("Password must be at least 6 characters.", "error");
+                    return;
+                }
+                payload.password = password;
+            }
+
+            try {
+                const response = await apiFetch(`/customers/update/${auth.userId}/`, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+
+                showToast("Profile Settings Saved!", "success");
+                saveSession(response, 'customer');
+                document.getElementById('sidebar-user-name').innerText = response.full_name;
+                document.getElementById('sidebar-user-avatar').src = response.profile_pic;
+            } catch (err) {}
+        }
+
+        window.onload = () => {
+            fetchStats();
+        };
+    </script>
+</body>
+</html>

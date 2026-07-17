@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiGo - Register</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sticky Navbar -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Taxi<span>Go</span></a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="login.html">Login</a>
+            </nav>
+            <div class="nav-buttons">
+                <button class="theme-toggle" id="theme-toggle-btn">☀️</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Register Container -->
+    <div class="glass-card form-container" style="max-width: 650px; margin: 3rem auto;">
+        <div class="form-header">
+            <h2>Create Account</h2>
+            <p>Join TaxiGo today for premium riding convenience</p>
+        </div>
+
+        <form id="register-form" onsubmit="handleRegister(event)">
+            <div class="form-group">
+                <label for="reg-name">Full Name</label>
+                <input type="text" id="reg-name" class="form-input" placeholder="John Doe" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="reg-email">Email Address</label>
+                    <input type="email" id="reg-email" class="form-input" placeholder="john@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-phone">Phone Number</label>
+                    <input type="tel" id="reg-phone" class="form-input" placeholder="+1234567890" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="reg-gender">Gender</label>
+                    <select id="reg-gender" class="form-input" required>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                        <option value="Prefer Not to Say">Prefer Not to Say</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="reg-dob">Date of Birth</label>
+                    <input type="date" id="reg-dob" class="form-input" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="reg-emergency">Emergency Contact</label>
+                    <input type="tel" id="reg-emergency" class="form-input" placeholder="SOS Phone Number" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-avatar">Profile Picture (URL)</label>
+                    <input type="url" id="reg-avatar" class="form-input" placeholder="https://unsplash.com/avatar.jpg">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="reg-address">Residential Address</label>
+                <input type="text" id="reg-address" class="form-input" placeholder="123 Main St, Central Metro City" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="reg-password">Password</label>
+                    <input type="password" id="reg-password" class="form-input" placeholder="••••••••" required>
+                </div>
+                <div class="form-group">
+                    <label for="reg-confirm">Confirm Password</label>
+                    <input type="password" id="reg-confirm" class="form-input" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">Register Now</button>
+        </form>
+
+        <div class="form-footer">
+            Already have an account? <a href="login.html">Login Here</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        async function handleRegister(e) {
+            e.preventDefault();
+            
+            const full_name = document.getElementById('reg-name').value;
+            const email = document.getElementById('reg-email').value;
+            const phone = document.getElementById('reg-phone').value;
+            const gender = document.getElementById('reg-gender').value;
+            const dob = document.getElementById('reg-dob').value;
+            const emergency_contact = document.getElementById('reg-emergency').value;
+            const profile_pic = document.getElementById('reg-avatar').value;
+            const address = document.getElementById('reg-address').value;
+            const password = document.getElementById('reg-password').value;
+            const confirm = document.getElementById('reg-confirm').value;
+            
+            if (password.length < 6) {
+                showToast("Password must be at least 6 characters.", "error");
+                return;
+            }
+            if (password !== confirm) {
+                showToast("Passwords do not match.", "error");
+                return;
+            }
+            if (!validateEmail(email)) {
+                showToast("Please enter a valid email.", "error");
+                return;
+            }
+            if (!validatePhone(phone) || !validatePhone(emergency_contact)) {
+                showToast("Please check telephone numbers format (+ and 10-14 digits).", "error");
+                return;
+            }
+
+            const payload = {
+                full_name,
+                email,
+                phone,
+                gender,
+                dob,
+                emergency_contact,
+                address,
+                password
+            };
+            if (profile_pic.trim() !== '') {
+                payload.profile_pic = profile_pic;
+            }
+
+            try {
+                const response = await apiFetch('/customers/add/', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                showToast("Registration Successful! Redirecting...", "success");
+                document.getElementById('register-form').reset();
+                setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+            } catch (err) {}
+        }
+    </script>
+</body>
+</html>

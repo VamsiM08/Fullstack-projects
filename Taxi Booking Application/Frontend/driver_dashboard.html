@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiGo - Driver Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sticky Navbar -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Taxi<span>Go</span></a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="drivers.html">Drivers</a>
+                <a href="ride_history.html">Ride History</a>
+                <a href="driver_dashboard.html" class="active">Dashboard</a>
+                <a href="#" onclick="clearSession()">Logout</a>
+            </nav>
+            <div class="nav-buttons">
+                <button class="theme-toggle" id="theme-toggle-btn">☀️</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="glass-card dashboard-sidebar" style="padding: 1.8rem;">
+            <div style="text-align:center; padding-bottom:1.5rem; border-bottom:1px solid var(--glass-border);">
+                <img id="sidebar-driver-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150" alt="Avatar" style="width:90px; height:90px; border-radius:50%; object-fit:cover; margin-bottom:1rem; border:2px solid var(--glass-border); box-shadow:var(--accent-glow);">
+                <h3 id="sidebar-driver-name">Driver Name</h3>
+                <p id="sidebar-driver-role" style="font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; margin-top:0.2rem;">Driver</p>
+                <div style="margin-top:0.4rem;"><span id="sidebar-driver-rating" style="font-size:0.85rem; color:var(--primary-orange); font-weight:700;">⭐ 5.00</span></div>
+            </div>
+
+            <!-- Availability Toggles -->
+            <div style="margin-top:1.5rem; display:flex; flex-direction:column; gap:0.5rem;">
+                <label style="font-size:0.8rem; font-weight:600; color:var(--text-secondary);">Manage Availability</label>
+                <select id="driver-avail-select" class="form-input" onchange="updateAvailability(this.value)">
+                    <option value="Available">🟢 Available</option>
+                    <option value="Busy">🟡 Busy</option>
+                    <option value="Offline">🔴 Offline</option>
+                </select>
+            </div>
+            
+            <ul class="sidebar-nav" style="margin-top: 1.5rem;">
+                <li class="sidebar-link active" onclick="switchSection('dashboard', this)">📊 Dashboard</li>
+                <li class="sidebar-link" onclick="switchSection('profile', this)">⚙️ Edit Profile</li>
+                <li class="sidebar-link" onclick="clearSession()" style="color:var(--danger-red); margin-top:2rem;">🚪 Log Out</li>
+            </ul>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="dashboard-main">
+            <!-- Section 1: Dashboard Stats & Rides -->
+            <section id="sec-dashboard" class="db-section">
+                <h2>Driver Console</h2>
+                <p style="color:var(--text-secondary); margin-bottom:1.5rem;">Manage active trip schedules and review earnings logs.</p>
+
+                <!-- Statistics Cards Grid -->
+                <div class="stats-grid">
+                    <div class="glass-card stat-card">
+                        <div>
+                            <div class="stat-label">Assigned Rides</div>
+                            <h2 id="driver-stat-assigned" style="font-size:2rem; margin-top:0.4rem;">0</h2>
+                        </div>
+                        <div class="stat-icon">🔔</div>
+                    </div>
+                    <div class="glass-card stat-card">
+                        <div>
+                            <div class="stat-label">Trips Completed</div>
+                            <h2 id="driver-stat-completed" style="font-size:2rem; margin-top:0.4rem;">0</h2>
+                        </div>
+                        <div class="stat-icon">🏁</div>
+                    </div>
+                    <div class="glass-card stat-card">
+                        <div>
+                            <div class="stat-label">Today's Earnings</div>
+                            <h2 id="driver-stat-today" style="font-size:2rem; margin-top:0.4rem;">$0.00</h2>
+                        </div>
+                        <div class="stat-icon">💵</div>
+                    </div>
+                    <div class="glass-card stat-card">
+                        <div>
+                            <div class="stat-label">Total Earnings</div>
+                            <h2 id="driver-stat-total" style="font-size:2rem; margin-top:0.4rem;">$0.00</h2>
+                        </div>
+                        <div class="stat-icon">📈</div>
+                    </div>
+                </div>
+
+                <!-- Active Assigned Trips -->
+                <div class="glass-card" style="margin-top:2rem;">
+                    <h3>Active Assigned Rides</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Customer</th>
+                                    <th>Distance</th>
+                                    <th>ETA</th>
+                                    <th>Fare</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="active-rides-body">
+                                <tr>
+                                    <td colspan="7" style="text-align:center; padding:2rem;">No active schedules assigned.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Completed Trips Log -->
+                <div class="glass-card" style="margin-top:2rem;">
+                    <h3>Completed Trip History</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Customer</th>
+                                    <th>Pickup Location</th>
+                                    <th>Drop Location</th>
+                                    <th>Fare</th>
+                                    <th>Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="completed-rides-body">
+                                <tr>
+                                    <td colspan="6" style="text-align:center; padding:2rem;">No completed trips logged.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section 2: Edit Profile -->
+            <section id="sec-profile" class="db-section" style="display:none;">
+                <div class="glass-card" style="max-width:680px;">
+                    <h2>Driver Settings</h2>
+                    <p style="color:var(--text-secondary); margin-bottom:2rem;">Edit your driver profile parameters</p>
+
+                    <form id="profile-form" onsubmit="updateProfile(event)">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="prof-name">Driver Name</label>
+                                <input type="text" id="prof-name" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-avatar">Profile Picture (URL)</label>
+                                <input type="url" id="prof-avatar" class="form-input">
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="prof-email">Email Address</label>
+                                <input type="email" id="prof-email" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-phone">Phone Number</label>
+                                <input type="tel" id="prof-phone" class="form-input" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="prof-license">License Number</label>
+                                <input type="text" id="prof-license" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-expiry">License Expiry Date</label>
+                                <input type="date" id="prof-expiry" class="form-input" required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="prof-plate">Assigned Vehicle Plate</label>
+                                <input type="text" id="prof-plate" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-exp">Experience (Years)</label>
+                                <input type="number" id="prof-exp" class="form-input" min="0" required>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="prof-password">New Password (Leave blank to keep current)</label>
+                            <input type="password" id="prof-password" class="form-input" placeholder="••••••••">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="margin-top:1.5rem;">Save Settings</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        const auth = getSession();
+        if (!auth.isLoggedIn || auth.role !== 'driver') {
+            showToast("Unauthorized page view access.", "error");
+            setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+        }
+
+        document.getElementById('sidebar-driver-name').innerText = auth.userName;
+
+        function switchSection(sectionId, element) {
+            document.querySelectorAll('.db-section').forEach(sec => sec.style.display = 'none');
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+            
+            document.getElementById(`sec-${sectionId}`).style.display = 'block';
+            element.classList.add('active');
+            
+            if (sectionId === 'profile') {
+                loadProfileForm();
+            } else {
+                fetchDriverStats();
+            }
+        }
+
+        async function fetchDriverStats() {
+            try {
+                const stats = await apiFetch(`/driver/dashboard-stats/${encodeURIComponent(auth.userName)}/`);
+                
+                document.getElementById('driver-stat-assigned').innerText = stats.assigned_rides;
+                document.getElementById('driver-stat-completed').innerText = stats.completed_trips;
+                document.getElementById('driver-stat-today').innerText = `$${stats.today_earnings.toFixed(2)}`;
+                document.getElementById('driver-stat-total').innerText = `$${stats.total_earnings.toFixed(2)}`;
+
+                // Update ratings & profile picture
+                const drivers = await apiFetch(`/drivers/?q=${encodeURIComponent(auth.email)}`);
+                if (drivers.length > 0) {
+                    const prof = drivers[0];
+                    document.getElementById('sidebar-driver-avatar').src = prof.profile_pic || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150';
+                    document.getElementById('sidebar-driver-rating').innerText = `⭐ ${(prof.rating || 5.0).toFixed(2)}`;
+                    document.getElementById('driver-avail-select').value = prof.availability;
+                }
+
+                // Load active rides
+                const aBody = document.getElementById('active-rides-body');
+                if (stats.active_rides.length === 0) {
+                    aBody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:2rem;">No active schedules assigned.</td></tr>`;
+                } else {
+                    aBody.innerHTML = stats.active_rides.map(b => {
+                        let btnHtml = '';
+                        let badgeClass = 'badge-accepted';
+                        
+                        if (b.ride_status === 'Accepted') {
+                            btnHtml = `<button class="btn btn-primary" style="padding:0.4rem 0.8rem; font-size:0.75rem;" onclick="updateRideStatus('${b.id}', 'In Progress')">Start Ride</button>`;
+                            badgeClass = 'badge-accepted';
+                        } else if (b.ride_status === 'In Progress') {
+                            btnHtml = `<button class="btn btn-primary" style="padding:0.4rem 0.8rem; font-size:0.75rem; background:var(--success-green);" onclick="updateRideStatus('${b.id}', 'Completed')">Complete Ride</button>`;
+                            badgeClass = 'badge-progress';
+                        }
+
+                        return `
+                            <tr>
+                                <td><strong>${b.booking_id}</strong></td>
+                                <td>${b.customer_name}</td>
+                                <td>${(b.distance || 0.0).toFixed(1)} km</td>
+                                <td>${b.eta || '--'} mins</td>
+                                <td><strong>$${b.fare.toFixed(2)}</strong></td>
+                                <td><span class="badge ${badgeClass}">${b.ride_status}</span></td>
+                                <td>${btnHtml}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+
+                // Load completed rides
+                const cBody = document.getElementById('completed-rides-body');
+                if (stats.completed_rides.length === 0) {
+                    cBody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:2rem;">No completed trips logged.</td></tr>`;
+                } else {
+                    cBody.innerHTML = stats.completed_rides.map(b => `
+                        <tr>
+                            <td><strong>${b.booking_id}</strong></td>
+                            <td>${b.customer_name}</td>
+                            <td>${b.pickup_location.length > 25 ? b.pickup_location.substring(0,25)+'...' : b.pickup_location}</td>
+                            <td>${b.drop_location.length > 25 ? b.drop_location.substring(0,25)+'...' : b.drop_location}</td>
+                            <td><strong>$${b.fare.toFixed(2)}</strong></td>
+                            <td>${b.booking_date}</td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (err) {}
+        }
+
+        async function updateRideStatus(bookingDbId, newStatus) {
+            try {
+                await apiFetch(`/bookings/update/${bookingDbId}/`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ ride_status: newStatus })
+                });
+                
+                showToast(`Ride updated to ${newStatus}`, "success");
+                fetchDriverStats();
+            } catch (err) {}
+        }
+
+        async function loadProfileForm() {
+            try {
+                const drivers = await apiFetch(`/drivers/?q=${encodeURIComponent(auth.email)}`);
+                if (drivers.length > 0) {
+                    const profile = drivers[0];
+                    
+                    document.getElementById('prof-name').value = profile.driver_name;
+                    document.getElementById('prof-email').value = profile.email;
+                    document.getElementById('prof-phone').value = profile.phone;
+                    document.getElementById('prof-license').value = profile.license_number;
+                    document.getElementById('prof-exp').value = profile.experience;
+                    document.getElementById('prof-avatar').value = profile.profile_pic || '';
+                    document.getElementById('prof-plate').value = profile.vehicle_number || '';
+                    document.getElementById('prof-expiry').value = profile.license_expiry || '';
+                }
+            } catch (err) {
+                showToast("Failed to fetch profile details.", "error");
+            }
+        }
+
+        async function updateAvailability(statusVal) {
+            try {
+                const response = await apiFetch(`/drivers/update/${auth.userId}/`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ availability: statusVal })
+                });
+
+                showToast(`Availability: ${statusVal}`, "success");
+                saveSession(response, 'driver');
+            } catch (err) {}
+        }
+
+        async function updateProfile(e) {
+            e.preventDefault();
+
+            const driver_name = document.getElementById('prof-name').value;
+            const email = document.getElementById('prof-email').value;
+            const phone = document.getElementById('prof-phone').value;
+            const license_number = document.getElementById('prof-license').value;
+            const experience = parseInt(document.getElementById('prof-exp').value);
+            const profile_pic = document.getElementById('prof-avatar').value;
+            const vehicle_number = document.getElementById('prof-plate').value;
+            const license_expiry = document.getElementById('prof-expiry').value;
+            const password = document.getElementById('prof-password').value;
+
+            if (!validateEmail(email)) {
+                showToast("Invalid email.", "error");
+                return;
+            }
+
+            const payload = {
+                driver_name,
+                email,
+                phone,
+                license_number,
+                experience,
+                profile_pic,
+                vehicle_number,
+                license_expiry
+            };
+            if (password.trim() !== '') {
+                if (password.length < 6) {
+                    showToast("Password must be at least 6 characters.", "error");
+                    return;
+                }
+                payload.password = password;
+            }
+
+            try {
+                const response = await apiFetch(`/drivers/update/${auth.userId}/`, {
+                    method: 'PUT',
+                    body: JSON.stringify(payload)
+                });
+
+                showToast("Profile Settings Saved!", "success");
+                saveSession(response, 'driver');
+                document.getElementById('sidebar-driver-name').innerText = response.driver_name;
+                document.getElementById('sidebar-driver-avatar').src = response.profile_pic;
+            } catch (err) {}
+        }
+
+        window.onload = () => {
+            fetchDriverStats();
+        };
+    </script>
+</body>
+</html>

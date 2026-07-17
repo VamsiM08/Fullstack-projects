@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiGo - Login</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sticky Navbar -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Taxi<span>Go</span></a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="register.html">Register</a>
+            </nav>
+            <div class="nav-buttons">
+                <button class="theme-toggle" id="theme-toggle-btn">☀️</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Container -->
+    <div class="glass-card form-container">
+        <div class="form-header">
+            <h2>Welcome Back</h2>
+            <p>Select your account type to login</p>
+        </div>
+
+        <div class="role-switcher">
+            <button class="role-btn active" onclick="switchRole('customer')">Customer</button>
+            <button class="role-btn" onclick="switchRole('driver')">Driver</button>
+            <button class="role-btn" onclick="switchRole('admin')">Admin</button>
+        </div>
+
+        <form id="login-form" onsubmit="handleLogin(event)">
+            <input type="hidden" id="login-role" value="customer">
+
+            <div class="form-group">
+                <label for="login-email">Email Address</label>
+                <input type="email" id="login-email" class="form-input" placeholder="name@domain.com" required>
+            </div>
+
+            <div class="form-group">
+                <label for="login-password">Password</label>
+                <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1.5rem;">Sign In</button>
+        </form>
+
+        <div class="form-footer">
+            Don't have an account? <a href="register.html">Register Here</a>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let currentRole = 'customer';
+
+        function switchRole(role) {
+            currentRole = role;
+            document.getElementById('login-role').value = role;
+            
+            // Toggle active classes
+            const buttons = document.querySelectorAll('.role-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            showToast(`Switched to ${role.charAt(0).toUpperCase() + role.slice(1)} Login`, 'info');
+        }
+
+        async function handleLogin(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            
+            if (!validateEmail(email)) {
+                showToast("Please enter a valid email address.", "error");
+                return;
+            }
+
+            let endpoint = '/customers/login/';
+            if (currentRole === 'driver') {
+                endpoint = '/drivers/login/';
+            } else if (currentRole === 'admin') {
+                endpoint = '/admin/login/';
+            }
+
+            try {
+                const response = await apiFetch(endpoint, {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+
+                showToast("Login Successful!", "success");
+                
+                // Save session storage variables
+                saveSession(response, currentRole);
+
+                // Re-direct to dashboard
+                setTimeout(() => {
+                    if (currentRole === 'customer') {
+                        window.location.href = 'customer_dashboard.html';
+                    } else if (currentRole === 'driver') {
+                        window.location.href = 'driver_dashboard.html';
+                    } else if (currentRole === 'admin') {
+                        window.location.href = 'admin_dashboard.html';
+                    }
+                }, 800);
+            } catch (err) {
+                // Toast is automatically shown inside apiFetch
+            }
+        }
+    </script>
+</body>
+</html>

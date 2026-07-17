@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiGo - Payment Checkout</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sticky Navbar -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Taxi<span>Go</span></a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="booking.html">Book Ride</a>
+                <a href="ride_history.html">Ride History</a>
+                <a href="customer_dashboard.html">Dashboard</a>
+                <a href="#" onclick="clearSession()">Logout</a>
+            </nav>
+            <div class="nav-buttons">
+                <button class="theme-toggle" id="theme-toggle-btn">☀️</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Payment Checkout Container -->
+    <div class="form-container" style="max-width: 580px; margin: 3rem auto;">
+        <div class="glass-card" id="checkout-card">
+            <div class="form-header">
+                <h2>Secure Checkout</h2>
+                <p>Verify ride summary and complete your payment</p>
+            </div>
+
+            <!-- Booking Summary Breakdown -->
+            <div style="padding: 1.2rem; background: var(--glass-bg); border-radius: 12px; margin-bottom: 1.5rem; display:flex; flex-direction:column; gap:0.5rem; border:1px solid var(--glass-border); font-size:0.9rem;">
+                <h4 style="border-bottom:1px solid var(--glass-border); padding-bottom:0.4rem; color:var(--primary-purple); margin-bottom:0.3rem;">Invoice Breakdown</h4>
+                <p><strong>Booking ID:</strong> <span id="summary-booking-id">--</span></p>
+                <div style="display:flex; justify-content:space-between; margin-top:0.3rem;"><span>Ride Subtotal:</span><span id="summary-subtotal">$0.00</span></div>
+                <div style="display:flex; justify-content:space-between; color:var(--success-green);"><span>Promo Discount:</span><span id="summary-discount">-$0.00</span></div>
+                <div style="display:flex; justify-content:space-between;"><span>Tax (8% GST):</span><span id="summary-tax">$0.00</span></div>
+                <hr style="border-color:var(--glass-border); margin:0.3rem 0;">
+                <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.1rem; color:var(--primary-orange);">
+                    <span>Total Due:</span>
+                    <span id="summary-fare">$0.00</span>
+                </div>
+            </div>
+
+            <form id="payment-form" onsubmit="processCheckout(event)">
+                <div class="form-group">
+                    <label for="pay-method">Select Payment Method</label>
+                    <select id="pay-method" class="form-input" required>
+                        <option value="UPI">UPI (GooglePay, PhonePe, Paytm)</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="Debit Card">Debit Card</option>
+                        <option value="Wallet">Wallet (PayPal, TaxiGo Coins)</option>
+                        <option value="Cash">Cash to Driver</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="pay-billing">Billing Address</label>
+                    <input type="text" id="pay-billing" class="form-input" placeholder="e.g. 742 Evergreen Terrace, Springfield" required>
+                </div>
+
+                <div class="form-group" id="card-fields" style="display:none;">
+                    <label for="card-num">Card Details</label>
+                    <input type="text" id="card-num" class="form-input" placeholder="1234 5678 9012 3456" style="margin-bottom:0.5rem;">
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem;">
+                        <input type="text" placeholder="MM/YY" class="form-input">
+                        <input type="password" placeholder="CVV" class="form-input">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 1.5rem;">Confirm & Pay</button>
+            </form>
+        </div>
+
+        <!-- Processing Loader Card -->
+        <div class="glass-card" id="loader-card" style="display:none; text-align:center; padding:4rem 2rem;">
+            <div class="spinner" style="margin:0 auto 2rem auto;"></div>
+            <h3>Encrypting Transaction...</h3>
+            <p style="color:var(--text-secondary); margin-top:0.5rem;">Please do not refresh the page.</p>
+        </div>
+
+        <!-- Success Modal/Card -->
+        <div class="glass-card" id="success-card" style="display:none; border-color:var(--success-green); padding:3rem 2rem;">
+            <div style="font-size:3rem; text-align:center; margin-bottom:1rem;">🎉</div>
+            <h2 style="text-align:center; color:var(--success-green); margin-bottom:0.5rem;">Payment Success!</h2>
+            <p style="text-align:center; color:var(--text-secondary); margin-bottom:2rem;">Your transaction was completed and verified.</p>
+            
+            <div style="background:var(--glass-bg); border-radius:12px; padding:1.2rem; margin-bottom:2rem; display:flex; flex-direction:column; gap:0.5rem; border:1px solid var(--glass-border); font-size:0.9rem;">
+                <p><strong>Transaction ID:</strong> <span id="success-txn-id">--</span></p>
+                <p><strong>Payment ID:</strong> <span id="success-payment-id">--</span></p>
+                <p><strong>Amount Paid:</strong> <span id="success-amount">--</span></p>
+                <p><strong>Billing To:</strong> <span id="success-billing">--</span></p>
+            </div>
+
+            <div style="display:flex; gap:1rem;">
+                <button class="btn btn-secondary" onclick="window.print()" style="flex:1;">Print Invoice</button>
+                <button class="btn btn-primary" onclick="goToHistory()" style="flex:1;">View History</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Printable Receipt for window.print() -->
+    <div class="print-receipt-section" style="display:none;">
+        <h2 style="text-align:center; margin-bottom:1rem;">TAXIGO RIDE INVOICE</h2>
+        <hr style="margin-bottom:1rem;">
+        <p><strong>Booking ID:</strong> <span id="print-booking-id"></span></p>
+        <p><strong>Transaction ID:</strong> <span id="print-txn-id"></span></p>
+        <p><strong>Passenger Name:</strong> <span id="print-passenger"></span></p>
+        <p><strong>Billing Address:</strong> <span id="print-billing"></span></p>
+        <p><strong>Subtotal Amount:</strong> <span id="print-subtotal"></span></p>
+        <p><strong>Promo Discount:</strong> <span id="print-discount"></span></p>
+        <p><strong>GST Tax (8%):</strong> <span id="print-tax"></span></p>
+        <p style="font-size:1.1rem; font-weight:700;"><strong>Total Paid:</strong> <span id="print-amount"></span></p>
+        <p><strong>Date & Time:</strong> <span id="print-date"></span></p>
+        <hr style="margin-top:1rem;">
+        <p style="text-align:center; font-size:0.8rem; color:gray;">Thank you for riding with TaxiGo!</p>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        const auth = getSession();
+        if (!auth.isLoggedIn) {
+            showToast("Please login first.", "error");
+            setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+        }
+
+        // Parse query params
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookingId = urlParams.get('booking_id');
+        const fare = parseFloat(urlParams.get('fare') || '0');
+        const bookingDbId = urlParams.get('id');
+        
+        const subtotal = parseFloat(urlParams.get('subtotal') || '0');
+        const discount = parseFloat(urlParams.get('discount') || '0');
+        const tax = parseFloat(urlParams.get('tax') || '0');
+
+        document.getElementById('summary-booking-id').innerText = bookingId;
+        document.getElementById('summary-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+        document.getElementById('summary-discount').innerText = `-$${discount.toFixed(2)}`;
+        document.getElementById('summary-tax').innerText = `$${tax.toFixed(2)}`;
+        document.getElementById('summary-fare').innerText = `$${fare.toFixed(2)}`;
+
+        // Card field toggler
+        const methodSelect = document.getElementById('pay-method');
+        methodSelect.addEventListener('change', (e) => {
+            const cardFields = document.getElementById('card-fields');
+            if (e.target.value === 'Credit Card' || e.target.value === 'Debit Card') {
+                cardFields.style.display = 'block';
+            } else {
+                cardFields.style.display = 'none';
+            }
+        });
+
+        async function processCheckout(e) {
+            e.preventDefault();
+
+            document.getElementById('checkout-card').style.display = 'none';
+            document.getElementById('loader-card').style.display = 'block';
+
+            const method = document.getElementById('pay-method').value;
+            const billing = document.getElementById('pay-billing').value;
+
+            const payload = {
+                booking_id: bookingId,
+                customer_name: auth.userName,
+                amount: fare,
+                payment_method: method,
+                payment_status: 'Success',
+                subtotal: subtotal,
+                discount: discount,
+                tax: tax,
+                billing_address: billing
+            };
+
+            setTimeout(async () => {
+                try {
+                    const paymentResponse = await apiFetch('/payments/add/', {
+                        method: 'POST',
+                        body: JSON.stringify(payload)
+                    });
+
+                    // Update Ride Booking status to Accepted
+                    if (bookingDbId) {
+                        await apiFetch(`/bookings/update/${bookingDbId}/`, {
+                            method: 'PUT',
+                            body: JSON.stringify({ 
+                                ride_status: 'Accepted',
+                                payment_method: method
+                            })
+                        });
+                    }
+
+                    // Pre-fill success layouts
+                    document.getElementById('success-txn-id').innerText = paymentResponse.transaction_id;
+                    document.getElementById('success-payment-id').innerText = paymentResponse.payment_id;
+                    document.getElementById('success-amount').innerText = `$${paymentResponse.amount.toFixed(2)}`;
+                    document.getElementById('success-billing').innerText = paymentResponse.billing_address;
+
+                    // Pre-fill print layouts
+                    document.getElementById('print-booking-id').innerText = bookingId;
+                    document.getElementById('print-txn-id').innerText = paymentResponse.transaction_id;
+                    document.getElementById('print-passenger').innerText = auth.userName;
+                    document.getElementById('print-billing').innerText = paymentResponse.billing_address;
+                    document.getElementById('print-subtotal').innerText = `$${paymentResponse.subtotal.toFixed(2)}`;
+                    document.getElementById('print-discount').innerText = `-$${paymentResponse.discount.toFixed(2)}`;
+                    document.getElementById('print-tax').innerText = `$${paymentResponse.tax.toFixed(2)}`;
+                    document.getElementById('print-amount').innerText = `$${paymentResponse.amount.toFixed(2)}`;
+                    document.getElementById('print-date').innerText = paymentResponse.payment_date;
+
+                    document.getElementById('loader-card').style.display = 'none';
+                    document.getElementById('success-card').style.display = 'block';
+                    
+                    showToast("Payment Processed Successfully!", "success");
+                } catch (err) {
+                    document.getElementById('loader-card').style.display = 'none';
+                    document.getElementById('checkout-card').style.display = 'block';
+                }
+            }, 1500);
+        }
+
+        function goToHistory() {
+            window.location.href = 'ride_history.html';
+        }
+    </script>
+</body>
+</html>

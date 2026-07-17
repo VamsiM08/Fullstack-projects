@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiGo - Admin Console</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <!-- Sticky Navbar -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Taxi<span>Go</span></a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="drivers.html">Drivers</a>
+                <a href="ride_history.html">Ride History</a>
+                <a href="admin_dashboard.html" class="active">Dashboard</a>
+                <a href="#" onclick="clearSession()">Logout</a>
+            </nav>
+            <div class="nav-buttons">
+                <button class="theme-toggle" id="theme-toggle-btn">☀️</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="glass-card dashboard-sidebar" style="padding: 1.8rem;">
+            <div style="text-align:center; padding-bottom:1.5rem; border-bottom:1px solid var(--glass-border);">
+                <div style="font-size:3rem; margin-bottom:0.5rem;">👑</div>
+                <h3>System Admin</h3>
+                <p style="font-size:0.8rem; color:var(--text-secondary); text-transform:uppercase; margin-top:0.2rem;">Administrator</p>
+            </div>
+            
+            <ul class="sidebar-nav">
+                <li class="sidebar-link active" onclick="switchTab('analytics', this)">📈 Analytics Overview</li>
+                <li class="sidebar-link" onclick="switchTab('customers', this)">👥 Customers</li>
+                <li class="sidebar-link" onclick="switchTab('drivers', this)">👨‍✈️ Drivers Network</li>
+                <li class="sidebar-link" onclick="switchTab('vehicles', this)">🚗 Vehicle Fleet</li>
+                <li class="sidebar-link" onclick="switchTab('bookings', this)">📅 Bookings Logs</li>
+                <li class="sidebar-link" onclick="switchTab('payments', this)">💳 Payments Audit</li>
+            </ul>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="dashboard-main">
+            <!-- TAB 1: ANALYTICS OVERVIEW -->
+            <section id="tab-analytics" class="admin-tab">
+                <h2>System Analytics</h2>
+                <p style="color:var(--text-secondary); margin-bottom:1.5rem;">Overview of total metrics and revenue logs.</p>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="glass-card stat-card">
+                        <div>
+                            <div class="stat-label">Total Revenue</div>
+                            <h2 id="adm-rev" style="font-size:2rem; margin-top:0.4rem; color:var(--success-green);">$0.00</h2>
+                        </div>
+                        <div class="stat-icon">💰</div>
+                    </div>
+                    <div class="glass-card stat-card">
+                        <div>
+                            <div class="stat-label">Total Bookings</div>
+                            <h2 id="adm-book" style="font-size:2rem; margin-top:0.4rem;">0</h2>
+                        </div>
+                        <div class="stat-icon">📅</div>
+                    </div>
+                    <div class="glass-card stat-card">
+                        <div>
+                            <div class="stat-label">Active Drivers</div>
+                            <h2 id="adm-drv" style="font-size:2rem; margin-top:0.4rem;">0</h2>
+                        </div>
+                        <div class="stat-icon">👨‍✈️</div>
+                    </div>
+                    <div class="glass-card stat-card">
+                        <div>
+                            <div class="stat-label">Average Rating</div>
+                            <h2 id="adm-rating" style="font-size:2rem; margin-top:0.4rem; color:var(--primary-orange);">⭐ 5.0</h2>
+                        </div>
+                        <div class="stat-icon">⭐</div>
+                    </div>
+                </div>
+
+                <!-- Charts Container -->
+                <div class="charts-container" style="margin-top:2.5rem;">
+                    <div class="glass-card">
+                        <h3>Bookings Status Distribution</h3>
+                        <div style="height:250px; position:relative;"><canvas id="bookingsChart"></canvas></div>
+                    </div>
+                    <div class="glass-card">
+                        <h3>Revenue by Payment Channel</h3>
+                        <div style="height:250px; position:relative;"><canvas id="revenueChart"></canvas></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: MANAGE CUSTOMERS -->
+            <section id="tab-customers" class="admin-tab" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <h2>Customer Management</h2>
+                    <button class="btn btn-primary" onclick="openAddModal('customer')">+ Add Customer</button>
+                </div>
+                
+                <div class="glass-card">
+                    <input type="text" id="cust-search" class="form-input" placeholder="Search customer records..." oninput="loadCustomers()" style="width:100%; margin-bottom:1rem;">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Customer ID</th>
+                                    <th>Name</th>
+                                    <th>Gender</th>
+                                    <th>Emergency Contact</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-cust-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: MANAGE DRIVERS -->
+            <section id="tab-drivers" class="admin-tab" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <h2>Driver Management</h2>
+                    <button class="btn btn-primary" onclick="openAddModal('driver')">+ Add Driver</button>
+                </div>
+
+                <div class="glass-card">
+                    <input type="text" id="drv-search" class="form-input" placeholder="Search driver network profiles..." oninput="loadDrivers()" style="width:100%; margin-bottom:1rem;">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Driver ID</th>
+                                    <th>Name</th>
+                                    <th>Vehicle Plate</th>
+                                    <th>Rating</th>
+                                    <th>Rides Count</th>
+                                    <th>Phone</th>
+                                    <th>Availability</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-drv-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: MANAGE VEHICLES -->
+            <section id="tab-vehicles" class="admin-tab" style="display:none;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+                    <h2>Fleet Vehicle Management</h2>
+                    <button class="btn btn-primary" onclick="openAddModal('vehicle')">+ Add Vehicle</button>
+                </div>
+
+                <div class="glass-card">
+                    <input type="text" id="veh-search" class="form-input" placeholder="Search vehicle parameters..." oninput="loadVehicles()" style="width:100%; margin-bottom:1rem;">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Vehicle ID</th>
+                                    <th>Model Name</th>
+                                    <th>Type</th>
+                                    <th>Plate Number</th>
+                                    <th>Details</th>
+                                    <th>Driver</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-veh-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: MANAGE BOOKINGS -->
+            <section id="tab-bookings" class="admin-tab" style="display:none;">
+                <h2>Booking Log Management</h2>
+                <p style="color:var(--text-secondary); margin-bottom:1.5rem;">Audit system ride bookings and manual cancellations.</p>
+
+                <div class="glass-card">
+                    <div style="display:flex; gap:1rem; margin-bottom:1rem;">
+                        <input type="text" id="book-search" class="form-input" placeholder="Search bookings..." oninput="loadBookings()" style="flex:1;">
+                        <select id="book-status" class="form-input" onchange="loadBookings()">
+                            <option value="">All Statuses</option>
+                            <option value="Requested">Requested</option>
+                            <option value="Accepted">Accepted</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                        </select>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Booking ID</th>
+                                    <th>Customer</th>
+                                    <th>Driver</th>
+                                    <th>Distance</th>
+                                    <th>ETA</th>
+                                    <th>Fare</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-book-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 6: MANAGE PAYMENTS -->
+            <section id="tab-payments" class="admin-tab" style="display:none;">
+                <h2>Payments Audit Logs</h2>
+                <p style="color:var(--text-secondary); margin-bottom:1.5rem;">Review all financial transactions processed on the application.</p>
+
+                <div class="glass-card">
+                    <input type="text" id="pay-search" class="form-input" placeholder="Search transaction ID, passenger name..." oninput="loadPayments()" style="width:100%; margin-bottom:1rem;">
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Payment ID</th>
+                                    <th>Booking ID</th>
+                                    <th>Amount</th>
+                                    <th>Tax</th>
+                                    <th>Discount</th>
+                                    <th>Billing Address</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-pay-tbody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Generic Entity Edit/Add Modal -->
+    <div class="modal-overlay" id="admin-modal">
+        <div class="modal-box" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3 id="modal-title">Edit Details</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <form id="admin-modal-form" onsubmit="handleFormSubmit(event)">
+                <input type="hidden" id="modal-entity-type">
+                <input type="hidden" id="modal-entity-id">
+
+                <div id="modal-fields-container" style="max-height: 400px; overflow-y: auto; padding-right: 0.5rem;"></div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%; margin-top: 1.5rem;">Save Record</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        const auth = getSession();
+        if (!auth.isLoggedIn || auth.role !== 'admin') {
+            showToast("Access Denied. Please login as Admin.", "error");
+            setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+        }
+
+        let bookingsChart = null;
+        let revenueChart = null;
+
+        function switchTab(tabName, element) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.sidebar-link').forEach(link => link.classList.remove('active'));
+            
+            document.getElementById(`tab-${tabName}`).style.display = 'block';
+            element.classList.add('active');
+
+            if (tabName === 'analytics') {
+                loadAnalytics();
+            } else if (tabName === 'customers') {
+                loadCustomers();
+            } else if (tabName === 'drivers') {
+                loadDrivers();
+            } else if (tabName === 'vehicles') {
+                loadVehicles();
+            } else if (tabName === 'bookings') {
+                loadBookings();
+            } else if (tabName === 'payments') {
+                loadPayments();
+            }
+        }
+
+        async function loadAnalytics() {
+            try {
+                const stats = await apiFetch('/admin/dashboard-stats/');
+                
+                document.getElementById('adm-rev').innerText = `$${stats.total_revenue.toFixed(2)}`;
+                document.getElementById('adm-book').innerText = stats.total_bookings;
+                document.getElementById('adm-drv').innerText = stats.total_drivers;
+                document.getElementById('adm-rating').innerText = `⭐ ${stats.avg_driver_rating.toFixed(2)}`;
+
+                renderBookingsChart(stats.rides_breakdown);
+                renderRevenueChart(stats.revenue_by_method);
+            } catch (err) {}
+        }
+
+        function renderBookingsChart(breakdown) {
+            const ctx = document.getElementById('bookingsChart').getContext('2d');
+            if (bookingsChart) bookingsChart.destroy();
+
+            bookingsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(breakdown),
+                    datasets: [{
+                        label: 'Trips Count',
+                        data: Object.values(breakdown),
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.6)',
+                            'rgba(251, 191, 36, 0.6)',
+                            'rgba(139, 92, 246, 0.6)',
+                            'rgba(16, 185, 129, 0.6)',
+                            'rgba(244, 63, 94, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(251, 191, 36, 1)',
+                            'rgba(139, 92, 246, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(244, 63, 94, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function renderRevenueChart(revenueData) {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+            if (revenueChart) revenueChart.destroy();
+
+            revenueChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(revenueData),
+                    datasets: [{
+                        data: Object.values(revenueData),
+                        backgroundColor: [
+                            '#ff7a00',
+                            '#3b82f6',
+                            '#8b5cf6',
+                            '#10b981',
+                            '#f43f5e'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        async function loadCustomers() {
+            const q = document.getElementById('cust-search').value;
+            const tbody = document.getElementById('admin-cust-tbody');
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Loading customer profiles...</td></tr>`;
+
+            try {
+                const customers = await apiFetch(`/customers/?q=${encodeURIComponent(q)}`);
+                if (customers.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No customers found.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = customers.map(c => `
+                    <tr>
+                        <td><strong>${c.customer_id}</strong></td>
+                        <td>
+                            <div style="display:flex; gap:0.5rem; align-items:center;">
+                                <img src="${c.profile_pic || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150'}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
+                                <span>${c.full_name}</span>
+                            </div>
+                        </td>
+                        <td>${c.gender || 'N/A'}</td>
+                        <td>${c.emergency_contact || 'N/A'}</td>
+                        <td>${c.email}</td>
+                        <td>${c.phone}</td>
+                        <td>
+                            <button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem; border-color:var(--primary-purple); color:var(--primary-purple);" onclick="openEditModal('customer', ${JSON.stringify(c).replace(/"/g, '&quot;')})">Edit</button>
+                            <button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem; border-color:var(--danger-red); color:var(--danger-red);" onclick="deleteRecord('customer', '${c.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {}
+        }
+
+        async function loadDrivers() {
+            const q = document.getElementById('drv-search').value;
+            const tbody = document.getElementById('admin-drv-tbody');
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">Loading drivers network...</td></tr>`;
+
+            try {
+                const drivers = await apiFetch(`/drivers/?q=${encodeURIComponent(q)}`);
+                if (drivers.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No drivers found.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = drivers.map(d => {
+                    let badgeClass = 'badge-requested';
+                    if (d.availability === 'Available') badgeClass = 'badge-completed';
+                    if (d.availability === 'Busy') badgeClass = 'badge-accepted';
+                    if (d.availability === 'Offline') badgeClass = 'badge-cancelled';
+
+                    return `
+                        <tr>
+                            <td><strong>${d.driver_id}</strong></td>
+                            <td>
+                                <div style="display:flex; gap:0.5rem; align-items:center;">
+                                    <img src="${d.profile_pic || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=150'}" style="width:30px; height:30px; border-radius:50%; object-fit:cover;">
+                                    <span>${d.driver_name}</span>
+                                </div>
+                            </td>
+                            <td><strong>${d.vehicle_number || 'N/A'}</strong></td>
+                            <td style="color:var(--primary-orange); font-weight:700;">⭐ ${(d.rating || 5.0).toFixed(2)}</td>
+                            <td>${d.total_rides || 0}</td>
+                            <td>${d.phone}</td>
+                            <td><span class="badge ${badgeClass}">${d.availability}</span></td>
+                            <td>
+                                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem; border-color:var(--primary-purple); color:var(--primary-purple);" onclick="openEditModal('driver', ${JSON.stringify(d).replace(/"/g, '&quot;')})">Edit</button>
+                                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem; border-color:var(--danger-red); color:var(--danger-red);" onclick="deleteRecord('driver', '${d.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {}
+        }
+
+        async function loadVehicles() {
+            const q = document.getElementById('veh-search').value;
+            const tbody = document.getElementById('admin-veh-tbody');
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Loading fleet...</td></tr>`;
+
+            try {
+                const vehicles = await apiFetch(`/vehicles/?q=${encodeURIComponent(q)}`);
+                if (vehicles.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">No vehicles found.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = vehicles.map(v => `
+                    <tr>
+                        <td><strong>${v.vehicle_id}</strong></td>
+                        <td>
+                            <div style="display:flex; gap:0.5rem; align-items:center;">
+                                <img src="${v.vehicle_image || 'https://images.unsplash.com/photo-1549880181-56a44cf4a9a1?auto=format&fit=crop&q=80&w=300'}" style="width:40px; height:30px; border-radius:4px; object-fit:cover;">
+                                <span>${v.model} (${v.year || '2022'})</span>
+                            </div>
+                        </td>
+                        <td>${v.vehicle_type}</td>
+                        <td><strong>${v.vehicle_number}</strong></td>
+                        <td>
+                            <div class="vehicle-badge-container">
+                                <span class="v-badge v-badge-fuel">${v.fuel_type || 'Petrol'}</span>
+                                <span class="v-badge v-badge-gear">${v.transmission || 'Automatic'}</span>
+                            </div>
+                        </td>
+                        <td>${v.driver_name}</td>
+                        <td>
+                            <button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem; border-color:var(--primary-purple); color:var(--primary-purple);" onclick="openEditModal('vehicle', ${JSON.stringify(v).replace(/"/g, '&quot;')})">Edit</button>
+                            <button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem; border-color:var(--danger-red); color:var(--danger-red);" onclick="deleteRecord('vehicle', '${v.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {}
+        }
+
+        async function loadBookings() {
+            const q = document.getElementById('book-search').value;
+            const statusFilter = document.getElementById('book-status').value;
+            const tbody = document.getElementById('admin-book-tbody');
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">Loading bookings...</td></tr>`;
+
+            let url = `/bookings/?q=${encodeURIComponent(q)}`;
+            if (statusFilter) url += `&ride_status=${statusFilter}`;
+
+            try {
+                const bookings = await apiFetch(url);
+                if (bookings.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No bookings found.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = bookings.map(b => {
+                    let badgeClass = 'badge-requested';
+                    if (b.ride_status === 'Requested') badgeClass = 'badge-requested';
+                    if (b.ride_status === 'Accepted') badgeClass = 'badge-accepted';
+                    if (b.ride_status === 'In Progress') badgeClass = 'badge-progress';
+                    if (b.ride_status === 'Completed') badgeClass = 'badge-completed';
+                    if (b.ride_status === 'Cancelled') badgeClass = 'badge-cancelled';
+
+                    return `
+                        <tr>
+                            <td><strong>${b.booking_id}</strong></td>
+                            <td>${b.customer_name}</td>
+                            <td>${b.driver_name}</td>
+                            <td>${(b.distance || 0).toFixed(1)} km</td>
+                            <td>${b.eta || '--'} mins</td>
+                            <td><strong>$${b.fare.toFixed(2)}</strong></td>
+                            <td><span class="badge ${badgeClass}">${b.ride_status}</span></td>
+                            <td>
+                                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem; border-color:var(--primary-purple); color:var(--primary-purple);" onclick="openEditModal('booking', ${JSON.stringify(b).replace(/"/g, '&quot;')})">Edit</button>
+                                <button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem; border-color:var(--danger-red); color:var(--danger-red);" onclick="deleteRecord('booking', '${b.id}')">Delete</button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            } catch (err) {}
+        }
+
+        async function loadPayments() {
+            const q = document.getElementById('pay-search').value;
+            const tbody = document.getElementById('admin-pay-tbody');
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">Loading audit transaction statements...</td></tr>`;
+
+            try {
+                const payments = await apiFetch(`/payments/?q=${encodeURIComponent(q)}`);
+                if (payments.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">No payments found.</td></tr>`;
+                    return;
+                }
+                tbody.innerHTML = payments.map(p => `
+                    <tr>
+                        <td><strong>${p.payment_id}</strong></td>
+                        <td>${p.booking_id}</td>
+                        <td><strong>$${p.amount.toFixed(2)}</strong></td>
+                        <td>$${(p.tax || 0.0).toFixed(2)}</td>
+                        <td style="color:var(--success-green);">-$${(p.discount || 0.0).toFixed(2)}</td>
+                        <td>${p.billing_address || 'N/A'}</td>
+                        <td><span class="badge badge-completed">${p.payment_status}</span></td>
+                        <td>
+                            <button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem; border-color:var(--primary-purple); color:var(--primary-purple);" onclick="openEditModal('payment', ${JSON.stringify(p).replace(/"/g, '&quot;')})">Edit</button>
+                            <button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem; border-color:var(--danger-red); color:var(--danger-red);" onclick="deleteRecord('payment', '${p.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {}
+        }
+
+        async function deleteRecord(type, dbId) {
+            if (!confirm(`Confirm deleting this ${type}?`)) return;
+
+            let endpoint = '';
+            if (type === 'customer') endpoint = `/customers/delete/${dbId}/`;
+            else if (type === 'driver') endpoint = `/drivers/delete/${dbId}/`;
+            else if (type === 'vehicle') endpoint = `/vehicles/delete/${dbId}/`;
+            else if (type === 'booking') endpoint = `/bookings/delete/${dbId}/`;
+            else if (type === 'payment') endpoint = `/payments/delete/${dbId}/`;
+
+            try {
+                await apiFetch(endpoint, { method: 'DELETE' });
+                showToast("Record deleted successfully.", "success");
+                if (type === 'customer') loadCustomers();
+                else if (type === 'driver') loadDrivers();
+                else if (type === 'vehicle') loadVehicles();
+                else if (type === 'booking') loadBookings();
+                else if (type === 'payment') loadPayments();
+            } catch (err) {}
+        }
+
+        function closeModal() {
+            document.getElementById('admin-modal').classList.remove('active');
+        }
+
+        function openAddModal(type) {
+            document.getElementById('modal-entity-type').value = type;
+            document.getElementById('modal-entity-id').value = '';
+            document.getElementById('modal-title').innerText = `Add New ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+            
+            const container = document.getElementById('modal-fields-container');
+            container.innerHTML = '';
+
+            let fieldsHtml = '';
+            if (type === 'customer') {
+                fieldsHtml = `
+                    <div class="form-group"><label>Full Name</label><input type="text" id="f-name" class="form-input" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="f-email" class="form-input" required></div>
+                    <div class="form-group"><label>Phone</label><input type="text" id="f-phone" class="form-input" required></div>
+                    <div class="form-group"><label>Gender</label>
+                        <select id="f-gender" class="form-input">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Date of Birth</label><input type="date" id="f-dob" class="form-input" required></div>
+                    <div class="form-group"><label>Emergency Contact</label><input type="text" id="f-emergency" class="form-input" required></div>
+                    <div class="form-group"><label>Residential Address</label><input type="text" id="f-address" class="form-input" required></div>
+                    <div class="form-group"><label>Password</label><input type="password" id="f-pass" class="form-input" minlength="6" required></div>
+                `;
+            } else if (type === 'driver') {
+                fieldsHtml = `
+                    <div class="form-group"><label>Driver Name</label><input type="text" id="f-name" class="form-input" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="f-email" class="form-input" required></div>
+                    <div class="form-group"><label>Phone</label><input type="text" id="f-phone" class="form-input" required></div>
+                    <div class="form-group"><label>License Number</label><input type="text" id="f-license" class="form-input" required></div>
+                    <div class="form-group"><label>License Expiry</label><input type="date" id="f-expiry" class="form-input" required></div>
+                    <div class="form-group"><label>Assigned Vehicle Plate</label><input type="text" id="f-plate" class="form-input" required></div>
+                    <div class="form-group"><label>Experience (Years)</label><input type="number" id="f-exp" class="form-input" required></div>
+                    <div class="form-group"><label>Availability</label>
+                        <select id="f-avail" class="form-input">
+                            <option value="Available">Available</option>
+                            <option value="Busy">Busy</option>
+                            <option value="Offline">Offline</option>
+                        </select>
+                    </div>
+                `;
+            } else if (type === 'vehicle') {
+                fieldsHtml = `
+                    <div class="form-group"><label>Model Name</label><input type="text" id="f-model" class="form-input" required></div>
+                    <div class="form-group"><label>Plate Number</label><input type="text" id="f-number" class="form-input" required></div>
+                    <div class="form-group"><label>Year</label><input type="number" id="f-year" class="form-input" value="2023" required></div>
+                    <div class="form-group"><label>Color</label><input type="text" id="f-color" class="form-input" placeholder="e.g. Red" required></div>
+                    <div class="form-group"><label>Assigned Driver Name</label><input type="text" id="f-drv-name" class="form-input" required></div>
+                    <div class="form-group"><label>Vehicle Type</label>
+                        <select id="f-type" class="form-input">
+                            <option value="Sedan">Sedan</option>
+                            <option value="SUV">SUV</option>
+                            <option value="Luxury">Luxury</option>
+                            <option value="Bike">Bike</option>
+                            <option value="Auto">Auto</option>
+                            <option value="Hatchback">Hatchback</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Transmission</label>
+                        <select id="f-transmission" class="form-input">
+                            <option value="Automatic">Automatic</option>
+                            <option value="Manual">Manual</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Fuel Type</label>
+                        <select id="f-fuel" class="form-input">
+                            <option value="Petrol">Petrol</option>
+                            <option value="Diesel">Diesel</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Hybrid">Hybrid</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Seating Capacity</label><input type="number" id="f-seats" class="form-input" required></div>
+                `;
+            }
+
+            container.innerHTML = fieldsHtml;
+            document.getElementById('admin-modal').classList.add('active');
+        }
+
+        function openEditModal(type, dataObj) {
+            document.getElementById('modal-entity-type').value = type;
+            document.getElementById('modal-entity-id').value = dataObj.id;
+            document.getElementById('modal-title').innerText = `Edit ${type.charAt(0).toUpperCase() + type.slice(1)}`;
+
+            const container = document.getElementById('modal-fields-container');
+            container.innerHTML = '';
+
+            let fieldsHtml = '';
+            if (type === 'customer') {
+                fieldsHtml = `
+                    <div class="form-group"><label>Full Name</label><input type="text" id="f-name" class="form-input" value="${dataObj.full_name}" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="f-email" class="form-input" value="${dataObj.email}" required></div>
+                    <div class="form-group"><label>Phone</label><input type="text" id="f-phone" class="form-input" value="${dataObj.phone}" required></div>
+                    <div class="form-group"><label>Gender</label>
+                        <select id="f-gender" class="form-input">
+                            <option value="Male" ${dataObj.gender === 'Male' ? 'selected' : ''}>Male</option>
+                            <option value="Female" ${dataObj.gender === 'Female' ? 'selected' : ''}>Female</option>
+                            <option value="Other" ${dataObj.gender === 'Other' ? 'selected' : ''}>Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Date of Birth</label><input type="date" id="f-dob" class="form-input" value="${dataObj.dob || ''}"></div>
+                    <div class="form-group"><label>Emergency Contact</label><input type="text" id="f-emergency" class="form-input" value="${dataObj.emergency_contact || ''}"></div>
+                    <div class="form-group"><label>Address</label><input type="text" id="f-address" class="form-input" value="${dataObj.address}" required></div>
+                    <div class="form-group"><label>Password (blank to keep same)</label><input type="password" id="f-pass" class="form-input"></div>
+                `;
+            } else if (type === 'driver') {
+                fieldsHtml = `
+                    <div class="form-group"><label>Driver Name</label><input type="text" id="f-name" class="form-input" value="${dataObj.driver_name}" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="f-email" class="form-input" value="${dataObj.email}" required></div>
+                    <div class="form-group"><label>Phone</label><input type="text" id="f-phone" class="form-input" value="${dataObj.phone}" required></div>
+                    <div class="form-group"><label>License Number</label><input type="text" id="f-license" class="form-input" value="${dataObj.license_number}" required></div>
+                    <div class="form-group"><label>License Expiry</label><input type="date" id="f-expiry" class="form-input" value="${dataObj.license_expiry || ''}"></div>
+                    <div class="form-group"><label>Assigned Vehicle Plate</label><input type="text" id="f-plate" class="form-input" value="${dataObj.vehicle_number || ''}"></div>
+                    <div class="form-group"><label>Experience (Years)</label><input type="number" id="f-exp" class="form-input" value="${dataObj.experience}" required></div>
+                    <div class="form-group"><label>Availability</label>
+                        <select id="f-avail" class="form-input">
+                            <option value="Available" ${dataObj.availability === 'Available' ? 'selected' : ''}>Available</option>
+                            <option value="Busy" ${dataObj.availability === 'Busy' ? 'selected' : ''}>Busy</option>
+                            <option value="Offline" ${dataObj.availability === 'Offline' ? 'selected' : ''}>Offline</option>
+                        </select>
+                    </div>
+                `;
+            } else if (type === 'vehicle') {
+                fieldsHtml = `
+                    <div class="form-group"><label>Model Name</label><input type="text" id="f-model" class="form-input" value="${dataObj.model}" required></div>
+                    <div class="form-group"><label>Plate Number</label><input type="text" id="f-number" class="form-input" value="${dataObj.vehicle_number}" required></div>
+                    <div class="form-group"><label>Year</label><input type="number" id="f-year" class="form-input" value="${dataObj.year || '2023'}" required></div>
+                    <div class="form-group"><label>Color</label><input type="text" id="f-color" class="form-input" value="${dataObj.color || 'White'}" required></div>
+                    <div class="form-group"><label>Assigned Driver Name</label><input type="text" id="f-drv-name" class="form-input" value="${dataObj.driver_name}" required></div>
+                    <div class="form-group"><label>Vehicle Type</label>
+                        <select id="f-type" class="form-input">
+                            <option value="Sedan" ${dataObj.vehicle_type === 'Sedan' ? 'selected' : ''}>Sedan</option>
+                            <option value="SUV" ${dataObj.vehicle_type === 'SUV' ? 'selected' : ''}>SUV</option>
+                            <option value="Luxury" ${dataObj.vehicle_type === 'Luxury' ? 'selected' : ''}>Luxury</option>
+                            <option value="Bike" ${dataObj.vehicle_type === 'Bike' ? 'selected' : ''}>Bike</option>
+                            <option value="Auto" ${dataObj.vehicle_type === 'Auto' ? 'selected' : ''}>Auto</option>
+                            <option value="Hatchback" ${dataObj.vehicle_type === 'Hatchback' ? 'selected' : ''}>Hatchback</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Transmission</label>
+                        <select id="f-transmission" class="form-input">
+                            <option value="Automatic" ${dataObj.transmission === 'Automatic' ? 'selected' : ''}>Automatic</option>
+                            <option value="Manual" ${dataObj.transmission === 'Manual' ? 'selected' : ''}>Manual</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Fuel Type</label>
+                        <select id="f-fuel" class="form-input">
+                            <option value="Petrol" ${dataObj.fuel_type === 'Petrol' ? 'selected' : ''}>Petrol</option>
+                            <option value="Diesel" ${dataObj.fuel_type === 'Diesel' ? 'selected' : ''}>Diesel</option>
+                            <option value="Electric" ${dataObj.fuel_type === 'Electric' ? 'selected' : ''}>Electric</option>
+                            <option value="Hybrid" ${dataObj.fuel_type === 'Hybrid' ? 'selected' : ''}>Hybrid</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Seating Capacity</label><input type="number" id="f-seats" class="form-input" value="${dataObj.seating_capacity}" required></div>
+                `;
+            } else if (type === 'booking') {
+                fieldsHtml = `
+                    <div class="form-group"><label>Assigned Driver Name</label><input type="text" id="f-drv-name" class="form-input" value="${dataObj.driver_name}"></div>
+                    <div class="form-group"><label>Ride Status</label>
+                        <select id="f-status" class="form-input">
+                            <option value="Requested" ${dataObj.ride_status === 'Requested' ? 'selected' : ''}>Requested</option>
+                            <option value="Accepted" ${dataObj.ride_status === 'Accepted' ? 'selected' : ''}>Accepted</option>
+                            <option value="In Progress" ${dataObj.ride_status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                            <option value="Completed" ${dataObj.ride_status === 'Completed' ? 'selected' : ''}>Completed</option>
+                            <option value="Cancelled" ${dataObj.ride_status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+                        </select>
+                    </div>
+                `;
+            } else if (type === 'payment') {
+                fieldsHtml = `
+                    <div class="form-group"><label>Payment Status</label>
+                        <select id="f-status" class="form-input">
+                            <option value="Success" ${dataObj.payment_status === 'Success' ? 'selected' : ''}>Success</option>
+                            <option value="Pending" ${dataObj.payment_status === 'Pending' ? 'selected' : ''}>Pending</option>
+                            <option value="Failed" ${dataObj.payment_status === 'Failed' ? 'selected' : ''}>Failed</option>
+                        </select>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = fieldsHtml;
+            document.getElementById('admin-modal').classList.add('active');
+        }
+
+        async function handleFormSubmit(e) {
+            e.preventDefault();
+
+            const type = document.getElementById('modal-entity-type').value;
+            const dbId = document.getElementById('modal-entity-id').value;
+            const isEdit = dbId !== '';
+
+            let payload = {};
+            let endpoint = '';
+
+            if (type === 'customer') {
+                payload = {
+                    full_name: document.getElementById('f-name').value,
+                    email: document.getElementById('f-email').value,
+                    phone: document.getElementById('f-phone').value,
+                    gender: document.getElementById('f-gender').value,
+                    dob: document.getElementById('f-dob').value,
+                    emergency_contact: document.getElementById('f-emergency').value,
+                    address: document.getElementById('f-address').value
+                };
+                if (!isEdit) {
+                    payload.password = document.getElementById('f-pass').value;
+                } else if (document.getElementById('f-pass').value.trim() !== '') {
+                    payload.password = document.getElementById('f-pass').value;
+                }
+                endpoint = isEdit ? `/customers/update/${dbId}/` : '/customers/add/';
+            } else if (type === 'driver') {
+                payload = {
+                    driver_name: document.getElementById('f-name').value,
+                    email: document.getElementById('f-email').value,
+                    phone: document.getElementById('f-phone').value,
+                    license_number: document.getElementById('f-license').value,
+                    license_expiry: document.getElementById('f-expiry').value,
+                    vehicle_number: document.getElementById('f-plate').value,
+                    experience: parseInt(document.getElementById('f-exp').value),
+                    availability: document.getElementById('f-avail').value
+                };
+                endpoint = isEdit ? `/drivers/update/${dbId}/` : '/drivers/add/';
+            } else if (type === 'vehicle') {
+                payload = {
+                    model: document.getElementById('f-model').value,
+                    vehicle_number: document.getElementById('f-number').value,
+                    year: parseInt(document.getElementById('f-year').value),
+                    color: document.getElementById('f-color').value,
+                    driver_name: document.getElementById('f-drv-name').value,
+                    vehicle_type: document.getElementById('f-type').value,
+                    transmission: document.getElementById('f-transmission').value,
+                    fuel_type: document.getElementById('f-fuel').value,
+                    seating_capacity: parseInt(document.getElementById('f-seats').value)
+                };
+                endpoint = isEdit ? `/vehicles/update/${dbId}/` : '/vehicles/add/';
+            } else if (type === 'booking') {
+                payload = {
+                    driver_name: document.getElementById('f-drv-name').value,
+                    ride_status: document.getElementById('f-status').value
+                };
+                endpoint = `/bookings/update/${dbId}/`;
+            } else if (type === 'payment') {
+                payload = {
+                    payment_status: document.getElementById('f-status').value
+                };
+                endpoint = `/payments/update/${dbId}/`;
+            }
+
+            try {
+                await apiFetch(endpoint, {
+                    method: isEdit ? 'PUT' : 'POST',
+                    body: JSON.stringify(payload)
+                });
+
+                showToast(`Record ${isEdit ? 'updated' : 'added'} successfully.`, "success");
+                closeModal();
+
+                if (type === 'customer') loadCustomers();
+                else if (type === 'driver') loadDrivers();
+                else if (type === 'vehicle') loadVehicles();
+                else if (type === 'booking') loadBookings();
+                else if (type === 'payment') loadPayments();
+            } catch (err) {}
+        }
+
+        window.onload = () => {
+            loadAnalytics();
+        };
+    </script>
+</body>
+</html>

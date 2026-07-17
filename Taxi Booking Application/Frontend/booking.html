@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiGo - Book a Ride</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Leaflet.js map CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+</head>
+<body>
+
+    <!-- Sticky Navbar -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Taxi<span>Go</span></a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="booking.html" class="active">Book Ride</a>
+                <a href="drivers.html">Drivers</a>
+                <a href="ride_history.html">Ride History</a>
+                <a href="customer_dashboard.html">Dashboard</a>
+                <a href="#" onclick="clearSession()">Logout</a>
+            </nav>
+            <div class="nav-buttons">
+                <button class="theme-toggle" id="theme-toggle-btn">☀️</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Booking Content Grid -->
+    <div class="booking-grid">
+        <div class="glass-card" style="padding: 1.8rem; max-height: 550px; overflow-y: auto;">
+            <h3>Book Your Ride</h3>
+            <p style="font-size:0.82rem; color:var(--text-secondary); margin-bottom:1.2rem;">Click on the map to set pickup and drop-off points automatically.</p>
+
+            <form id="booking-form" onsubmit="confirmBooking(event)">
+                <div class="form-group">
+                    <label for="pickup-loc">Pickup Location</label>
+                    <input type="text" id="pickup-loc" class="form-input" placeholder="Set on map" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="drop-loc">Drop Location</label>
+                    <input type="text" id="drop-loc" class="form-input" placeholder="Set on map" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ride-distance">Est. Distance</label>
+                        <input type="text" id="ride-distance" class="form-input" value="0.0 km" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="eta">Est. Arrival Time</label>
+                        <input type="text" id="eta" class="form-input" value="-- mins" readonly>
+                    </div>
+                </div>
+
+                <!-- Vehicle options -->
+                <div class="vehicle-selector">
+                    <!-- Hatchback -->
+                    <div class="vehicle-option selected" data-type="Hatchback" onclick="selectVehicle(this)">
+                        <div class="vehicle-info">
+                            <span class="vehicle-icon-img"><img src="images/hatchback.png" style="width:50px; height:35px; object-fit:contain;" alt="Hatchback"></span>
+                            <div class="vehicle-details">
+                                <h4>Hatchback</h4>
+                                <p>Affordable compact. 4 Seats</p>
+                                <div class="vehicle-badge-container">
+                                    <span class="v-badge v-badge-fuel">Petrol</span>
+                                    <span class="v-badge v-badge-gear">Manual</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vehicle-fare" id="fare-Hatchback">$0.00</div>
+                    </div>
+
+                    <!-- Sedan -->
+                    <div class="vehicle-option" data-type="Sedan" onclick="selectVehicle(this)">
+                        <div class="vehicle-info">
+                            <span class="vehicle-icon-img"><img src="images/sedan.png" style="width:50px; height:35px; object-fit:contain;" alt="Sedan"></span>
+                            <div class="vehicle-details">
+                                <h4>Sedan</h4>
+                                <p>Comfort ride. 4 Seats</p>
+                                <div class="vehicle-badge-container">
+                                    <span class="v-badge v-badge-fuel">Hybrid</span>
+                                    <span class="v-badge v-badge-gear">Automatic</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vehicle-fare" id="fare-Sedan">$0.00</div>
+                    </div>
+
+                    <!-- SUV -->
+                    <div class="vehicle-option" data-type="SUV" onclick="selectVehicle(this)">
+                        <div class="vehicle-info">
+                            <span class="vehicle-icon-img"><img src="images/suv.png" style="width:50px; height:35px; object-fit:contain;" alt="SUV"></span>
+                            <div class="vehicle-details">
+                                <h4>SUV</h4>
+                                <p>Spacious, offroad. 6 Seats</p>
+                                <div class="vehicle-badge-container">
+                                    <span class="v-badge v-badge-fuel">Diesel</span>
+                                    <span class="v-badge v-badge-gear">Automatic</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vehicle-fare" id="fare-SUV">$0.00</div>
+                    </div>
+
+                    <!-- Luxury -->
+                    <div class="vehicle-option" data-type="Luxury" onclick="selectVehicle(this)">
+                        <div class="vehicle-info">
+                            <span class="vehicle-icon-img"><img src="images/luxury.png" style="width:50px; height:35px; object-fit:contain;" alt="Luxury"></span>
+                            <div class="vehicle-details">
+                                <h4>Luxury</h4>
+                                <p>Elite styling. 4 Seats</p>
+                                <div class="vehicle-badge-container">
+                                    <span class="v-badge v-badge-fuel">Electric</span>
+                                    <span class="v-badge v-badge-gear">Automatic</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="vehicle-fare" id="fare-Luxury">$0.00</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="promo-input">Promo Code</label>
+                    <div style="display:flex; gap:0.5rem;">
+                        <input type="text" id="promo-input" class="form-input" placeholder="e.g. NEW30" style="flex:1;">
+                        <button type="button" class="btn btn-secondary" onclick="applyPromo()">Apply</button>
+                    </div>
+                    <small id="promo-msg" style="font-size:0.75rem; color:var(--text-muted);"></small>
+                </div>
+
+                <!-- Detailed Pricing Breakdown -->
+                <div style="padding: 1rem; background: rgba(255, 255, 255, 0.02); border:1px solid var(--glass-border); border-radius:10px; font-size:0.85rem; margin-bottom:1rem; display:flex; flex-direction:column; gap:0.3rem;">
+                    <div style="display:flex; justify-content:space-between;"><span>Subtotal:</span><span id="price-subtotal">$0.00</span></div>
+                    <div style="display:flex; justify-content:space-between; color:var(--success-green);"><span>Promo Discount:</span><span id="price-discount">-$0.00</span></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Tax (8%):</span><span id="price-tax">$0.00</span></div>
+                    <hr style="border-color:var(--glass-border); margin:0.3rem 0;">
+                    <div style="display:flex; justify-content:space-between; font-weight:700; font-size:1.1rem; color:var(--primary-orange);">
+                        <span>Fare Estimate:</span>
+                        <span id="price-total">$0.00</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%;">Book Ride</button>
+            </form>
+        </div>
+
+        <div id="map-container"></div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Booking Confirmed!</h3>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <p>Your ride request has been registered. An available driver is accepting your request.</p>
+            <div style="margin: 1.5rem 0; padding: 1rem; background: var(--glass-bg); border-radius: 8px;">
+                <p><strong>Booking ID:</strong> <span id="modal-booking-id">--</span></p>
+                <p><strong>Assigned Driver:</strong> <span id="modal-driver">--</span></p>
+                <p><strong>Total Fare:</strong> <span id="modal-fare" style="color:var(--primary-orange);">--</span></p>
+            </div>
+            <button class="btn btn-primary" onclick="proceedToPayment()" style="width:100%;">Proceed to Payment</button>
+        </div>
+    </div>
+
+    <!-- Leaflet.js map JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const session = getSession();
+        if (!session.isLoggedIn || session.role !== 'customer') {
+            showToast("Access Denied. Please login as Customer.", "error");
+            setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+        }
+
+        let map;
+        let pickupMarker = null;
+        let dropMarker = null;
+        let routePolyline = null;
+        let calculatedDistance = 0;
+        let latestBooking = null;
+
+        // Pricing values
+        let priceSubtotal = 0;
+        let priceDiscount = 0;
+        let priceTax = 0;
+        let priceTotal = 0;
+        let appliedPromo = "";
+
+        const fareRates = {
+            Hatchback: { base: 6, perKm: 1.5 },
+            Sedan: { base: 9, perKm: 2.0 },
+            SUV: { base: 14, perKm: 3.0 },
+            Luxury: { base: 22, perKm: 5.0 }
+        };
+        let selectedType = 'Hatchback';
+
+        function initMap() {
+            map = L.map('map-container').setView([40.7128, -74.0060], 13);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors'
+            }).addTo(map);
+
+            map.on('click', handleMapClick);
+        }
+
+        function handleMapClick(e) {
+            const latlng = e.latlng;
+            if (!pickupMarker) {
+                pickupMarker = L.marker(latlng, { draggable: true }).addTo(map)
+                    .bindPopup("<b>Pickup Location</b>").openPopup();
+                document.getElementById('pickup-loc').value = `${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}`;
+                pickupMarker.on('dragend', recalculateRoute);
+            } else if (!dropMarker) {
+                dropMarker = L.marker(latlng, { draggable: true }).addTo(map)
+                    .bindPopup("<b>Drop Location</b>").openPopup();
+                document.getElementById('drop-loc').value = `${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}`;
+                dropMarker.on('dragend', recalculateRoute);
+                recalculateRoute();
+            } else {
+                map.removeLayer(pickupMarker);
+                map.removeLayer(dropMarker);
+                if (routePolyline) map.removeLayer(routePolyline);
+                pickupMarker = L.marker(latlng, { draggable: true }).addTo(map)
+                    .bindPopup("<b>Pickup Location</b>").openPopup();
+                document.getElementById('pickup-loc').value = `${latlng.lat.toFixed(5)}, ${latlng.lng.toFixed(5)}`;
+                dropMarker = null;
+                routePolyline = null;
+                pickupMarker.on('dragend', recalculateRoute);
+                updateBreakdown(0);
+            }
+        }
+
+        function recalculateRoute() {
+            if (!pickupMarker || !dropMarker) return;
+            const start = pickupMarker.getLatLng();
+            const end = dropMarker.getLatLng();
+            
+            if (routePolyline) map.removeLayer(routePolyline);
+            routePolyline = L.polyline([start, end], { color: 'var(--primary-purple)', weight: 4 }).addTo(map);
+            map.fitBounds(routePolyline.getBounds());
+            
+            const dist = start.distanceTo(end) / 1000;
+            calculatedDistance = parseFloat(dist.toFixed(2));
+            document.getElementById('ride-distance').value = `${calculatedDistance} km`;
+            
+            const etaMinutes = Math.ceil((calculatedDistance / 30) * 60) + 3;
+            document.getElementById('eta').value = `${etaMinutes} mins`;
+            
+            updateBreakdown(calculatedDistance);
+        }
+
+        function updateBreakdown(distance) {
+            // Update rates previews for all options
+            for (const [key, value] of Object.entries(fareRates)) {
+                const estSub = distance > 0 ? (value.base + (distance * value.perKm)) : 0;
+                document.getElementById(`fare-${key}`).innerText = `$${estSub.toFixed(2)}`;
+            }
+
+            const currentRate = fareRates[selectedType];
+            priceSubtotal = distance > 0 ? (currentRate.base + (distance * currentRate.perKm)) : 0;
+
+            // Apply promo logic
+            priceDiscount = 0;
+            if (priceSubtotal > 0 && appliedPromo) {
+                if (appliedPromo === "NEW30") {
+                    priceDiscount = priceSubtotal * 0.3;
+                } else if (appliedPromo === "AIRPORT10") {
+                    priceDiscount = 10.0;
+                } else if (appliedPromo === "WEEKEND5") {
+                    priceDiscount = 5.0;
+                } else if (appliedPromo === "FLAT20") {
+                    priceDiscount = 20.0;
+                }
+                priceDiscount = Math.min(priceDiscount, priceSubtotal);
+            }
+
+            priceTax = (priceSubtotal - priceDiscount) * 0.08;
+            priceTotal = (priceSubtotal - priceDiscount) + priceTax;
+
+            // Update UI Elements
+            document.getElementById('price-subtotal').innerText = `$${priceSubtotal.toFixed(2)}`;
+            document.getElementById('price-discount').innerText = `-$${priceDiscount.toFixed(2)}`;
+            document.getElementById('price-tax').innerText = `$${priceTax.toFixed(2)}`;
+            document.getElementById('price-total').innerText = `$${priceTotal.toFixed(2)}`;
+        }
+
+        function selectVehicle(element) {
+            document.querySelectorAll('.vehicle-option').forEach(el => el.classList.remove('selected'));
+            element.classList.add('selected');
+            selectedType = element.getAttribute('data-type');
+            
+            updateBreakdown(calculatedDistance);
+            showToast(`Selected ${selectedType}`, 'info');
+        }
+
+        function applyPromo() {
+            const promo = document.getElementById('promo-input').value.toUpperCase().trim();
+            const msg = document.getElementById('promo-msg');
+            
+            const validPromos = ["NEW30", "AIRPORT10", "WEEKEND5", "FLAT20"];
+            if (promo === "") {
+                appliedPromo = "";
+                msg.innerText = "";
+                updateBreakdown(calculatedDistance);
+                return;
+            }
+
+            if (validPromos.includes(promo)) {
+                appliedPromo = promo;
+                msg.style.color = "var(--success-green)";
+                msg.innerText = `Promo Code "${promo}" Applied!`;
+                showToast(`Promo Code Applied!`, "success");
+            } else {
+                appliedPromo = "";
+                msg.style.color = "var(--danger-red)";
+                msg.innerText = "Invalid Promo Code.";
+                showToast("Invalid Promo Code", "error");
+            }
+            updateBreakdown(calculatedDistance);
+        }
+
+        async function confirmBooking(e) {
+            e.preventDefault();
+            const pickup = document.getElementById('pickup-loc').value;
+            const drop = document.getElementById('drop-loc').value;
+            
+            if (calculatedDistance === 0) {
+                showToast("Set route coordinates on the map.", "error");
+                return;
+            }
+
+            const payload = {
+                customer_name: session.userName,
+                pickup_location: pickup,
+                drop_location: drop,
+                fare: priceTotal,
+                distance: calculatedDistance,
+                eta: parseInt(document.getElementById('eta').value),
+                promo_code: appliedPromo,
+                ride_status: 'Requested',
+                payment_method: 'Cash'
+            };
+
+            try {
+                const response = await apiFetch('/bookings/add/', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                
+                latestBooking = response;
+                
+                document.getElementById('modal-booking-id').innerText = response.booking_id;
+                document.getElementById('modal-driver').innerText = response.driver_name;
+                document.getElementById('modal-fare').innerText = `$${response.fare.toFixed(2)}`;
+                document.getElementById('confirm-modal').classList.add('active');
+                
+                showToast("Booking Successful!", "success");
+            } catch (err) {}
+        }
+
+        function closeModal() {
+            document.getElementById('confirm-modal').classList.remove('active');
+        }
+
+        function proceedToPayment() {
+            if (!latestBooking) return;
+            window.location.href = `payments.html?booking_id=${latestBooking.booking_id}&fare=${latestBooking.fare}&id=${latestBooking.id}&subtotal=${priceSubtotal}&discount=${priceDiscount}&tax=${priceTax}&promo=${appliedPromo}`;
+        }
+
+        window.onload = () => {
+            initMap();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const dropParam = urlParams.get('drop');
+            if (dropParam) {
+                // Preset pickup coordinates (Empire State Building, NYC)
+                const startLatLng = L.latLng(40.7484, -73.9857);
+                document.getElementById('pickup-loc').value = "Empire State Building, NYC";
+                pickupMarker = L.marker(startLatLng, { draggable: true }).addTo(map)
+                    .bindPopup("<b>Pickup Location</b>").openPopup();
+                pickupMarker.on('dragend', recalculateRoute);
+
+                // Define coordinates for popular destinations
+                let endLatLng = L.latLng(40.7128, -74.0060); // Default
+                if (dropParam.includes("Airport")) {
+                    endLatLng = L.latLng(40.6413, -73.7781);
+                } else if (dropParam.includes("Railway") || dropParam.includes("Station")) {
+                    endLatLng = L.latLng(40.7527, -73.9772);
+                } else if (dropParam.includes("Downtown") || dropParam.includes("Square") || dropParam.includes("City")) {
+                    endLatLng = L.latLng(40.7580, -73.9855);
+                } else if (dropParam.includes("Silicon") || dropParam.includes("Boulevard") || dropParam.includes("IT")) {
+                    endLatLng = L.latLng(40.7061, -74.0089);
+                }
+
+                document.getElementById('drop-loc').value = dropParam;
+                dropMarker = L.marker(endLatLng, { draggable: true }).addTo(map)
+                    .bindPopup("<b>Drop Location</b>").openPopup();
+                dropMarker.on('dragend', recalculateRoute);
+
+                recalculateRoute();
+            }
+        };
+    </script>
+</body>
+</html>

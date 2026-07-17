@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiGo - Ride History</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Sticky Navbar -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Taxi<span>Go</span></a>
+            <nav class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="booking.html" class="customer-only auth-only">Book Ride</a>
+                <a href="drivers.html">Drivers</a>
+                <a href="ride_history.html" class="active">Ride History</a>
+                
+                <!-- Dynamic Dashboards -->
+                <a href="customer_dashboard.html" class="customer-only auth-only">Dashboard</a>
+                <a href="driver_dashboard.html" class="driver-only auth-only">Dashboard</a>
+                <a href="admin_dashboard.html" class="admin-only auth-only">Dashboard</a>
+                <a href="#" onclick="clearSession()">Logout</a>
+            </nav>
+            <div class="nav-buttons">
+                <button class="theme-toggle" id="theme-toggle-btn">☀️</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Search / Filter Grid -->
+    <div class="section" style="padding-bottom:1rem;">
+        <div class="glass-card" style="padding: 1.5rem; display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+            <div style="flex:1; min-width:300px; display:flex; gap:1rem;">
+                <input type="text" id="history-search" class="form-input" placeholder="Search by location, booking ID..." style="flex:1;" oninput="fetchHistory()">
+                <select id="status-filter" class="form-input" onchange="fetchHistory()">
+                    <option value="">All Ride Statuses</option>
+                    <option value="Requested">Requested</option>
+                    <option value="Accepted">Accepted</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
+            <h3>My Trips</h3>
+        </div>
+    </div>
+
+    <!-- Ride History Table Section -->
+    <section class="section" style="padding-top:1rem;">
+        <div class="glass-card">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Pickup Location</th>
+                            <th>Drop Location</th>
+                            <th>Date & Time</th>
+                            <th>Fare</th>
+                            <th>Status</th>
+                            <th class="no-print">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-table-body">
+                        <tr>
+                            <td colspan="7" style="text-align:center; padding:3rem;">
+                                <div class="spinner" style="margin:0 auto 1.5rem auto;"></div>
+                                Loading trip records...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hidden Invoice Receipt layout for printing -->
+    <div class="print-receipt-section" id="print-area" style="display:none;">
+        <h2 style="text-align:center; margin-bottom:1rem;">TAXIGO RIDE RECEIPT</h2>
+        <hr style="margin-bottom:1rem;">
+        <p><strong>Booking ID:</strong> <span id="print-b-id"></span></p>
+        <p><strong>Customer Name:</strong> <span id="print-c-name"></span></p>
+        <p><strong>Driver Name:</strong> <span id="print-d-name"></span></p>
+        <p><strong>Route:</strong> <span id="print-route"></span></p>
+        <p><strong>Fare Paid:</strong> <span id="print-fare"></span></p>
+        <p><strong>Booking Date:</strong> <span id="print-date"></span></p>
+        <hr style="margin-top:1rem;">
+        <p style="text-align:center; font-size:0.8rem; color:gray;">Generated automatically. Safe travels!</p>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Guard check
+        const auth = getSession();
+        if (!auth.isLoggedIn) {
+            showToast("Access Denied. Please login to view history.", "error");
+            setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+        }
+
+        async function fetchHistory() {
+            const query = document.getElementById('history-search').value;
+            const statusFilter = document.getElementById('status-filter').value;
+            
+            let endpoint = `/bookings/?q=${encodeURIComponent(query)}`;
+            
+            // Filters based on roles
+            if (auth.role === 'customer') {
+                endpoint += `&customer_name=${encodeURIComponent(auth.userName)}`;
+            } else if (auth.role === 'driver') {
+                endpoint += `&driver_name=${encodeURIComponent(auth.userName)}`;
+            }
+            
+            if (statusFilter) {
+                endpoint += `&ride_status=${statusFilter}`;
+            }
+
+            try {
+                const bookings = await apiFetch(endpoint);
+                renderHistory(bookings);
+            } catch (err) {
+                document.getElementById('history-table-body').innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align:center; color:var(--danger-red); padding:3rem;">
+                            Error loading ride history. Please try again.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderHistory(bookings) {
+            const tbody = document.getElementById('history-table-body');
+            if (bookings.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align:center; padding:3rem; color:var(--text-secondary);">
+                            No trip records found.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = bookings.map(b => {
+                let badgeClass = 'badge-requested';
+                if (b.ride_status === 'Requested') badgeClass = 'badge-requested';
+                if (b.ride_status === 'Accepted') badgeClass = 'badge-accepted';
+                if (b.ride_status === 'In Progress') badgeClass = 'badge-progress';
+                if (b.ride_status === 'Completed') badgeClass = 'badge-completed';
+                if (b.ride_status === 'Cancelled') badgeClass = 'badge-cancelled';
+
+                // Display options
+                let actionsHtml = '';
+                if (b.ride_status === 'Completed') {
+                    actionsHtml = `<button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem;" onclick="printReceipt(${JSON.stringify(b).replace(/"/g, '&quot;')})">Receipt</button>`;
+                } else if (b.ride_status === 'Requested' || b.ride_status === 'Accepted') {
+                    // Customer can cancel ride
+                    if (auth.role === 'customer') {
+                        actionsHtml = `<button class="btn btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.75rem; background:rgba(239,68,68,0.15); color:var(--danger-red); border-color:rgba(239,68,68,0.2);" onclick="cancelRide('${b.id}')">Cancel</button>`;
+                    }
+                } else {
+                    actionsHtml = '<span style="font-size:0.8rem; color:var(--text-muted);">--</span>';
+                }
+
+                return `
+                    <tr>
+                        <td><strong>${b.booking_id}</strong></td>
+                        <td>${b.pickup_location.length > 30 ? b.pickup_location.substring(0,30)+'...' : b.pickup_location}</td>
+                        <td>${b.drop_location.length > 30 ? b.drop_location.substring(0,30)+'...' : b.drop_location}</td>
+                        <td>${b.booking_date}</td>
+                        <td><strong>$${b.fare.toFixed(2)}</strong></td>
+                        <td><span class="badge ${badgeClass}">${b.ride_status}</span></td>
+                        <td class="no-print">${actionsHtml}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function cancelRide(dbId) {
+            if (!confirm("Are you sure you want to cancel this booking?")) return;
+            
+            try {
+                await apiFetch(`/bookings/update/${dbId}/`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ ride_status: 'Cancelled' })
+                });
+                showToast("Ride cancelled.", "info");
+                fetchHistory();
+            } catch (err) {
+                // Handled in apiFetch
+            }
+        }
+
+        function printReceipt(bookingObj) {
+            // Fill print area
+            document.getElementById('print-b-id').innerText = bookingObj.booking_id;
+            document.getElementById('print-c-name').innerText = bookingObj.customer_name;
+            document.getElementById('print-d-name').innerText = bookingObj.driver_name;
+            document.getElementById('print-route').innerText = `${bookingObj.pickup_location} ➡️ ${bookingObj.drop_location}`;
+            document.getElementById('print-fare').innerText = `$${bookingObj.fare.toFixed(2)}`;
+            document.getElementById('print-date').innerText = bookingObj.booking_date;
+
+            // Trigger browser print dialog
+            window.print();
+        }
+
+        window.onload = () => {
+            fetchHistory();
+        };
+    </script>
+</body>
+</html>

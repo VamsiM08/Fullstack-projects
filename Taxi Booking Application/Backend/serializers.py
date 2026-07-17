@@ -1,0 +1,80 @@
+from rest_framework import serializers
+
+class CustomerSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    customer_id = serializers.CharField(required=False)
+    full_name = serializers.CharField(max_length=100, required=True)
+    email = serializers.EmailField(required=True)
+    phone = serializers.CharField(max_length=20, required=True)
+    address = serializers.CharField(max_length=255, required=True)
+    password = serializers.CharField(max_length=100, min_length=6, write_only=True, required=False)
+    profile_pic = serializers.URLField(required=False, allow_blank=True)
+    gender = serializers.CharField(max_length=20, required=False, allow_blank=True)
+    dob = serializers.CharField(max_length=20, required=False, allow_blank=True)
+    emergency_contact = serializers.CharField(max_length=20, required=False, allow_blank=True)
+    member_since = serializers.CharField(max_length=20, required=False, allow_blank=True)
+
+
+class DriverSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    driver_id = serializers.CharField(required=False)
+    driver_name = serializers.CharField(max_length=100, required=True)
+    email = serializers.EmailField(required=True)
+    phone = serializers.CharField(max_length=20, required=True)
+    license_number = serializers.CharField(max_length=50, required=True)
+    experience = serializers.IntegerField(min_value=0, required=True)
+    availability = serializers.ChoiceField(choices=['Available', 'Busy', 'Offline'], default='Available')
+    password = serializers.CharField(max_length=100, min_length=6, write_only=True, required=False)
+    profile_pic = serializers.URLField(required=False, allow_blank=True)
+    vehicle_number = serializers.CharField(max_length=20, required=False, allow_blank=True)
+    rating = serializers.FloatField(min_value=0.0, max_value=5.0, default=5.0, required=False)
+    total_rides = serializers.IntegerField(min_value=0, default=0, required=False)
+    license_expiry = serializers.CharField(max_length=20, required=False, allow_blank=True)
+
+
+class VehicleSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    vehicle_id = serializers.CharField(required=False)
+    driver_name = serializers.CharField(max_length=100, required=True)
+    vehicle_type = serializers.ChoiceField(choices=['Sedan', 'SUV', 'Luxury', 'Bike', 'Auto', 'Hatchback'], required=True)
+    vehicle_number = serializers.CharField(max_length=20, required=True)
+    seating_capacity = serializers.IntegerField(min_value=1, required=True)
+    model = serializers.CharField(max_length=100, required=True)
+    year = serializers.IntegerField(min_value=1900, required=False, default=2022)
+    color = serializers.CharField(max_length=50, required=False, allow_blank=True)
+    transmission = serializers.ChoiceField(choices=['Automatic', 'Manual'], default='Automatic', required=False)
+    fuel_type = serializers.ChoiceField(choices=['Petrol', 'Diesel', 'Electric', 'Hybrid'], default='Petrol', required=False)
+    vehicle_image = serializers.URLField(required=False, allow_blank=True)
+
+
+class BookingSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    booking_id = serializers.CharField(required=False)
+    customer_name = serializers.CharField(max_length=100, required=True)
+    driver_name = serializers.CharField(max_length=100, default='Unassigned', allow_blank=True)
+    pickup_location = serializers.CharField(max_length=255, required=True)
+    drop_location = serializers.CharField(max_length=255, required=True)
+    booking_date = serializers.CharField(required=False)
+    fare = serializers.FloatField(min_value=0.0, required=True)
+    ride_status = serializers.ChoiceField(choices=['Requested', 'Accepted', 'In Progress', 'Completed', 'Cancelled'], default='Requested')
+    distance = serializers.FloatField(min_value=0.0, default=0.0, required=False)
+    eta = serializers.IntegerField(min_value=0, default=0, required=False)
+    payment_method = serializers.CharField(max_length=50, default='Cash', required=False)
+    promo_code = serializers.CharField(max_length=50, default='', required=False, allow_blank=True)
+    rating = serializers.FloatField(min_value=0.0, max_value=5.0, default=5.0, required=False)
+
+
+class PaymentSerializer(serializers.Serializer):
+    id = serializers.CharField(read_only=True)
+    payment_id = serializers.CharField(required=False)
+    booking_id = serializers.CharField(max_length=100, required=True)
+    customer_name = serializers.CharField(max_length=100, required=True)
+    amount = serializers.FloatField(min_value=0.0, required=True)
+    payment_method = serializers.ChoiceField(choices=['UPI', 'Credit Card', 'Debit Card', 'Wallet', 'Cash'], required=True)
+    payment_status = serializers.ChoiceField(choices=['Success', 'Pending', 'Failed'], default='Pending')
+    transaction_id = serializers.CharField(max_length=100, required=False, allow_blank=True)
+    payment_date = serializers.CharField(required=False)
+    subtotal = serializers.FloatField(min_value=0.0, required=False, default=0.0)
+    discount = serializers.FloatField(min_value=0.0, required=False, default=0.0)
+    tax = serializers.FloatField(min_value=0.0, required=False, default=0.0)
+    billing_address = serializers.CharField(max_length=255, required=False, allow_blank=True)

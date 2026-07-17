@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaxiGo - Premium Taxi Booking</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Loading Screen -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <!-- Sticky Navbar -->
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Taxi<span>Go</span></a>
+            <button class="menu-toggle" id="mobile-menu-btn">☰</button>
+            <nav class="nav-links" id="nav-links-container">
+                <a href="index.html" class="active">Home</a>
+                <a href="booking.html" class="customer-only auth-only">Book Ride</a>
+                <a href="drivers.html" class="auth-only">Drivers</a>
+                <a href="ride_history.html" class="auth-only">Ride History</a>
+                
+                <!-- Dynamic Dashboards -->
+                <a href="customer_dashboard.html" class="customer-only auth-only">Dashboard</a>
+                <a href="driver_dashboard.html" class="driver-only auth-only">Dashboard</a>
+                <a href="admin_dashboard.html" class="admin-only auth-only">Dashboard</a>
+                
+                <a href="login.html" class="guest-only">Login</a>
+                <a href="register.html" class="guest-only btn btn-primary" style="color:white;">Register</a>
+                
+                <!-- Auth states -->
+                <span class="auth-only" style="font-size:0.9rem; color:var(--text-secondary);">Hello, <strong id="navbar-user-name" style="color:var(--primary-purple);">User</strong></span>
+                <a href="#" class="auth-only btn btn-secondary" onclick="clearSession()">Logout</a>
+            </nav>
+            <div class="nav-buttons">
+                <button class="theme-toggle" id="theme-toggle-btn">☀️</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner Section -->
+    <section class="hero">
+        <div class="hero-text glass-card" style="padding: 3rem; border-radius: 32px; background: rgba(10, 10, 26, 0.45); border-color: rgba(255,255,255,0.06);">
+            <h1 style="font-size: 3.8rem; margin-bottom: 1.2rem; background: linear-gradient(135deg, var(--text-primary) 30%, var(--cyan-glow) 70%, var(--pink-glow) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Premium Rides<br>On Demand</h1>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary); line-height: 1.65; font-size: 1.05rem;">Experience the next level of urban transit. Fast, safe, and premium rides with professional drivers at transparent prices.</p>
+            <div style="display:flex; gap:1rem; margin-bottom: 2.2rem;">
+                <a href="booking.html" class="btn btn-primary customer-only auth-only">Book a Ride Now</a>
+                <a href="login.html" class="btn btn-primary guest-only">Book a Ride Now</a>
+                <a href="register.html" class="btn btn-secondary">Join as Driver</a>
+            </div>
+            
+            <!-- Statistics Counters inside sub-cards -->
+            <div class="hero-stats" style="display: flex; gap: 1rem; border-top: none; padding-top: 0; margin-top: 0;">
+                <div class="stat-mini-card">
+                    <div class="stat-number counter-anim" data-target="25000">0</div>
+                    <div class="stat-label">Rides Done</div>
+                </div>
+                <div class="stat-mini-card">
+                    <div class="stat-number counter-anim" data-target="980">0</div>
+                    <div class="stat-label">Active Drivers</div>
+                </div>
+                <div class="stat-mini-card">
+                    <div class="stat-number">4.9/5</div>
+                    <div class="stat-label">Avg Rating</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="hero-visual">
+            <div class="hero-image-glow-wrapper">
+                <img class="hero-img" src="images/hero_taxi.png" alt="Taxi Cab Glassmorphism backdrop" style="border-radius: 28px; border: 1px solid var(--glass-border); box-shadow: 0 30px 60px -15px rgba(0,0,0,0.6); display:block; width:100%; object-fit:cover;">
+            </div>
+            <!-- Futuristic HUD overlay panels -->
+            <div class="hud-panel hud-left">
+                <div class="hud-row"><span class="hud-led-green"></span> SECURE GPS: ACTIVE</div>
+                <div class="hud-row">LAT: 40.7128° N</div>
+                <div class="hud-row">LNG: 74.0060° W</div>
+            </div>
+            <div class="hud-panel hud-right">
+                <div class="hud-row">⚡ ENGINE: HYBRID</div>
+                <div class="hud-row">SPEED: 65 MPH</div>
+                <div class="hud-row">SYSTEMS: 100%</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us -->
+    <section class="section">
+        <div class="section-header">
+            <h2>Why Choose Us</h2>
+            <p>We pride ourselves on offering the most reliable and premium taxi service in the city.</p>
+        </div>
+        
+        <div class="features-grid">
+            <div class="glass-card feature-card">
+                <div class="feature-icon">🏅</div>
+                <h3>Best Drivers</h3>
+                <p>All our drivers undergo extensive background screening and professional customer care training.</p>
+            </div>
+            <div class="glass-card feature-card">
+                <div class="feature-icon">🛡️</div>
+                <h3>Safe Ride</h3>
+                <p>SOS modules, real-time vehicle GPS tracking, and comprehensive passenger insurance for every booking.</p>
+            </div>
+            <div class="glass-card feature-card">
+                <div class="feature-icon">⚡</div>
+                <h3>Fast Booking</h3>
+                <p>Intuitive smartphone and web interface gets a driver to your current location in under 5 minutes.</p>
+            </div>
+            <div class="glass-card feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>24/7 Support</h3>
+                <p>A dedicated operations helpdesk team is ready to resolve all customer complaints immediately.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Destinations -->
+    <section class="section" style="background: rgba(124, 58, 237, 0.02); border-radius: 30px; margin-top:2rem;">
+        <div class="section-header">
+            <h2>Popular Destinations</h2>
+            <p>Ride to popular travel hubs and commercial complexes at flat competitive prices.</p>
+        </div>
+        
+        <div class="destinations-grid">
+            <div class="glass-card dest-card" onclick="bookDestination('Metro Airport, NYC')" style="cursor: pointer;">
+                <div class="dest-image-container">✈️ Airport</div>
+                <div class="dest-info">
+                    <h3>Metro Airport</h3>
+                    <p>International and domestic terminals transfer.</p>
+                </div>
+            </div>
+            <div class="glass-card dest-card" onclick="bookDestination('Central Railway, NYC')" style="cursor: pointer;">
+                <div class="dest-image-container">🚄 Station</div>
+                <div class="dest-info">
+                    <h3>Central Railway</h3>
+                    <p>Quick access to national rail tracks platforms.</p>
+                </div>
+            </div>
+            <div class="glass-card dest-card" onclick="bookDestination('Downtown Square, NYC')" style="cursor: pointer;">
+                <div class="dest-image-container">🏢 City Center</div>
+                <div class="dest-info">
+                    <h3>Downtown Square</h3>
+                    <p>Financial center shopping and food districts.</p>
+                </div>
+            </div>
+            <div class="glass-card dest-card" onclick="bookDestination('Silicon Boulevard, NYC')" style="cursor: pointer;">
+                <div class="dest-image-container">💻 IT Park</div>
+                <div class="dest-info">
+                    <h3>Silicon Boulevard</h3>
+                    <p>Daily business commute for IT professionals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Offers Section -->
+    <section class="section">
+        <div class="section-header">
+            <h2>Exclusive Offers</h2>
+            <p>Save big on your daily commutes with our latest promocodes.</p>
+        </div>
+        
+        <div class="offers-row">
+            <div class="glass-card offer-card">
+                <div class="offer-badge">30% OFF</div>
+                <div>
+                    <h3>First Ride Discount</h3>
+                    <p>Use code <strong>NEW30</strong> on your first ride booking.</p>
+                </div>
+            </div>
+            <div class="glass-card offer-card">
+                <div class="offer-badge">FLAT $10</div>
+                <div>
+                    <h3>Airport Flat Saver</h3>
+                    <p>Book rides to or from the airport using code <strong>AIRPORT10</strong>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <a href="index.html" class="logo">Taxi<span>Go</span></a>
+                <p style="margin-top:1rem;">Your trusted, premium partner for fast and affordable taxi rides across the metropolitan area.</p>
+                <div class="social-icons">
+                    <a href="#" class="social-icon">🔵</a>
+                    <a href="#" class="social-icon">🟣</a>
+                    <a href="#" class="social-icon">🔴</a>
+                </div>
+            </div>
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="booking.html">Book Ride</a></li>
+                    <li><a href="drivers.html">Drivers</a></li>
+                    <li><a href="ride_history.html">Ride History</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Support</h3>
+                <ul class="footer-links">
+                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Refund Policy</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Download App</h3>
+                <p>Get our free mobile apps on App Store and Google Play.</p>
+                <div style="display:flex; flex-direction:column; gap:0.5rem; margin-top:1rem;">
+                    <a href="#" class="btn btn-secondary" style="font-size:0.8rem;">🤖 Google Play Store</a>
+                    <a href="#" class="btn btn-secondary" style="font-size:0.8rem;">🍎 Apple App Store</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 TaxiGo Technologies Inc. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        function bookDestination(dest) {
+            const auth = getSession();
+            if (!auth.isLoggedIn) {
+                showToast("Please login as Customer to book a ride.", "info");
+                setTimeout(() => { window.location.href = 'login.html'; }, 1000);
+                return;
+            }
+            if (auth.role !== 'customer') {
+                showToast("Only Customers can book rides.", "error");
+                return;
+            }
+            window.location.href = `booking.html?drop=${encodeURIComponent(dest)}`;
+        }
+    </script>
+</body>
+</html>
