@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Gateway - EventHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="navbarContainer"></div>
+
+    <main class="main-container" style="display: flex; justify-content: center; align-items: center; min-height: 80vh;">
+        <div class="card-box" style="width: 100%; max-width: 580px; padding: 2.5rem;" id="paymentBox">
+            <h2 style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; text-align: center; margin-bottom: 0.5rem;">💳 Secure Online Checkout</h2>
+            <p style="color: var(--text-secondary); text-align: center; margin-bottom: 2rem; font-size: 0.95rem;">Select your preferred payment mode to complete your ticket booking.</p>
+
+            <div style="background: rgba(15, 23, 42, 0.6); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-glass); margin-bottom: 2rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="color: var(--text-secondary);">Event:</span>
+                    <strong id="payEventName">-</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="color: var(--text-secondary);">Booking ID:</span>
+                    <strong id="payBookingId">#401</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                    <span style="color: var(--text-secondary);">Tickets:</span>
+                    <strong id="payTicketsQty">2</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; border-top: 1px solid var(--border-glass); padding-top: 0.75rem; margin-top: 0.75rem;">
+                    <span style="font-size: 1.1rem; font-weight: 600;">Total Payable:</span>
+                    <strong style="font-family: var(--font-heading); font-size: 1.5rem; color: var(--accent-emerald);" id="payTotalAmount">₹3,000</strong>
+                </div>
+            </div>
+
+            <!-- Payment Method Form -->
+            <form id="paymentForm" onsubmit="processPayment(event)">
+                <div class="form-group">
+                    <label class="form-label">Payment Method</label>
+                    <select id="payMethod" class="form-control" onchange="togglePaymentInputs()">
+                        <option value="UPI">Google Pay / PhonePe / Paytm UPI</option>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="Debit Card">Debit Card</option>
+                        <option value="Net Banking">Net Banking</option>
+                        <option value="Wallet">Wallet / Amazon Pay</option>
+                    </select>
+                </div>
+
+                <!-- UPI Input -->
+                <div class="form-group" id="upiDetailsGroup">
+                    <label class="form-label">VPA / UPI ID</label>
+                    <input type="text" id="upiIdInput" class="form-control" placeholder="e.g. rahul@okaxis" value="rahul@upi">
+                </div>
+
+                <!-- Card Details Group -->
+                <div id="cardDetailsGroup" style="display: none;">
+                    <div class="form-group">
+                        <label class="form-label">Card Number</label>
+                        <input type="text" class="form-control" placeholder="4532 •••• •••• 8892">
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label class="form-label">Expiry Date</label>
+                            <input type="text" class="form-control" placeholder="12/28">
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label class="form-label">CVV</label>
+                            <input type="password" class="form-control" placeholder="•••">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" id="paySubmitBtn" class="btn-primary" style="width: 100%; justify-content: center; font-size: 1.1rem; padding: 0.9rem; margin-top: 1rem;">
+                    Pay Now & Generate Ticket
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Digital Ticket Pass Modal (Bonus Feature: QR Code Ticket Generation) -->
+    <div class="modal-overlay" id="ticketModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal('ticketModal'); window.location.href='booking_history.html';">&times;</button>
+            
+            <div class="ticket-pass" id="ticketPassContent">
+                <h2 style="font-family: var(--font-heading); font-size: 1.6rem; text-transform: uppercase; letter-spacing: 1px;">🎉 Booking Confirmed!</h2>
+                <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 1rem;">Official Digital Ticket Pass</p>
+
+                <!-- QR Code Box -->
+                <div class="qr-box" id="ticketQRBox">
+                    <!-- SVG QR Code -->
+                </div>
+
+                <div style="text-align: left; background: rgba(0, 0, 0, 0.3); padding: 1.25rem; border-radius: var(--radius-md); margin-top: 1rem; font-size: 0.9rem; line-height: 1.7;">
+                    <p><strong>Event:</strong> <span id="modalEventName">-</span></p>
+                    <p><strong>Attendee:</strong> <span id="modalUserName">-</span></p>
+                    <p><strong>Booking ID:</strong> <span id="modalBookingId">-</span></p>
+                    <p><strong>Txn ID:</strong> <span id="modalTxnId">-</span></p>
+                    <p><strong>Seats:</strong> <span id="modalSeats">-</span></p>
+                    <p><strong>Status:</strong> <span class="status-badge status-confirmed">Confirmed & Paid</span></p>
+                </div>
+
+                <button onclick="window.print()" class="btn-primary" style="margin-top: 1.5rem; width: 100%; justify-content: center;">
+                    🖨️ Download / Print Digital Ticket
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        let draft = null;
+
+        function initPayment() {
+            draft = Storage.getDraftBooking();
+            if (!draft) {
+                window.location.href = 'events.html';
+                return;
+            }
+
+            document.getElementById('payEventName').textContent = draft.event_name;
+            document.getElementById('payBookingId').textContent = `#${draft.booking_id || '401'}`;
+            document.getElementById('payTicketsQty').textContent = draft.number_of_tickets;
+            document.getElementById('payTotalAmount').textContent = `₹${draft.total_amount}`;
+        }
+
+        function togglePaymentInputs() {
+            const method = document.getElementById('payMethod').value;
+            const upiGroup = document.getElementById('upiDetailsGroup');
+            const cardGroup = document.getElementById('cardDetailsGroup');
+
+            if (method === 'UPI') {
+                upiGroup.style.display = 'block';
+                cardGroup.style.display = 'none';
+            } else if (method === 'Credit Card' || method === 'Debit Card') {
+                upiGroup.style.display = 'none';
+                cardGroup.style.display = 'block';
+            } else {
+                upiGroup.style.display = 'none';
+                cardGroup.style.display = 'none';
+            }
+        }
+
+        async function processPayment(e) {
+            e.preventDefault();
+            const btn = document.getElementById('paySubmitBtn');
+            btn.disabled = true;
+            btn.textContent = 'Processing Payment...';
+
+            const paymentMethod = document.getElementById('payMethod').value;
+            const txnId = 'TXN' + Math.floor(100000000 + Math.random() * 900000000);
+            const user = Storage.getUser();
+
+            const paymentPayload = {
+                payment_id: Math.floor(500 + Math.random() * 9000),
+                booking_id: draft.booking_id || 401,
+                user_name: user ? user.full_name : draft.user_name,
+                amount: draft.total_amount,
+                payment_method: paymentMethod,
+                payment_status: 'Success',
+                transaction_id: txnId,
+                payment_date: new Date().toISOString().split('T')[0]
+            };
+
+            try {
+                // Submit payment to backend API
+                await apiCall('/payments/add/', 'POST', paymentPayload);
+
+                // Update booking status to Confirmed
+                if (draft.booking_id) {
+                    await apiCall(`/bookings/update/${draft.booking_id}/`, 'PUT', {
+                        booking_status: 'Confirmed'
+                    });
+                }
+
+                showToast('Payment successful! Ticket confirmed.', 'success');
+
+                // Populate Modal Digital Ticket
+                document.getElementById('modalEventName').textContent = draft.event_name;
+                document.getElementById('modalUserName').textContent = user ? user.full_name : draft.user_name;
+                document.getElementById('modalBookingId').textContent = `#${draft.booking_id || '401'}`;
+                document.getElementById('modalTxnId').textContent = txnId;
+                document.getElementById('modalSeats').textContent = draft.seats || 'General';
+
+                // Generate QR Code (Bonus Feature)
+                const qrText = `EVENTHUB-TICKET|B:${draft.booking_id}|E:${draft.event_name}|U:${user ? user.full_name : 'User'}|TXN:${txnId}`;
+                document.getElementById('ticketQRBox').innerHTML = generateSVGQRCode(qrText);
+
+                Storage.clearDraftBooking();
+                openModal('ticketModal');
+            } catch (err) {
+                showToast(err.message || 'Payment failed. Please try again.', 'error');
+                btn.disabled = false;
+                btn.textContent = 'Pay Now & Generate Ticket';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initPayment);
+    </script>
+</body>
+</html>

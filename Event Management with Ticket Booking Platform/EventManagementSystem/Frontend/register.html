@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration - EventHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="navbarContainer"></div>
+
+    <main class="main-container" style="display: flex; align-items: center; justify-content: center; min-height: 80vh;">
+        <div class="card-box" style="width: 100%; max-width: 480px; padding: 2.5rem;">
+            <h2 style="font-family: var(--font-heading); font-size: 2rem; margin-bottom: 0.5rem; text-align: center;">Create Account</h2>
+            <p style="color: var(--text-secondary); text-align: center; margin-bottom: 2rem; font-size: 0.95rem;">Join EventHub to book tickets and manage events seamlessly.</p>
+
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="regFullName" class="form-control" placeholder="e.g. Rahul Sharma" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" id="regEmail" class="form-control" placeholder="e.g. rahul@gmail.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Phone Number</label>
+                    <input type="tel" id="regPhone" class="form-control" placeholder="e.g. 9876543210" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">City</label>
+                    <input type="text" id="regCity" class="form-control" placeholder="e.g. Hyderabad" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <select id="regRole" class="form-control">
+                        <option value="user">User (Book Tickets)</option>
+                        <option value="organizer">Organizer (Host & Manage Events)</option>
+                        <option value="admin">Admin (Full Control)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="regPassword" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center; margin-top: 1rem;">Register Account</button>
+            </form>
+
+            <p style="text-align: center; margin-top: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+                Already have an account? <a href="login.html" style="color: var(--accent-indigo); font-weight: 600;">Log In</a>
+            </p>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        async function handleRegister(e) {
+            e.preventDefault();
+            const userData = {
+                user_id: Math.floor(100 + Math.random() * 900),
+                full_name: document.getElementById('regFullName').value.trim(),
+                email: document.getElementById('regEmail').value.trim(),
+                phone: document.getElementById('regPhone').value.trim(),
+                city: document.getElementById('regCity').value.trim(),
+                password: document.getElementById('regPassword').value,
+                role: document.getElementById('regRole').value
+            };
+
+            try {
+                const created = await apiCall('/users/add/', 'POST', userData);
+                Storage.setUser(created);
+                showToast('Registration successful! Welcome to EventHub.', 'success');
+                setTimeout(() => {
+                    if (created.role === 'organizer') window.location.href = 'organizer_dashboard.html';
+                    else if (created.role === 'admin') window.location.href = 'admin_dashboard.html';
+                    else window.location.href = 'index.html';
+                }, 1000);
+            } catch (err) {
+                showToast(err.message || 'Registration failed', 'error');
+            }
+        }
+    </script>
+</body>
+</html>

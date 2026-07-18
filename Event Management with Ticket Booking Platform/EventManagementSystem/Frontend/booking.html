@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticket Booking - EventHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="navbarContainer"></div>
+
+    <main class="main-container" id="bookingPageContainer">
+        <!-- Dynamically rendered -->
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 EventHub Ticket Booking Platform.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let draftBooking = null;
+        let selectedSeats = [];
+
+        function initBookingPage() {
+            draftBooking = Storage.getDraftBooking();
+            const user = Storage.getUser();
+
+            if (!draftBooking || !user) {
+                window.location.href = 'events.html';
+                return;
+            }
+
+            renderBookingUI(draftBooking, user);
+        }
+
+        function renderBookingUI(draft, user) {
+            const container = document.getElementById('bookingPageContainer');
+            container.innerHTML = `
+                <div style="margin-bottom: 1.5rem;">
+                    <a href="event_details.html?id=${draft.event_id}" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem;">← Back to Event Details</a>
+                </div>
+
+                <div class="event-detail-grid">
+                    <div>
+                        <!-- Interactive Seat Map (Bonus Feature) -->
+                        <div class="card-box">
+                            <h2 style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem;">💺 Interactive Seat Selection</h2>
+                            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem;">Click to select your preferred seats in the arena layout below.</p>
+
+                            <div class="seat-map-container">
+                                <div class="screen-indicator">STAGE / SCREEN FRONT</div>
+                                
+                                <div class="seat-grid" id="seatGrid">
+                                    <!-- Populated via loop -->
+                                </div>
+
+                                <div class="seat-legend">
+                                    <div class="legend-item"><div class="legend-dot" style="background: #1e293b; border: 1px solid #334155;"></div> Available</div>
+                                    <div class="legend-item"><div class="legend-dot" style="background: var(--accent-indigo);"></div> Selected</div>
+                                    <div class="legend-item"><div class="legend-dot" style="background: #334155;"></div> Booked</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Attendee Form -->
+                        <div class="card-box">
+                            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 1.25rem;">👤 Attendee Information</h3>
+                            <div class="form-group">
+                                <label class="form-label">Full Name</label>
+                                <input type="text" id="bookUserName" class="form-control" value="${user.full_name}" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Email Address</label>
+                                <input type="email" class="form-control" value="${user.email}" readonly style="opacity: 0.7;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Order Summary Sidebar -->
+                    <div>
+                        <div class="card-box" style="position: sticky; top: 90px; border-color: var(--border-glow); box-shadow: var(--shadow-lg);">
+                            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 1.25rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.75rem;">
+                                📋 Booking Summary
+                            </h3>
+
+                            <div style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.8; margin-bottom: 1.5rem;">
+                                <p><strong>Event:</strong> ${draft.event_name}</p>
+                                <p><strong>Venue:</strong> ${draft.venue}</p>
+                                <p><strong>Date:</strong> ${draft.event_date}</p>
+                                <p><strong>Price per Ticket:</strong> ₹${draft.ticket_price}</p>
+                                
+                                <div class="form-group" style="margin-top: 1rem;">
+                                    <label class="form-label">Quantity</label>
+                                    <input type="number" id="ticketQty" class="form-control" value="1" min="1" max="${Math.min(10, draft.available_tickets)}" onchange="updateSummary()">
+                                </div>
+
+                                <p><strong>Selected Seats:</strong> <span id="summarySeatsStr" style="color: var(--accent-indigo); font-weight: 600;">Auto-Assigned</span></p>
+                            </div>
+
+                            <div style="border-top: 1px solid var(--border-glass); padding-top: 1rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+                                <span style="font-size: 1.1rem; font-weight: 600;">Total Amount</span>
+                                <span style="font-family: var(--font-heading); font-size: 1.8rem; font-weight: 800; color: var(--accent-emerald);" id="summaryTotal">₹${draft.ticket_price}</span>
+                            </div>
+
+                            <button onclick="confirmBooking()" class="btn-primary" style="width: 100%; justify-content: center; font-size: 1.05rem; padding: 0.85rem;">
+                                Proceed to Payment →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            renderSeats();
+        }
+
+        function renderSeats() {
+            const grid = document.getElementById('seatGrid');
+            if (!grid) return;
+
+            const rows = ['A', 'B', 'C', 'D'];
+            let html = '';
+
+            rows.forEach(row => {
+                for (let i = 1; i <= 8; i++) {
+                    const seatId = `${row}${i}`;
+                    const isBooked = (row === 'A' && (i === 3 || i === 4));
+                    const isSelected = selectedSeats.includes(seatId);
+
+                    html += `
+                        <div class="seat ${isBooked ? 'booked' : ''} ${isSelected ? 'selected' : ''}" 
+                             onclick="${isBooked ? '' : `toggleSeat('${seatId}')`}">
+                            ${seatId}
+                        </div>
+                    `;
+                }
+            });
+
+            grid.innerHTML = html;
+        }
+
+        function toggleSeat(seatId) {
+            if (selectedSeats.includes(seatId)) {
+                selectedSeats = selectedSeats.filter(s => s !== seatId);
+            } else {
+                selectedSeats.push(seatId);
+            }
+            
+            document.getElementById('ticketQty').value = Math.max(1, selectedSeats.length);
+            updateSummary();
+            renderSeats();
+        }
+
+        function updateSummary() {
+            const qty = parseInt(document.getElementById('ticketQty').value) || 1;
+            const total = qty * draftBooking.ticket_price;
+            document.getElementById('summaryTotal').textContent = `₹${total}`;
+            document.getElementById('summarySeatsStr').textContent = selectedSeats.length > 0 ? selectedSeats.join(', ') : 'Auto-Assigned';
+
+            draftBooking.number_of_tickets = qty;
+            draftBooking.total_amount = total;
+            draftBooking.seats = selectedSeats.join(', ') || `A${Math.floor(Math.random()*20+1)}, A${Math.floor(Math.random()*20+2)}`;
+            Storage.setDraftBooking(draftBooking);
+        }
+
+        async function confirmBooking() {
+            const userName = document.getElementById('bookUserName').value.trim();
+            if (!userName) {
+                showToast('Please enter your full name', 'error');
+                return;
+            }
+
+            updateSummary();
+
+            // Create Booking in Pending state, then redirect to Payment Page
+            const bookingPayload = {
+                booking_id: Math.floor(400 + Math.random() * 9000),
+                user_name: userName,
+                event_name: draftBooking.event_name,
+                booking_date: new Date().toISOString().split('T')[0],
+                number_of_tickets: draftBooking.number_of_tickets,
+                total_amount: draftBooking.total_amount,
+                booking_status: 'Pending',
+                seats: draftBooking.seats
+            };
+
+            try {
+                const createdBooking = await apiCall('/bookings/add/', 'POST', bookingPayload);
+                draftBooking.booking_id = createdBooking.booking_id;
+                Storage.setDraftBooking(draftBooking);
+
+                showToast('Booking initiated! Proceeding to payment...', 'success');
+                setTimeout(() => window.location.href = 'payment.html', 800);
+            } catch (err) {
+                showToast(err.message || 'Booking creation failed', 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initBookingPage);
+    </script>
+</body>
+</html>

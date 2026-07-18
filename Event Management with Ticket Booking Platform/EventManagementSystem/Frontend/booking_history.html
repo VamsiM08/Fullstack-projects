@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking History - EventHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="navbarContainer"></div>
+
+    <main class="main-container">
+        <div style="margin-bottom: 2rem;">
+            <h1 style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; margin-bottom: 0.5rem;">🎟️ My Ticket Bookings</h1>
+            <p style="color: var(--text-secondary);">View all your upcoming and past booked event tickets, payments, and digital passes.</p>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="category-pills" style="justify-content: flex-start; margin-bottom: 1.5rem;">
+            <button class="pill active" onclick="switchTab('all')">All Bookings</button>
+            <button class="pill" onclick="switchTab('Confirmed')">Confirmed</button>
+            <button class="pill" onclick="switchTab('Pending')">Pending</button>
+            <button class="pill" onclick="switchTab('Cancelled')">Cancelled</button>
+        </div>
+
+        <!-- Bookings Data Table -->
+        <div class="table-responsive">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Event Name</th>
+                        <th>Booking Date</th>
+                        <th>Tickets</th>
+                        <th>Seats</th>
+                        <th>Total Amount</th>
+                        <th>Booking Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="bookingHistoryTbody">
+                    <!-- Populated dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Digital Ticket Pass Modal -->
+    <div class="modal-overlay" id="historyTicketModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal('historyTicketModal')">&times;</button>
+            
+            <div class="ticket-pass" id="historyTicketContent">
+                <!-- Dynamically generated -->
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 EventHub Ticket Booking Platform.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let allUserBookings = [];
+        let currentFilter = 'all';
+
+        async function loadUserBookings() {
+            const user = Storage.getUser();
+            if (!user) {
+                showToast('Please log in to view booking history', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1000);
+                return;
+            }
+
+            try {
+                const bookings = await apiCall('/bookings/');
+                // Filter bookings by current logged in user's name
+                allUserBookings = bookings.filter(b => b.user_name.toLowerCase() === user.full_name.toLowerCase());
+                renderTable();
+            } catch (err) {
+                showToast('Failed to fetch booking history', 'error');
+            }
+        }
+
+        function switchTab(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.category-pills .pill').forEach(p => p.classList.remove('active'));
+            event.target.classList.add('active');
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('bookingHistoryTbody');
+            let filtered = allUserBookings;
+
+            if (currentFilter !== 'all') {
+                filtered = allUserBookings.filter(b => b.booking_status === currentFilter);
+            }
+
+            if (!filtered || filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 3rem;">No booking history records found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(b => {
+                let statusClass = 'status-confirmed';
+                if (b.booking_status === 'Pending') statusClass = 'status-pending';
+                if (b.booking_status === 'Cancelled') statusClass = 'status-cancelled';
+
+                return `
+                    <tr>
+                        <td><strong>#${b.booking_id}</strong></td>
+                        <td><strong>${b.event_name}</strong></td>
+                        <td>${b.booking_date}</td>
+                        <td>${b.number_of_tickets}</td>
+                        <td>${b.seats || 'General'}</td>
+                        <td>₹${b.total_amount}</td>
+                        <td><span class="status-badge ${statusClass}">${b.booking_status}</span></td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem;">
+                                ${b.booking_status === 'Confirmed' ? `
+                                    <button class="btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="viewTicketPass(${b.booking_id})">🎫 View Ticket</button>
+                                    <button class="btn-danger" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;" onclick="cancelBooking(${b.booking_id})">Cancel</button>
+                                ` : b.booking_status === 'Pending' ? `
+                                    <a href="payment.html" class="btn-primary" style="padding: 0.35rem 0.75rem; font-size: 0.8rem;">Pay Now</a>
+                                ` : '<span style="color: var(--text-muted); font-size: 0.8rem;">N/A</span>'}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function viewTicketPass(bookingId) {
+            const booking = allUserBookings.find(b => b.booking_id === bookingId);
+            if (!booking) return;
+
+            const qrText = `EVENTHUB-TICKET|B:${booking.booking_id}|E:${booking.event_name}|U:${booking.user_name}`;
+            const qrSvg = generateSVGQRCode(qrText);
+
+            document.getElementById('historyTicketContent').innerHTML = `
+                <h2 style="font-family: var(--font-heading); font-size: 1.6rem; text-transform: uppercase;">🎫 DIGITAL TICKET PASS</h2>
+                <p style="font-size: 0.85rem; opacity: 0.8; margin-bottom: 1rem;">Show this QR code at venue entry</p>
+
+                <div class="qr-box">${qrSvg}</div>
+
+                <div style="text-align: left; background: rgba(0,0,0,0.3); padding: 1.25rem; border-radius: var(--radius-md); margin-top: 1rem; font-size: 0.9rem; line-height: 1.7;">
+                    <p><strong>Event:</strong> ${booking.event_name}</p>
+                    <p><strong>Attendee:</strong> ${booking.user_name}</p>
+                    <p><strong>Booking ID:</strong> #${booking.booking_id}</p>
+                    <p><strong>Tickets:</strong> ${booking.number_of_tickets} ticket(s)</p>
+                    <p><strong>Seats:</strong> ${booking.seats || 'General'}</p>
+                    <p><strong>Status:</strong> <span class="status-badge status-confirmed">Confirmed</span></p>
+                </div>
+
+                <button onclick="window.print()" class="btn-primary" style="margin-top: 1.25rem; width: 100%; justify-content: center;">
+                    🖨️ Print Ticket
+                </button>
+            `;
+
+            openModal('historyTicketModal');
+        }
+
+        async function cancelBooking(bookingId) {
+            if (!confirm('Are you sure you want to cancel this ticket booking?')) return;
+
+            try {
+                await apiCall(`/bookings/update/${bookingId}/`, 'PUT', { booking_status: 'Cancelled' });
+                showToast('Booking cancelled successfully', 'success');
+                loadUserBookings();
+            } catch (err) {
+                showToast('Failed to cancel booking', 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadUserBookings);
+    </script>
+</body>
+</html>

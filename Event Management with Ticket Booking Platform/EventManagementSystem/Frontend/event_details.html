@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details - EventHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="navbarContainer"></div>
+
+    <main class="main-container" id="eventDetailsContainer">
+        <!-- Rendered dynamically -->
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 EventHub Ticket Booking Platform.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let currentEvent = null;
+
+        async function loadEventDetails() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            if (!id) {
+                window.location.href = 'events.html';
+                return;
+            }
+
+            try {
+                const events = await apiCall('/events/');
+                currentEvent = events.find(e => String(e.event_id) === String(id));
+                if (!currentEvent) {
+                    showToast('Event not found', 'error');
+                    setTimeout(() => window.location.href = 'events.html', 1500);
+                    return;
+                }
+
+                const reviews = await apiCall(`/reviews/event/${id}/`);
+                renderPage(currentEvent, reviews);
+                startCountdown(currentEvent.event_date);
+            } catch (err) {
+                showToast('Failed to load event details', 'error');
+            }
+        }
+
+        function renderPage(ev, reviews) {
+            const container = document.getElementById('eventDetailsContainer');
+            container.innerHTML = `
+                <div style="margin-bottom: 1.5rem;">
+                    <a href="events.html" style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem;">← Back to Events</a>
+                </div>
+
+                <div class="event-detail-grid">
+                    <!-- Main Left Column -->
+                    <div>
+                        <img src="${ev.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80'}" alt="${ev.event_name}" class="event-hero-banner">
+
+                        <div class="card-box">
+                            <span class="badge-category" style="position: static; display: inline-block; margin-bottom: 0.75rem;">${ev.category}</span>
+                            <h1 style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; margin-bottom: 1rem;">${ev.event_name}</h1>
+                            <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1.5rem;">${ev.description || 'Join us for an exceptional experience featuring industry experts, world-class entertainment, and unique networking opportunities.'}</p>
+
+                            <!-- Event Reminder Countdown Timer (Bonus) -->
+                            <div style="border-top: 1px solid var(--border-glass); padding-top: 1.5rem; margin-top: 1.5rem;">
+                                <h3 style="font-size: 1rem; color: var(--text-secondary); text-align: center; margin-bottom: 0.5rem;">⏰ Event Starts In</h3>
+                                <div class="countdown-box">
+                                    <div class="countdown-item"><div class="countdown-num" id="cdDays">00</div><div class="countdown-label">Days</div></div>
+                                    <div class="countdown-item"><div class="countdown-num" id="cdHours">00</div><div class="countdown-label">Hours</div></div>
+                                    <div class="countdown-item"><div class="countdown-num" id="cdMins">00</div><div class="countdown-label">Mins</div></div>
+                                    <div class="countdown-item"><div class="countdown-num" id="cdSecs">00</div><div class="countdown-label">Secs</div></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Venue Information -->
+                        <div class="card-box">
+                            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+                                📍 Venue Information
+                            </h3>
+                            <div style="font-size: 1rem; color: var(--text-secondary); line-height: 1.8;">
+                                <p><strong>Venue Name:</strong> ${ev.venue}</p>
+                                <p><strong>Date & Time:</strong> ${ev.event_date} at ${ev.event_time}</p>
+                                <p><strong>Organizer:</strong> ${ev.organizer_name}</p>
+                            </div>
+                        </div>
+
+                        <!-- Reviews & Ratings Section (Bonus) -->
+                        <div class="card-box">
+                            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem;">
+                                ⭐ Ratings & Reviews (${reviews.length})
+                            </h3>
+
+                            <!-- Submit Review Form -->
+                            <form onsubmit="handleReviewSubmit(event)" style="background: rgba(15, 23, 42, 0.6); padding: 1.25rem; border-radius: var(--radius-md); border: 1px solid var(--border-glass); margin-bottom: 2rem;">
+                                <h4 style="margin-bottom: 0.75rem; font-size: 1rem;">Leave a Review</h4>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <select id="revRating" class="form-control" style="padding: 0.5rem;">
+                                        <option value="5">⭐⭐⭐⭐⭐ (5/5 Exceptional)</option>
+                                        <option value="4">⭐⭐⭐⭐ (4/5 Great)</option>
+                                        <option value="3">⭐⭐⭐ (3/5 Good)</option>
+                                        <option value="2">⭐⭐ (2/5 Average)</option>
+                                        <option value="1">⭐ (1/5 Poor)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 0.75rem;">
+                                    <textarea id="revComment" class="form-control" rows="2" placeholder="Write your thoughts about this event..." required></textarea>
+                                </div>
+                                <button type="submit" class="btn-secondary" style="font-size: 0.85rem; padding: 0.5rem 1rem;">Post Review</button>
+                            </form>
+
+                            <!-- Reviews List -->
+                            <div>
+                                ${reviews.length === 0 ? '<p style="color: var(--text-muted);">No reviews yet. Be the first to leave a review!</p>' : reviews.map(r => `
+                                    <div style="border-bottom: 1px solid var(--border-glass); padding-bottom: 1rem; margin-bottom: 1rem;">
+                                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.25rem;">
+                                            <strong style="color: var(--text-primary); font-size: 0.95rem;">${r.user_name}</strong>
+                                            <span style="color: var(--accent-amber); font-size: 0.85rem;">${'⭐'.repeat(r.rating)}</span>
+                                        </div>
+                                        <p style="color: var(--text-secondary); font-size: 0.9rem;">${r.comment}</p>
+                                        <span style="font-size: 0.75rem; color: var(--text-muted);">${r.created_at}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Booking Card Sidebar -->
+                    <div>
+                        <div class="card-box" style="position: sticky; top: 90px; border-color: var(--border-glow); box-shadow: var(--shadow-lg);">
+                            <div style="text-align: center; margin-bottom: 1.5rem;">
+                                <div style="font-size: 0.9rem; color: var(--text-secondary);">Ticket Price</div>
+                                <div style="font-family: var(--font-heading); font-size: 2.5rem; font-weight: 800; color: var(--text-primary); margin: 0.25rem 0;">₹${ev.ticket_price}</div>
+                                <div style="font-size: 0.85rem; color: var(--accent-emerald);">🎟️ ${ev.available_tickets} Tickets Available</div>
+                            </div>
+
+                            <button onclick="proceedToBooking()" class="btn-primary" style="width: 100%; justify-content: center; font-size: 1.1rem; padding: 0.9rem;">
+                                Book Ticket Now
+                            </button>
+                            
+                            <div style="margin-top: 1.25rem; font-size: 0.85rem; color: var(--text-muted); text-align: center;">
+                                🔒 Instant Digital QR Code Confirmation<br>100% Secure Checkout
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function startCountdown(targetDateStr) {
+            const target = new Date(targetDateStr).getTime();
+            setInterval(() => {
+                const now = new Date().getTime();
+                const diff = target - now;
+
+                if (diff <= 0) {
+                    document.getElementById('cdDays').textContent = '00';
+                    document.getElementById('cdHours').textContent = '00';
+                    document.getElementById('cdMins').textContent = '00';
+                    document.getElementById('cdSecs').textContent = '00';
+                    return;
+                }
+
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                if (document.getElementById('cdDays')) {
+                    document.getElementById('cdDays').textContent = String(days).padStart(2, '0');
+                    document.getElementById('cdHours').textContent = String(hours).padStart(2, '0');
+                    document.getElementById('cdMins').textContent = String(mins).padStart(2, '0');
+                    document.getElementById('cdSecs').textContent = String(secs).padStart(2, '0');
+                }
+            }, 1000);
+        }
+
+        function proceedToBooking() {
+            const user = Storage.getUser();
+            if (!user) {
+                showToast('Please log in to book tickets', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1200);
+                return;
+            }
+
+            Storage.setDraftBooking({
+                event_id: currentEvent.event_id,
+                event_name: currentEvent.event_name,
+                ticket_price: currentEvent.ticket_price,
+                available_tickets: currentEvent.available_tickets,
+                venue: currentEvent.venue,
+                event_date: currentEvent.event_date,
+                user_name: user.full_name,
+                number_of_tickets: 1,
+                total_amount: currentEvent.ticket_price,
+                seats: []
+            });
+
+            window.location.href = 'booking.html';
+        }
+
+        async function handleReviewSubmit(e) {
+            e.preventDefault();
+            const user = Storage.getUser();
+            const rating = parseInt(document.getElementById('revRating').value);
+            const comment = document.getElementById('revComment').value.trim();
+
+            const reviewData = {
+                event_id: currentEvent.event_id,
+                user_name: user ? user.full_name : 'Guest User',
+                rating: rating,
+                comment: comment
+            };
+
+            try {
+                await apiCall('/reviews/add/', 'POST', reviewData);
+                showToast('Review submitted successfully!', 'success');
+                loadEventDetails();
+            } catch (err) {
+                showToast('Failed to post review', 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadEventDetails);
+    </script>
+</body>
+</html>

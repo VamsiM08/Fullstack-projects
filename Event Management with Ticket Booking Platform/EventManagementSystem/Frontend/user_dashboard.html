@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - EventHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="navbarContainer"></div>
+
+    <main class="main-container">
+        <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h1 style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800;" id="userWelcomeTitle">User Dashboard</h1>
+                <p style="color: var(--text-secondary);">Overview of your tickets, payments, profile settings, and activity.</p>
+            </div>
+            <a href="events.html" class="btn-primary">+ Book New Ticket</a>
+        </div>
+
+        <!-- Metrics Overview -->
+        <section class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">🎟️</div>
+                <div>
+                    <div class="metric-val" id="dashTotalBookings">0</div>
+                    <div class="metric-label">Total Bookings</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="color: var(--accent-emerald); background: rgba(16, 185, 129, 0.15);">📅</div>
+                <div>
+                    <div class="metric-val" id="dashUpcomingEvents">0</div>
+                    <div class="metric-label">Upcoming Events</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="color: var(--accent-amber); background: rgba(245, 158, 11, 0.15);">💳</div>
+                <div>
+                    <div class="metric-val" id="dashTotalSpent">₹0</div>
+                    <div class="metric-label">Total Spent</div>
+                </div>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <!-- Recent Bookings Table -->
+            <div>
+                <div class="section-header">
+                    <h3 class="section-title" style="font-size: 1.4rem;">Recent Bookings</h3>
+                    <a href="booking_history.html" style="color: var(--accent-indigo); font-size: 0.9rem;">View All →</a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Event</th>
+                                <th>Date</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashBookingsTbody">
+                            <!-- Dynamically loaded -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Profile Info Widget -->
+            <div>
+                <div class="card-box">
+                    <h3 style="font-family: var(--font-heading); font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; border-bottom: 1px solid var(--border-glass); padding-bottom: 0.5rem;">
+                        👤 Profile Info
+                    </h3>
+                    <form id="profileForm" onsubmit="updateProfile(event)">
+                        <div class="form-group" style="margin-bottom: 0.75rem;">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" id="profName" class="form-control" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0.75rem;">
+                            <label class="form-label">Email</label>
+                            <input type="email" id="profEmail" class="form-control" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0.75rem;">
+                            <label class="form-label">Phone</label>
+                            <input type="tel" id="profPhone" class="form-control" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0.75rem;">
+                            <label class="form-label">City</label>
+                            <input type="text" id="profCity" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn-secondary" style="width: 100%; justify-content: center; margin-top: 0.5rem;">Update Profile</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 EventHub Ticket Booking Platform.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let currentUser = null;
+
+        async function initDashboard() {
+            currentUser = Storage.getUser();
+            if (!currentUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('userWelcomeTitle').textContent = `Welcome back, ${currentUser.full_name}!`;
+            document.getElementById('profName').value = currentUser.full_name;
+            document.getElementById('profEmail').value = currentUser.email;
+            document.getElementById('profPhone').value = currentUser.phone;
+            document.getElementById('profCity').value = currentUser.city;
+
+            try {
+                const bookings = await apiCall('/bookings/');
+                const userBookings = bookings.filter(b => b.user_name.toLowerCase() === currentUser.full_name.toLowerCase());
+
+                document.getElementById('dashTotalBookings').textContent = userBookings.length;
+                
+                const confirmed = userBookings.filter(b => b.booking_status === 'Confirmed');
+                document.getElementById('dashUpcomingEvents').textContent = confirmed.length;
+
+                const totalSpent = confirmed.reduce((acc, curr) => acc + curr.total_amount, 0);
+                document.getElementById('dashTotalSpent').textContent = `₹${totalSpent.toLocaleString()}`;
+
+                // Populate recent bookings
+                const tbody = document.getElementById('dashBookingsTbody');
+                if (userBookings.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color: var(--text-muted);">No bookings found.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = userBookings.slice(0, 5).map(b => `
+                    <tr>
+                        <td><strong>#${b.booking_id}</strong></td>
+                        <td>${b.event_name}</td>
+                        <td>${b.booking_date}</td>
+                        <td>₹${b.total_amount}</td>
+                        <td><span class="status-badge ${b.booking_status === 'Confirmed' ? 'status-confirmed' : 'status-pending'}">${b.booking_status}</span></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                showToast('Failed to load dashboard data', 'error');
+            }
+        }
+
+        async function updateProfile(e) {
+            e.preventDefault();
+            const updated = {
+                ...currentUser,
+                full_name: document.getElementById('profName').value.trim(),
+                email: document.getElementById('profEmail').value.trim(),
+                phone: document.getElementById('profPhone').value.trim(),
+                city: document.getElementById('profCity').value.trim(),
+            };
+
+            try {
+                await apiCall(`/users/update/${currentUser.user_id}/`, 'PUT', updated);
+                Storage.setUser(updated);
+                showToast('Profile updated successfully', 'success');
+            } catch (err) {
+                showToast('Failed to update profile', 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

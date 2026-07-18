@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - EventHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="navbarContainer"></div>
+
+    <main class="main-container">
+        <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1 style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800;">⚡ Master Admin Dashboard</h1>
+                <p style="color: var(--text-secondary);">Complete CRUD management across all 5 system modules: Users, Events, Venues, Bookings, & Payments.</p>
+            </div>
+            <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button onclick="openModal('adminAddUserModal')" class="btn-primary" style="padding: 0.5rem 0.9rem; font-size: 0.85rem;">+ Add User</button>
+                <button onclick="openModal('adminAddEventModal')" class="btn-primary" style="padding: 0.5rem 0.9rem; font-size: 0.85rem;">+ Add Event</button>
+                <button onclick="openModal('adminAddVenueModal')" class="btn-primary" style="padding: 0.5rem 0.9rem; font-size: 0.85rem;">+ Add Venue</button>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="category-pills" style="justify-content: flex-start; margin-bottom: 2rem;">
+            <button class="pill active" onclick="switchAdminTab('users')">👥 Users (4 APIs)</button>
+            <button class="pill" onclick="switchAdminTab('events')">🎪 Events (4 APIs)</button>
+            <button class="pill" onclick="switchAdminTab('venues')">📍 Venues (4 APIs)</button>
+            <button class="pill" onclick="switchAdminTab('bookings')">🎟️ Bookings (4 APIs)</button>
+            <button class="pill" onclick="switchAdminTab('payments')">💳 Payments (4 APIs)</button>
+        </div>
+
+        <!-- TAB 1: USERS MANAGEMENT -->
+        <div id="tab-users" class="admin-tab-content">
+            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem;">Registered Users Directory</h3>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>User ID</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>City</th>
+                            <th>Role</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminUsersTbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: EVENTS MANAGEMENT -->
+        <div id="tab-events" class="admin-tab-content" style="display: none;">
+            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem;">System Events</h3>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Event ID</th>
+                            <th>Event Name</th>
+                            <th>Category</th>
+                            <th>Organizer</th>
+                            <th>Date & Time</th>
+                            <th>Venue</th>
+                            <th>Price</th>
+                            <th>Tickets Left</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminEventsTbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 3: VENUES MANAGEMENT -->
+        <div id="tab-venues" class="admin-tab-content" style="display: none;">
+            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem;">System Venues</h3>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Venue ID</th>
+                            <th>Venue Name</th>
+                            <th>Location</th>
+                            <th>City</th>
+                            <th>Capacity</th>
+                            <th>Contact Person</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminVenuesTbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 4: BOOKINGS MANAGEMENT -->
+        <div id="tab-bookings" class="admin-tab-content" style="display: none;">
+            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem;">All Ticket Bookings</h3>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>User Name</th>
+                            <th>Event Name</th>
+                            <th>Booking Date</th>
+                            <th>Qty</th>
+                            <th>Total Amount</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminBookingsTbody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 5: PAYMENTS MANAGEMENT -->
+        <div id="tab-payments" class="admin-tab-content" style="display: none;">
+            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem;">Transaction Logs</h3>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Payment ID</th>
+                            <th>Booking ID</th>
+                            <th>User Name</th>
+                            <th>Amount</th>
+                            <th>Method</th>
+                            <th>Status</th>
+                            <th>Txn ID</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminPaymentsTbody"></tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Add User -->
+    <div class="modal-overlay" id="adminAddUserModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal('adminAddUserModal')">&times;</button>
+            <h2 style="font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 1.5rem;">Add User</h2>
+            <form onsubmit="adminCreateUser(event)">
+                <div class="form-group"><label class="form-label">Full Name</label><input type="text" id="admUsrName" class="form-control" required></div>
+                <div class="form-group"><label class="form-label">Email</label><input type="email" id="admUsrEmail" class="form-control" required></div>
+                <div class="form-group"><label class="form-label">Phone</label><input type="tel" id="admUsrPhone" class="form-control" required></div>
+                <div class="form-group"><label class="form-label">City</label><input type="text" id="admUsrCity" class="form-control" required></div>
+                <div class="form-group"><label class="form-label">Role</label>
+                    <select id="admUsrRole" class="form-control">
+                        <option value="user">user</option>
+                        <option value="organizer">organizer</option>
+                        <option value="admin">admin</option>
+                    </select>
+                </div>
+                <div class="form-group"><label class="form-label">Password</label><input type="password" id="admUsrPass" class="form-control" required></div>
+                <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Create User</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add Event -->
+    <div class="modal-overlay" id="adminAddEventModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal('adminAddEventModal')">&times;</button>
+            <h2 style="font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 1.5rem;">Add Event</h2>
+            <form onsubmit="adminCreateEvent(event)">
+                <div class="form-group"><label class="form-label">Event Name</label><input type="text" id="admEvName" class="form-control" required></div>
+                <div class="form-group"><label class="form-label">Category</label>
+                    <select id="admEvCat" class="form-control">
+                        <option value="Conference">Conference</option>
+                        <option value="Music Concert">Music Concert</option>
+                        <option value="Comedy Show">Comedy Show</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Sports">Sports</option>
+                    </select>
+                </div>
+                <div class="form-group"><label class="form-label">Organizer Name</label><input type="text" id="admEvOrg" class="form-control" required></div>
+                <div style="display:flex; gap:1rem;">
+                    <div class="form-group" style="flex:1;"><label class="form-label">Date</label><input type="date" id="admEvDate" class="form-control" required></div>
+                    <div class="form-group" style="flex:1;"><label class="form-label">Time</label><input type="time" id="admEvTime" class="form-control" required></div>
+                </div>
+                <div class="form-group"><label class="form-label">Venue</label><input type="text" id="admEvVenue" class="form-control" required></div>
+                <div style="display:flex; gap:1rem;">
+                    <div class="form-group" style="flex:1;"><label class="form-label">Ticket Price (₹)</label><input type="number" id="admEvPrice" class="form-control" required></div>
+                    <div class="form-group" style="flex:1;"><label class="form-label">Available Tickets</label><input type="number" id="admEvTickets" class="form-control" required></div>
+                </div>
+                <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Save Event</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add Venue -->
+    <div class="modal-overlay" id="adminAddVenueModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal('adminAddVenueModal')">&times;</button>
+            <h2 style="font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 1.5rem;">Add Venue</h2>
+            <form onsubmit="adminCreateVenue(event)">
+                <div class="form-group"><label class="form-label">Venue Name</label><input type="text" id="admVnName" class="form-control" required></div>
+                <div class="form-group"><label class="form-label">Location</label><input type="text" id="admVnLoc" class="form-control" required></div>
+                <div class="form-group"><label class="form-label">City</label><input type="text" id="admVnCity" class="form-control" required></div>
+                <div class="form-group"><label class="form-label">Capacity</label><input type="number" id="admVnCap" class="form-control" required></div>
+                <div class="form-group"><label class="form-label">Contact Person</label><input type="text" id="admVnContact" class="form-control" required></div>
+                <button type="submit" class="btn-primary" style="width:100%; justify-content:center;">Save Venue</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 EventHub Ticket Booking Platform.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        async function initAdminDash() {
+            const user = Storage.getUser();
+            if (!user || user.role !== 'admin') {
+                showToast('Master Admin privileges required', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1000);
+                return;
+            }
+
+            loadAllAdminData();
+        }
+
+        function switchAdminTab(tabName) {
+            document.querySelectorAll('.admin-tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('.category-pills .pill').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabName}`).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        async function loadAllAdminData() {
+            try {
+                const [users, events, venues, bookings, payments] = await Promise.all([
+                    apiCall('/users/'),
+                    apiCall('/events/'),
+                    apiCall('/venues/'),
+                    apiCall('/bookings/'),
+                    apiCall('/payments/')
+                ]);
+
+                // 1. Users Table
+                document.getElementById('adminUsersTbody').innerHTML = users.map(u => `
+                    <tr>
+                        <td>#${u.user_id}</td>
+                        <td><strong>${u.full_name}</strong></td>
+                        <td>${u.email}</td>
+                        <td>${u.phone}</td>
+                        <td>${u.city}</td>
+                        <td><span class="status-badge ${u.role === 'admin' ? 'status-confirmed' : 'status-pending'}">${u.role}</span></td>
+                        <td><button class="btn-danger" onclick="deleteUser(${u.user_id})">Delete</button></td>
+                    </tr>
+                `).join('');
+
+                // 2. Events Table
+                document.getElementById('adminEventsTbody').innerHTML = events.map(e => `
+                    <tr>
+                        <td>#${e.event_id}</td>
+                        <td><strong>${e.event_name}</strong></td>
+                        <td>${e.category}</td>
+                        <td>${e.organizer_name}</td>
+                        <td>${e.event_date} ${e.event_time}</td>
+                        <td>${e.venue}</td>
+                        <td>₹${e.ticket_price}</td>
+                        <td>${e.available_tickets}</td>
+                        <td><button class="btn-danger" onclick="deleteEvent(${e.event_id})">Delete</button></td>
+                    </tr>
+                `).join('');
+
+                // 3. Venues Table
+                document.getElementById('adminVenuesTbody').innerHTML = venues.map(v => `
+                    <tr>
+                        <td>#${v.venue_id}</td>
+                        <td><strong>${v.venue_name}</strong></td>
+                        <td>${v.location}</td>
+                        <td>${v.city}</td>
+                        <td>${v.capacity}</td>
+                        <td>${v.contact_person}</td>
+                        <td><button class="btn-danger" onclick="deleteVenue(${v.venue_id})">Delete</button></td>
+                    </tr>
+                `).join('');
+
+                // 4. Bookings Table
+                document.getElementById('adminBookingsTbody').innerHTML = bookings.map(b => `
+                    <tr>
+                        <td>#${b.booking_id}</td>
+                        <td><strong>${b.user_name}</strong></td>
+                        <td>${b.event_name}</td>
+                        <td>${b.booking_date}</td>
+                        <td>${b.number_of_tickets}</td>
+                        <td>₹${b.total_amount}</td>
+                        <td><span class="status-badge ${b.booking_status === 'Confirmed' ? 'status-confirmed' : 'status-pending'}">${b.booking_status}</span></td>
+                        <td><button class="btn-danger" onclick="deleteBooking(${b.booking_id})">Delete</button></td>
+                    </tr>
+                `).join('');
+
+                // 5. Payments Table
+                document.getElementById('adminPaymentsTbody').innerHTML = payments.map(p => `
+                    <tr>
+                        <td>#${p.payment_id}</td>
+                        <td>#${p.booking_id}</td>
+                        <td><strong>${p.user_name}</strong></td>
+                        <td>₹${p.amount}</td>
+                        <td>${p.payment_method}</td>
+                        <td><span class="status-badge ${p.payment_status === 'Success' ? 'status-success' : 'status-failed'}">${p.payment_status}</span></td>
+                        <td><code>${p.transaction_id}</code></td>
+                        <td>${p.payment_date}</td>
+                        <td><button class="btn-danger" onclick="deletePayment(${p.payment_id})">Delete</button></td>
+                    </tr>
+                `).join('');
+
+            } catch (err) {
+                showToast('Failed to load admin management data', 'error');
+            }
+        }
+
+        async function adminCreateUser(e) {
+            e.preventDefault();
+            const payload = {
+                user_id: Math.floor(100 + Math.random() * 900),
+                full_name: document.getElementById('admUsrName').value.trim(),
+                email: document.getElementById('admUsrEmail').value.trim(),
+                phone: document.getElementById('admUsrPhone').value.trim(),
+                city: document.getElementById('admUsrCity').value.trim(),
+                role: document.getElementById('admUsrRole').value,
+                password: document.getElementById('admUsrPass').value
+            };
+            try {
+                await apiCall('/users/add/', 'POST', payload);
+                showToast('User created', 'success');
+                closeModal('adminAddUserModal');
+                loadAllAdminData();
+            } catch (err) { showToast(err.message || 'Error creating user', 'error'); }
+        }
+
+        async function adminCreateEvent(e) {
+            e.preventDefault();
+            const payload = {
+                event_id: Math.floor(200 + Math.random() * 900),
+                event_name: document.getElementById('admEvName').value.trim(),
+                category: document.getElementById('admEvCat').value,
+                organizer_name: document.getElementById('admEvOrg').value.trim(),
+                event_date: document.getElementById('admEvDate').value,
+                event_time: document.getElementById('admEvTime').value,
+                venue: document.getElementById('admEvVenue').value.trim(),
+                ticket_price: parseFloat(document.getElementById('admEvPrice').value),
+                available_tickets: parseInt(document.getElementById('admEvTickets').value),
+                image_url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80'
+            };
+            try {
+                await apiCall('/events/add/', 'POST', payload);
+                showToast('Event created', 'success');
+                closeModal('adminAddEventModal');
+                loadAllAdminData();
+            } catch (err) { showToast(err.message || 'Error creating event', 'error'); }
+        }
+
+        async function adminCreateVenue(e) {
+            e.preventDefault();
+            const payload = {
+                venue_id: Math.floor(300 + Math.random() * 900),
+                venue_name: document.getElementById('admVnName').value.trim(),
+                location: document.getElementById('admVnLoc').value.trim(),
+                city: document.getElementById('admVnCity').value.trim(),
+                capacity: parseInt(document.getElementById('admVnCap').value),
+                contact_person: document.getElementById('admVnContact').value.trim()
+            };
+            try {
+                await apiCall('/venues/add/', 'POST', payload);
+                showToast('Venue created', 'success');
+                closeModal('adminAddVenueModal');
+                loadAllAdminData();
+            } catch (err) { showToast(err.message || 'Error creating venue', 'error'); }
+        }
+
+        async function deleteUser(id) {
+            if (confirm(`Delete User #${id}?`)) {
+                await apiCall(`/users/delete/${id}/`, 'DELETE');
+                showToast('User deleted', 'success');
+                loadAllAdminData();
+            }
+        }
+        async function deleteEvent(id) {
+            if (confirm(`Delete Event #${id}?`)) {
+                await apiCall(`/events/delete/${id}/`, 'DELETE');
+                showToast('Event deleted', 'success');
+                loadAllAdminData();
+            }
+        }
+        async function deleteVenue(id) {
+            if (confirm(`Delete Venue #${id}?`)) {
+                await apiCall(`/venues/delete/${id}/`, 'DELETE');
+                showToast('Venue deleted', 'success');
+                loadAllAdminData();
+            }
+        }
+        async function deleteBooking(id) {
+            if (confirm(`Delete Booking #${id}?`)) {
+                await apiCall(`/bookings/delete/${id}/`, 'DELETE');
+                showToast('Booking deleted', 'success');
+                loadAllAdminData();
+            }
+        }
+        async function deletePayment(id) {
+            if (confirm(`Delete Payment #${id}?`)) {
+                await apiCall(`/payments/delete/${id}/`, 'DELETE');
+                showToast('Payment deleted', 'success');
+                loadAllAdminData();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initAdminDash);
+    </script>
+</body>
+</html>

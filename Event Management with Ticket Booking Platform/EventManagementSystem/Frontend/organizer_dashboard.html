@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organizer Dashboard - EventHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="navbarContainer"></div>
+
+    <main class="main-container">
+        <div style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h1 style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800;">🎙️ Organizer Dashboard</h1>
+                <p style="color: var(--text-secondary);">Manage published events, monitor ticket sales, track revenue, and configure venues.</p>
+            </div>
+            <div style="display: flex; gap: 1rem;">
+                <button onclick="openModal('addVenueModal')" class="btn-secondary">+ Add Venue</button>
+                <button onclick="openModal('addEventModal')" class="btn-primary">+ Create New Event</button>
+            </div>
+        </div>
+
+        <!-- Metrics Overview Widgets -->
+        <section class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">🎪</div>
+                <div>
+                    <div class="metric-val" id="orgTotalEvents">0</div>
+                    <div class="metric-label">Total Events</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="color: var(--accent-pink); background: rgba(236, 72, 153, 0.15);">🎟️</div>
+                <div>
+                    <div class="metric-val" id="orgTicketsSold">0</div>
+                    <div class="metric-label">Tickets Sold</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="color: var(--accent-emerald); background: rgba(16, 185, 129, 0.15);">💰</div>
+                <div>
+                    <div class="metric-val" id="orgRevenue">₹0</div>
+                    <div class="metric-label">Revenue Generated</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Managed Events Table -->
+        <div style="margin-bottom: 3rem;">
+            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem;">Published Events</h3>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Event Name</th>
+                            <th>Category</th>
+                            <th>Date & Time</th>
+                            <th>Venue</th>
+                            <th>Price</th>
+                            <th>Tickets Available</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orgEventsTbody">
+                        <!-- Dynamically populated -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Managed Venues Table -->
+        <div>
+            <h3 style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 700; margin-bottom: 1rem;">Venues Directory</h3>
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Venue Name</th>
+                            <th>Location</th>
+                            <th>City</th>
+                            <th>Capacity</th>
+                            <th>Contact Person</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orgVenuesTbody">
+                        <!-- Dynamically populated -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Add Event -->
+    <div class="modal-overlay" id="addEventModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal('addEventModal')">&times;</button>
+            <h2 style="font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 1.5rem;">Create New Event</h2>
+
+            <form onsubmit="handleCreateEvent(event)">
+                <div class="form-group">
+                    <label class="form-label">Event Name</label>
+                    <input type="text" id="evName" class="form-control" placeholder="e.g. AI & Cloud Conference 2026" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select id="evCat" class="form-control">
+                        <option value="Conference">Conference</option>
+                        <option value="Music Concert">Music Concert</option>
+                        <option value="Comedy Show">Comedy Show</option>
+                        <option value="Workshop">Workshop</option>
+                        <option value="Sports">Sports</option>
+                        <option value="Seminar">Seminar</option>
+                    </select>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">Date (YYYY-MM-DD)</label>
+                        <input type="date" id="evDate" class="form-control" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">Time (HH:MM)</label>
+                        <input type="time" id="evTime" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Venue</label>
+                    <input type="text" id="evVenue" class="form-control" placeholder="Bangalore International Convention Center" required>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">Ticket Price (₹)</label>
+                        <input type="number" id="evPrice" class="form-control" value="999" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">Available Tickets</label>
+                        <input type="number" id="evTickets" class="form-control" value="200" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea id="evDesc" class="form-control" rows="3" placeholder="Overview of the event..."></textarea>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">Publish Event</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Add Venue -->
+    <div class="modal-overlay" id="addVenueModal">
+        <div class="modal-card">
+            <button class="modal-close" onclick="closeModal('addVenueModal')">&times;</button>
+            <h2 style="font-family: var(--font-heading); font-size: 1.6rem; margin-bottom: 1.5rem;">Add New Venue</h2>
+
+            <form onsubmit="handleCreateVenue(event)">
+                <div class="form-group">
+                    <label class="form-label">Venue Name</label>
+                    <input type="text" id="vnName" class="form-control" placeholder="e.g. Grand Palace Convention" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Location / Landmark</label>
+                    <input type="text" id="vnLocation" class="form-control" placeholder="e.g. MG Road, Near Metro" required>
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">City</label>
+                        <input type="text" id="vnCity" class="form-control" placeholder="Bangalore" required>
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label class="form-label">Capacity</label>
+                        <input type="number" id="vnCap" class="form-control" value="1000" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Contact Person Name</label>
+                    <input type="text" id="vnContact" class="form-control" placeholder="e.g. Ramesh Kumar" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%; justify-content: center;">Save Venue</button>
+            </form>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2026 EventHub Ticket Booking Platform.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let currentUser = null;
+
+        async function initOrganizerDash() {
+            currentUser = Storage.getUser();
+            if (!currentUser || (currentUser.role !== 'organizer' && currentUser.role !== 'admin')) {
+                showToast('Organizer access required', 'error');
+                setTimeout(() => window.location.href = 'login.html', 1000);
+                return;
+            }
+
+            loadData();
+        }
+
+        async function loadData() {
+            try {
+                const events = await apiCall('/events/');
+                const bookings = await apiCall('/bookings/');
+                const venues = await apiCall('/venues/');
+
+                document.getElementById('orgTotalEvents').textContent = events.length;
+
+                const ticketsSold = bookings.reduce((acc, b) => acc + (b.number_of_tickets || 0), 0);
+                document.getElementById('orgTicketsSold').textContent = ticketsSold;
+
+                const totalRev = bookings.reduce((acc, b) => acc + (b.total_amount || 0), 0);
+                document.getElementById('orgRevenue').textContent = `₹${totalRev.toLocaleString()}`;
+
+                // Render Events Table
+                const evTbody = document.getElementById('orgEventsTbody');
+                evTbody.innerHTML = events.map(ev => `
+                    <tr>
+                        <td>#${ev.event_id}</td>
+                        <td><strong>${ev.event_name}</strong></td>
+                        <td>${ev.category}</td>
+                        <td>${ev.event_date} ${ev.event_time}</td>
+                        <td>${ev.venue}</td>
+                        <td>₹${ev.ticket_price}</td>
+                        <td>${ev.available_tickets}</td>
+                        <td>
+                            <button class="btn-danger" onclick="deleteEventItem(${ev.event_id})">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+
+                // Render Venues Table
+                const vnTbody = document.getElementById('orgVenuesTbody');
+                vnTbody.innerHTML = venues.map(vn => `
+                    <tr>
+                        <td>#${vn.venue_id}</td>
+                        <td><strong>${vn.venue_name}</strong></td>
+                        <td>${vn.location}</td>
+                        <td>${vn.city}</td>
+                        <td>${vn.capacity}</td>
+                        <td>${vn.contact_person}</td>
+                        <td>
+                            <button class="btn-danger" onclick="deleteVenueItem(${vn.venue_id})">Delete</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                showToast('Failed to load organizer metrics', 'error');
+            }
+        }
+
+        async function handleCreateEvent(e) {
+            e.preventDefault();
+            const payload = {
+                event_id: Math.floor(200 + Math.random() * 9000),
+                event_name: document.getElementById('evName').value.trim(),
+                category: document.getElementById('evCat').value,
+                organizer_name: currentUser.full_name,
+                event_date: document.getElementById('evDate').value,
+                event_time: document.getElementById('evTime').value,
+                venue: document.getElementById('evVenue').value.trim(),
+                ticket_price: parseFloat(document.getElementById('evPrice').value),
+                available_tickets: parseInt(document.getElementById('evTickets').value),
+                description: document.getElementById('evDesc').value.trim(),
+                image_url: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80'
+            };
+
+            try {
+                await apiCall('/events/add/', 'POST', payload);
+                showToast('New event created successfully!', 'success');
+                closeModal('addEventModal');
+                loadData();
+            } catch (err) {
+                showToast('Failed to create event', 'error');
+            }
+        }
+
+        async function handleCreateVenue(e) {
+            e.preventDefault();
+            const payload = {
+                venue_id: Math.floor(300 + Math.random() * 9000),
+                venue_name: document.getElementById('vnName').value.trim(),
+                location: document.getElementById('vnLocation').value.trim(),
+                city: document.getElementById('vnCity').value.trim(),
+                capacity: parseInt(document.getElementById('vnCap').value),
+                contact_person: document.getElementById('vnContact').value.trim()
+            };
+
+            try {
+                await apiCall('/venues/add/', 'POST', payload);
+                showToast('Venue saved successfully!', 'success');
+                closeModal('addVenueModal');
+                loadData();
+            } catch (err) {
+                showToast('Failed to add venue', 'error');
+            }
+        }
+
+        async function deleteEventItem(id) {
+            if (!confirm('Are you sure you want to delete this event?')) return;
+            try {
+                await apiCall(`/events/delete/${id}/`, 'DELETE');
+                showToast('Event deleted', 'success');
+                loadData();
+            } catch (err) {
+                showToast('Failed to delete event', 'error');
+            }
+        }
+
+        async function deleteVenueItem(id) {
+            if (!confirm('Are you sure you want to delete this venue?')) return;
+            try {
+                await apiCall(`/venues/delete/${id}/`, 'DELETE');
+                showToast('Venue deleted', 'success');
+                loadData();
+            } catch (err) {
+                showToast('Failed to delete venue', 'error');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', initOrganizerDash);
+    </script>
+</body>
+</html>

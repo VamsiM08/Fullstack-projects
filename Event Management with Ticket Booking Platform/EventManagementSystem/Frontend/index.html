@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventHub - Premier Event Management & Ticket Booking Platform</title>
+    <meta name="description" content="Discover, book, and host world-class music concerts, tech conferences, workshops, comedy shows, and sports events with instant digital tickets.">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <div id="navbarContainer"></div>
+
+    <main class="main-container">
+        <!-- Hero Banner Section -->
+        <section class="hero">
+            <h1 class="hero-title">Experience Unforgettable Events</h1>
+            <p class="hero-subtitle">Discover top-rated concerts, conferences, comedy shows, and workshops around you. Book digital tickets in seconds.</p>
+            
+            <!-- Live Search Bar -->
+            <div class="search-box">
+                <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="color: var(--text-muted); margin-right: 0.5rem;">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                </svg>
+                <input type="text" id="homeSearchInput" class="search-input" placeholder="Search by event title, category, or city (e.g. Bangalore, Tech, Concert)...">
+                <button class="btn-primary" onclick="triggerHomeSearch()">Search Events</button>
+            </div>
+
+            <!-- Category Pills Filter -->
+            <div class="category-pills" id="categoryPills">
+                <button class="pill active" onclick="filterByCategory('All')">🌟 All Categories</button>
+                <button class="pill" onclick="filterByCategory('Conference')">💼 Conference</button>
+                <button class="pill" onclick="filterByCategory('Music Concert')">🎵 Music Concert</button>
+                <button class="pill" onclick="filterByCategory('Comedy Show')">🎤 Comedy Show</button>
+                <button class="pill" onclick="filterByCategory('Workshop')">💻 Workshop</button>
+                <button class="pill" onclick="filterByCategory('Sports')">⚽ Sports</button>
+                <button class="pill" onclick="filterByCategory('Seminar')">📚 Seminar</button>
+            </div>
+        </section>
+
+        <!-- Stats Overview Widgets -->
+        <section class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-icon">🎪</div>
+                <div>
+                    <div class="metric-val" id="statTotalEvents">12+</div>
+                    <div class="metric-label">Active Events</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="color: var(--accent-pink); background: rgba(236, 72, 153, 0.15);">🎟️</div>
+                <div>
+                    <div class="metric-val" id="statTicketsSold">2,450+</div>
+                    <div class="metric-label">Tickets Issued</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="color: var(--accent-emerald); background: rgba(16, 185, 129, 0.15);">📍</div>
+                <div>
+                    <div class="metric-val" id="statVenues">15+</div>
+                    <div class="metric-label">Partner Venues</div>
+                </div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-icon" style="color: var(--accent-amber); background: rgba(245, 158, 11, 0.15);">⭐</div>
+                <div>
+                    <div class="metric-val">4.9/5</div>
+                    <div class="metric-label">User Satisfaction</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Events Grid -->
+        <section>
+            <div class="section-header">
+                <h2 class="section-title">🔥 Featured Events</h2>
+                <a href="events.html" class="nav-link" style="color: var(--accent-indigo);">View All Events →</a>
+            </div>
+
+            <div class="events-grid" id="featuredEventsGrid">
+                <!-- Dynamically Populated via Fetch API -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2026 EventHub Ticket Booking Platform. Built with Django REST APIs & Vanilla JavaScript.</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        let allEvents = [];
+
+        async function loadHomeEvents() {
+            try {
+                allEvents = await apiCall('/events/');
+                document.getElementById('statTotalEvents').textContent = allEvents.length;
+                renderEvents(allEvents);
+            } catch (err) {
+                showToast('Failed to load events from backend server', 'error');
+            }
+        }
+
+        function renderEvents(events) {
+            const grid = document.getElementById('featuredEventsGrid');
+            if (!events || events.length === 0) {
+                grid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center; padding: 2rem;">No events found matching your filter.</p>';
+                return;
+            }
+
+            grid.innerHTML = events.map(ev => `
+                <div class="event-card">
+                    <div class="event-card-img-wrapper">
+                        <img src="${ev.image_url || 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&auto=format&fit=crop&q=80'}" alt="${ev.event_name}" class="event-card-img">
+                        <span class="badge-category">${ev.category}</span>
+                        <span class="badge-price">₹${ev.ticket_price}</span>
+                    </div>
+                    <div class="event-card-body">
+                        <h3 class="event-card-title">${ev.event_name}</h3>
+                        <div class="event-info-item">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                            <span>${ev.event_date} at ${ev.event_time}</span>
+                        </div>
+                        <div class="event-info-item">
+                            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/></svg>
+                            <span>${ev.venue}</span>
+                        </div>
+                        <div class="event-card-footer">
+                            <span style="font-size: 0.85rem; color: var(--accent-emerald);">🎟️ ${ev.available_tickets} left</span>
+                            <a href="event_details.html?id=${ev.event_id}" class="btn-primary" style="padding: 0.45rem 1rem; font-size: 0.85rem;">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterByCategory(cat) {
+            document.querySelectorAll('#categoryPills .pill').forEach(p => p.classList.remove('active'));
+            event.target.classList.add('active');
+
+            if (cat === 'All') {
+                renderEvents(allEvents);
+            } else {
+                const filtered = allEvents.filter(e => e.category === cat);
+                renderEvents(filtered);
+            }
+        }
+
+        function triggerHomeSearch() {
+            const query = document.getElementById('homeSearchInput').value.toLowerCase().trim();
+            if (!query) {
+                renderEvents(allEvents);
+                return;
+            }
+            const filtered = allEvents.filter(e => 
+                e.event_name.toLowerCase().includes(query) ||
+                e.category.toLowerCase().includes(query) ||
+                e.venue.toLowerCase().includes(query)
+            );
+            renderEvents(filtered);
+        }
+
+        document.addEventListener('DOMContentLoaded', loadHomeEvents);
+    </script>
+</body>
+</html>
