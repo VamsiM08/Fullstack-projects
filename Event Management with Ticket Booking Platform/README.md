@@ -4,6 +4,19 @@ A full-stack Event Management and Ticket Booking web application built with **Dj
 
 ---
 
+## 🎨 Application Screenshots & Visual Proofs
+
+### 1. Frontend Application UI
+![Frontend Application UI](screenshots/frontend_application.png)
+
+### 2. SQLite Database Schema & Seed Data
+![Database Screenshot](screenshots/database_screenshot.png)
+
+### 3. Postman REST API Testing
+![Postman API Testing](screenshots/postman_api_testing.png)
+
+---
+
 ## 📁 Project Folder Structure
 
 ```
