@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passenger Dashboard - RailExpress</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🚆</div>
+        <div class="brand-text">Rail<span>Express</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="trains.html" class="nav-link">Search Trains</a></li>
+        <li><a href="booking_history.html" class="nav-link">PNR / Bookings</a></li>
+      </ul>
+      <div id="nav-user-area"></div>
+    </div>
+  </nav>
+
+  <!-- Main Wrapper -->
+  <main class="main-wrapper">
+    
+    <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+      <div>
+        <h1 class="page-title">Passenger Dashboard</h1>
+        <p class="page-subtitle">Welcome back, <strong id="dash-user-name" style="color: var(--primary-cyan);">Rahul Sharma</strong></p>
+      </div>
+      <a href="trains.html" class="btn btn-primary">+ Book New Ticket</a>
+    </div>
+
+    <!-- Metrics Stats Grid -->
+    <div class="stats-grid">
+      <div class="glass-panel stat-card">
+        <div class="stat-icon">🎟️</div>
+        <div>
+          <div id="dash-total-bookings" class="stat-value">0</div>
+          <div class="stat-label">Total Reservations</div>
+        </div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon">🟢</div>
+        <div>
+          <div id="dash-upcoming-trips" class="stat-value" style="color: var(--accent-emerald);">0</div>
+          <div class="stat-label">Confirmed / Upcoming</div>
+        </div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon">🚫</div>
+        <div>
+          <div id="dash-cancelled-trips" class="stat-value" style="color: var(--accent-rose);">0</div>
+          <div class="stat-label">Cancelled Tickets</div>
+        </div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon">💳</div>
+        <div>
+          <div id="dash-total-spend" class="stat-value" style="color: var(--primary-cyan);">₹0</div>
+          <div class="stat-label">Total Payment History</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Payments History Table -->
+    <section style="margin-top: 3rem;">
+      <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 1.25rem;">Recent Payment Transactions</h2>
+      <div class="glass-panel table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Payment ID</th>
+              <th>Booking ID</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Transaction Reference</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="passenger-payments-tbody">
+            <!-- Loaded dynamically via script.js -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

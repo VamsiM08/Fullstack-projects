@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Reservation - RailExpress</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🚆</div>
+        <div class="brand-text">Rail<span>Express</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="trains.html" class="nav-link">Search Trains</a></li>
+        <li><a href="booking_history.html" class="nav-link">PNR / Bookings</a></li>
+      </ul>
+      <div id="nav-user-area"></div>
+    </div>
+  </nav>
+
+  <!-- Main Wrapper -->
+  <main class="main-wrapper" style="max-width: 900px;">
+    
+    <div class="page-header">
+      <h1 class="page-title">Ticket Reservation</h1>
+      <p class="page-subtitle">Select your preferred coach type, pick your seat, and verify booking details</p>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+      
+      <!-- Booking Form Card -->
+      <div class="glass-panel" style="padding: 2rem;">
+        <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem;">Passenger & Seat Selection</h2>
+
+        <form id="booking-form">
+          <div class="form-group">
+            <label class="form-label">Passenger Full Name</label>
+            <input type="text" id="book-passenger-name" class="form-control" placeholder="Rahul Sharma" value="Rahul Sharma" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Coach Type</label>
+            <select id="book-coach-type" class="form-select">
+              <option value="Chair Car">Chair Car (CC)</option>
+              <option value="Executive Chair">Executive Chair (EC)</option>
+              <option value="AC 3 Tier">AC 3 Tier (3A)</option>
+              <option value="AC 2 Tier">AC 2 Tier (2A)</option>
+              <option value="Sleeper">Sleeper (SL)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Selected Seat Number</label>
+            <input type="text" id="book-seat-number" class="form-control" value="C5-18" readonly style="color: var(--primary-cyan); font-weight: 700;">
+          </div>
+
+          <h3 style="font-size: 0.95rem; font-weight: 700; margin: 1.5rem 0 0.5rem; color: var(--text-muted);">Interactive Seat Grid (Coach C5)</h3>
+          <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 1rem;">Click any available seat button below to pick your seat preference.</p>
+          
+          <div id="seat-grid" class="seat-picker-container">
+            <!-- Rendered dynamically via script.js -->
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.9rem; font-size: 1.05rem; margin-top: 1.5rem;">Confirm & Proceed to Payment →</button>
+        </form>
+      </div>
+
+      <!-- Booking Summary Card -->
+      <div class="glass-panel" style="padding: 2rem; align-self: flex-start;">
+        <h2 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem;">Journey Summary</h2>
+        
+        <div style="margin-bottom: 1.25rem;">
+          <span class="form-label">Train</span>
+          <strong id="book-train-name" style="font-size: 1.1rem; color: var(--primary-cyan); display: block;">Vande Bharat Express</strong>
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+          <span class="form-label">Route</span>
+          <strong id="book-route" style="font-size: 1rem; display: block;">Chennai ➔ Bangalore</strong>
+        </div>
+
+        <div style="margin-bottom: 1.25rem;">
+          <span class="form-label">Date of Journey</span>
+          <strong id="book-date" style="font-size: 1rem; display: block;">2026-08-15</strong>
+        </div>
+
+        <div style="margin-top: 2rem; padding-top: 1.25rem; border-top: 1px dashed var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-weight: 700; font-size: 1.1rem;">Total Payable:</span>
+          <strong id="book-fare-display" style="font-size: 1.8rem; font-weight: 800; color: var(--primary-cyan);">₹1200</strong>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

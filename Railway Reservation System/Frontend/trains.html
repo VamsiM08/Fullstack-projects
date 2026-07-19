@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search & Filter Trains - RailExpress</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🚆</div>
+        <div class="brand-text">Rail<span>Express</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="trains.html" class="nav-link active">Search Trains</a></li>
+        <li><a href="booking_history.html" class="nav-link">PNR / Bookings</a></li>
+      </ul>
+      <div id="nav-user-area"></div>
+    </div>
+  </nav>
+
+  <!-- Main Wrapper -->
+  <main class="main-wrapper">
+    
+    <div class="page-header">
+      <h1 class="page-title">Train Search & Live Availability</h1>
+      <p class="page-subtitle">Filter by departure, train type, and max fare with real-time seat tracking</p>
+    </div>
+
+    <!-- Advanced Filter Bar -->
+    <div class="glass-panel" style="padding: 1.5rem; margin-bottom: 2rem;">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Source</label>
+          <input type="text" id="filter-source" class="form-control" placeholder="Source City...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Destination</label>
+          <input type="text" id="filter-destination" class="form-control" placeholder="Destination City...">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Train Type</label>
+          <select id="filter-type" class="form-select">
+            <option value="">All Train Types</option>
+            <option value="Vande Bharat">Vande Bharat</option>
+            <option value="Rajdhani">Rajdhani</option>
+            <option value="Shatabdi">Shatabdi</option>
+            <option value="Superfast">Superfast</option>
+            <option value="Express">Express</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Max Fare (₹)</label>
+          <input type="number" id="filter-max-fare" class="form-control" placeholder="e.g. 3000" value="5000">
+        </div>
+      </div>
+    </div>
+
+    <!-- Trains List Results -->
+    <div id="trains-results-container" class="grid-cards">
+      <!-- Dynamically filled via script.js -->
+    </div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

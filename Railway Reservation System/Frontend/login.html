@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - RailExpress</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🚆</div>
+        <div class="brand-text">Rail<span>Express</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="trains.html" class="nav-link">Search Trains</a></li>
+        <li><a href="booking_history.html" class="nav-link">PNR / Bookings</a></li>
+      </ul>
+      <div id="nav-user-area"></div>
+    </div>
+  </nav>
+
+  <!-- Main Wrapper -->
+  <main class="main-wrapper" style="display: flex; align-items: center; justify-content: center; min-height: 80vh;">
+    
+    <div class="glass-panel" style="width: 100%; max-width: 440px; padding: 2.5rem;">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <h1 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem;">Welcome Back</h1>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Sign in to manage your bookings and dashboard</p>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label">Account Type</label>
+          <select id="login-role" class="form-select">
+            <option value="passenger">Passenger Account</option>
+            <option value="admin">Railway Administrator</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" id="login-email" class="form-control" placeholder="rahul@gmail.com / admin@railway.com" value="rahul@gmail.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" value="rahul123" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.8rem; margin-top: 1rem;">Sign In</button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">
+        Don't have a passenger account? <a href="register.html" style="color: var(--primary-cyan); text-decoration: none; font-weight: 600;">Register Now</a>
+      </div>
+
+      <div style="margin-top: 1.5rem; padding: 0.75rem; background: rgba(255,255,255,0.03); border-radius: 8px; font-size: 0.8rem; color: var(--text-dim);">
+        💡 <strong>Demo Credentials:</strong><br>
+        • Passenger: <code>rahul@gmail.com</code> / <code>rahul123</code><br>
+        • Admin: <code>admin@railway.com</code> / <code>admin123</code>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

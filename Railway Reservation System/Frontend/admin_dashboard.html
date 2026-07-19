@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Railway Admin Dashboard - RailExpress</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">⚙️</div>
+        <div class="brand-text">Admin<span>Panel</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home View</a></li>
+        <li><a href="admin_dashboard.html" class="nav-link active">Admin Dashboard</a></li>
+      </ul>
+      <div id="nav-user-area"></div>
+    </div>
+  </nav>
+
+  <!-- Main Wrapper -->
+  <main class="main-wrapper">
+    
+    <div class="page-header">
+      <h1 class="page-title">Railway Administrator Console</h1>
+      <p class="page-subtitle">Full CRUD control over Passengers, Trains, Routes & Schedules, Reservations, and Payment records</p>
+    </div>
+
+    <!-- Admin Overview Stats -->
+    <div class="stats-grid">
+      <div class="glass-panel stat-card">
+        <div class="stat-icon">👥</div>
+        <div>
+          <div id="admin-stat-passengers" class="stat-value">0</div>
+          <div class="stat-label">Registered Passengers</div>
+        </div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon">🚆</div>
+        <div>
+          <div id="admin-stat-trains" class="stat-value">0</div>
+          <div class="stat-label">Active Trains</div>
+        </div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon">📅</div>
+        <div>
+          <div id="admin-stat-schedules" class="stat-value">0</div>
+          <div class="stat-label">Routes & Schedules</div>
+        </div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon">🎟️</div>
+        <div>
+          <div id="admin-stat-bookings" class="stat-value">0</div>
+          <div class="stat-label">Total Reservations</div>
+        </div>
+      </div>
+      <div class="glass-panel stat-card">
+        <div class="stat-icon">💰</div>
+        <div>
+          <div id="admin-stat-revenue" class="stat-value" style="color: var(--accent-emerald);">₹0</div>
+          <div class="stat-label">Total Revenue Collected</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Management Navigation Tabs -->
+    <div style="display: flex; gap: 0.75rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1rem; overflow-x: auto;">
+      <button id="btn-tab-trains" onclick="switchAdminTab('trains')" class="btn btn-secondary admin-tab-btn active">🚆 Trains</button>
+      <button id="btn-tab-schedules" onclick="switchAdminTab('schedules')" class="btn btn-secondary admin-tab-btn">📅 Schedules</button>
+      <button id="btn-tab-passengers" onclick="switchAdminTab('passengers')" class="btn btn-secondary admin-tab-btn">👥 Passengers</button>
+      <button id="btn-tab-bookings" onclick="switchAdminTab('bookings')" class="btn btn-secondary admin-tab-btn">🎟️ Bookings</button>
+      <button id="btn-tab-payments" onclick="switchAdminTab('payments')" class="btn btn-secondary admin-tab-btn">💳 Payments</button>
+    </div>
+
+    <!-- TAB 1: TRAINS MANAGEMENT -->
+    <div id="tab-trains" class="admin-tab-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2>Train Fleet Management</h2>
+        <button onclick="openModal('modal-add-train')" class="btn btn-primary">+ Add New Train</button>
+      </div>
+      <div class="glass-panel table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Train ID</th>
+              <th>Train Name</th>
+              <th>Train Number</th>
+              <th>Type</th>
+              <th>Total Seats</th>
+              <th>Route</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-trains-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 2: SCHEDULES MANAGEMENT -->
+    <div id="tab-schedules" class="admin-tab-content" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2>Route & Schedule Management</h2>
+        <button onclick="openModal('modal-add-schedule')" class="btn btn-primary">+ Add New Schedule</button>
+      </div>
+      <div class="glass-panel table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Schedule ID</th>
+              <th>Train Name</th>
+              <th>Route</th>
+              <th>Departure</th>
+              <th>Arrival</th>
+              <th>Fare</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-schedules-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 3: PASSENGERS MANAGEMENT -->
+    <div id="tab-passengers" class="admin-tab-content" style="display: none;">
+      <div style="margin-bottom: 1.5rem;">
+        <h2>Passenger Registry</h2>
+      </div>
+      <div class="glass-panel table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Gender & Age</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-passengers-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 4: BOOKINGS MANAGEMENT -->
+    <div id="tab-bookings" class="admin-tab-content" style="display: none;">
+      <div style="margin-bottom: 1.5rem;">
+        <h2>Reservation Management</h2>
+      </div>
+      <div class="glass-panel table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Booking ID</th>
+              <th>Passenger</th>
+              <th>Train</th>
+              <th>Date</th>
+              <th>Coach & Seat</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="admin-bookings-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB 5: PAYMENTS MANAGEMENT -->
+    <div id="tab-payments" class="admin-tab-content" style="display: none;">
+      <div style="margin-bottom: 1.5rem;">
+        <h2>Financial & Payment Records</h2>
+      </div>
+      <div class="glass-panel table-responsive">
+        <table class="custom-table">
+          <thead>
+            <tr>
+              <th>Payment ID</th>
+              <th>Booking ID</th>
+              <th>Passenger</th>
+              <th>Amount</th>
+              <th>Method</th>
+              <th>Transaction ID</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="admin-payments-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- MODAL: ADD TRAIN -->
+  <div id="modal-add-train" class="modal-overlay">
+    <div class="modal-content glass-panel">
+      <button onclick="closeModal('modal-add-train')" class="modal-close">✕</button>
+      <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 1.5rem;">Add New Train</h2>
+      <form onsubmit="handleAddTrainSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Train ID</label>
+            <input type="number" id="add-train-id" class="form-control" placeholder="206" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Train Number</label>
+            <input type="text" id="add-train-number" class="form-control" placeholder="12951" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Train Name</label>
+          <input type="text" id="add-train-name" class="form-control" placeholder="Rajdhani Superfast Express" required>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Train Type</label>
+            <select id="add-train-type" class="form-select">
+              <option value="Vande Bharat">Vande Bharat</option>
+              <option value="Rajdhani">Rajdhani</option>
+              <option value="Shatabdi">Shatabdi</option>
+              <option value="Superfast">Superfast</option>
+              <option value="Express">Express</option>
+              <option value="Passenger">Passenger</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Total Seats</label>
+            <input type="number" id="add-train-seats" class="form-control" value="850" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Source Station</label>
+            <input type="text" id="add-train-source" class="form-control" placeholder="Mumbai" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Destination Station</label>
+            <input type="text" id="add-train-dest" class="form-control" placeholder="Delhi" required>
+          </div>
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button type="button" onclick="closeModal('modal-add-train')" class="btn btn-secondary" style="flex: 1;">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="flex: 1;">Save Train</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD SCHEDULE -->
+  <div id="modal-add-schedule" class="modal-overlay">
+    <div class="modal-content glass-panel">
+      <button onclick="closeModal('modal-add-schedule')" class="modal-close">✕</button>
+      <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 1.5rem;">Add Train Route & Schedule</h2>
+      <form onsubmit="handleAddScheduleSubmit(event)">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Schedule ID</label>
+            <input type="number" id="add-sch-id" class="form-control" placeholder="306" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Train Name</label>
+            <input type="text" id="add-sch-train" class="form-control" placeholder="Vande Bharat Express" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Source Station</label>
+            <input type="text" id="add-sch-source" class="form-control" placeholder="Chennai" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Destination Station</label>
+            <input type="text" id="add-sch-dest" class="form-control" placeholder="Bangalore" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Departure Date</label>
+            <input type="date" id="add-sch-dep-date" class="form-control" value="2026-08-15" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Departure Time</label>
+            <input type="text" id="add-sch-dep-time" class="form-control" placeholder="06:00" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Arrival Date</label>
+            <input type="date" id="add-sch-arr-date" class="form-control" value="2026-08-15" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Arrival Time</label>
+            <input type="text" id="add-sch-arr-time" class="form-control" placeholder="10:30" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ticket Fare (₹)</label>
+          <input type="number" id="add-sch-fare" class="form-control" placeholder="1200" required>
+        </div>
+        <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+          <button type="button" onclick="closeModal('modal-add-schedule')" class="btn btn-secondary" style="flex: 1;">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="flex: 1;">Create Schedule</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

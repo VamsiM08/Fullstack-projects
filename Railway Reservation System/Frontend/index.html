@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RailExpress - Modern Railway Reservation System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🚆</div>
+        <div class="brand-text">Rail<span>Express</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="trains.html" class="nav-link">Search Trains</a></li>
+        <li><a href="booking_history.html" class="nav-link">PNR / Bookings</a></li>
+      </ul>
+      <div id="nav-user-area"></div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="main-wrapper">
+    
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <h1 class="hero-title">Experience <span>Next-Gen</span> Train Travel</h1>
+      <p class="hero-subtitle">Search schedules, inspect seat availability, reserve tickets, and track PNR status with instant confirmation.</p>
+    </section>
+
+    <!-- Train Search Card -->
+    <section class="glass-panel search-card">
+      <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; text-align: center;">🔍 Find & Book Trains</h2>
+      <form id="home-search-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Source Station</label>
+            <input type="text" id="search-source" class="form-control" placeholder="e.g. Chennai, Delhi, Howrah" value="Chennai" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Destination Station</label>
+            <input type="text" id="search-destination" class="form-control" placeholder="e.g. Bangalore, Mumbai, Pune" value="Bangalore" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Journey Date</label>
+            <input type="date" id="search-date" class="form-control" value="2026-08-15" required>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 1.5rem;">
+          <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2.5rem; font-size: 1.05rem;">Search Available Trains</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Popular Routes Section -->
+    <section style="margin-bottom: 4rem;">
+      <div class="page-header" style="display: flex; justify-content: space-between; align-items: flex-end;">
+        <div>
+          <h2 class="page-title">Popular Routes & Schedules</h2>
+          <p class="page-subtitle">Frequently traveled express and high-speed Vande Bharat corridors</p>
+        </div>
+        <a href="trains.html" class="btn btn-secondary">View All Trains →</a>
+      </div>
+
+      <div id="popular-schedules-list" class="grid-cards">
+        <!-- Loaded dynamically via script.js -->
+      </div>
+    </section>
+
+    <!-- Offers Banner -->
+    <section class="glass-panel" style="padding: 2.5rem; background: linear-gradient(135deg, rgba(0,242,254,0.1) 0%, rgba(127,86,217,0.1) 100%); border-color: rgba(0,242,254,0.3); text-align: center;">
+      <span class="badge badge-confirmed" style="margin-bottom: 0.75rem;">Exclusive Offer</span>
+      <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem;">Get 15% Instant Cashback on UPI Payments</h2>
+      <p style="color: var(--text-muted); max-width: 600px; margin: 0 auto 1.5rem;">Book your AC & Chair Car tickets today using UPI or Net Banking and receive instant wallet discounts.</p>
+      <a href="trains.html" class="btn btn-primary">Book Now</a>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <div>
+        <strong style="color: #fff; font-size: 1.1rem;">RailExpress System</strong>
+        <p style="margin-top: 0.25rem;">Powered by Django REST APIs & Fetch API</p>
+      </div>
+      <div>
+        © 2026 Railway Reservation System. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>

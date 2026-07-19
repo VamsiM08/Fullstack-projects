@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PNR Status & Booking History - RailExpress</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🚆</div>
+        <div class="brand-text">Rail<span>Express</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="trains.html" class="nav-link">Search Trains</a></li>
+        <li><a href="booking_history.html" class="nav-link active">PNR / Bookings</a></li>
+      </ul>
+      <div id="nav-user-area"></div>
+    </div>
+  </nav>
+
+  <!-- Main Wrapper -->
+  <main class="main-wrapper">
+    
+    <!-- PNR Status Quick Tracker -->
+    <div class="glass-panel" style="padding: 2rem; margin-bottom: 3rem; background: linear-gradient(135deg, rgba(0,242,254,0.08) 0%, rgba(127,86,217,0.08) 100%);">
+      <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 0.5rem;">🔎 Track PNR / Booking Status</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.25rem;">Enter your 3-digit or 10-digit Booking ID to check real-time status</p>
+      
+      <div style="display: flex; gap: 1rem; max-width: 550px;">
+        <input type="text" id="pnr-input" class="form-control" placeholder="Enter Booking ID (e.g. 401)" value="401">
+        <button id="pnr-search-btn" class="btn btn-primary" style="white-space: nowrap;">Check Status</button>
+      </div>
+    </div>
+
+    <!-- Booking History Header -->
+    <div class="page-header">
+      <h1 class="page-title">My Ticket Reservations</h1>
+      <p class="page-subtitle">Manage your upcoming journeys, download E-Tickets, and view payment records</p>
+    </div>
+
+    <!-- History List Container -->
+    <div id="history-bookings-list">
+      <!-- Loaded dynamically via script.js -->
+    </div>
+
+  </main>
+
+  <!-- PNR Status Modal -->
+  <div id="pnr-modal" class="modal-overlay">
+    <div class="modal-content glass-panel">
+      <button onclick="closeModal('pnr-modal')" class="modal-close">✕</button>
+      <h2 style="font-size: 1.4rem; font-weight: 800; margin-bottom: 1.5rem; text-align: center;">PNR Status Result</h2>
+      <div id="pnr-modal-body"></div>
+      <div style="text-align: center; margin-top: 1.5rem;">
+        <button onclick="closeModal('pnr-modal')" class="btn btn-secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

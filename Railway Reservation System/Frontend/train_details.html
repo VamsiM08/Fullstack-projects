@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Train Details - RailExpress</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="brand-logo">
+        <div class="brand-icon">🚆</div>
+        <div class="brand-text">Rail<span>Express</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="trains.html" class="nav-link">Search Trains</a></li>
+        <li><a href="booking_history.html" class="nav-link">PNR / Bookings</a></li>
+      </ul>
+      <div id="nav-user-area"></div>
+    </div>
+  </nav>
+
+  <!-- Main Wrapper -->
+  <main class="main-wrapper" style="max-width: 800px;">
+    
+    <div class="glass-panel" style="padding: 2.5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; margin-bottom: 2rem;">
+        <div>
+          <span class="badge badge-confirmed" style="margin-bottom: 0.5rem;">Verified Schedule</span>
+          <h1 id="detail-train-name" style="font-size: 2rem; font-weight: 800;">Vande Bharat Express</h1>
+          <p style="color: var(--text-muted);">Train Number: #<strong id="detail-train-number" style="color: var(--primary-cyan);">20678</strong></p>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 0.85rem; color: var(--text-muted);">Base Fare</div>
+          <div id="detail-fare" style="font-size: 2rem; font-weight: 800; color: var(--primary-cyan);">₹1200</div>
+        </div>
+      </div>
+
+      <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;">Route & Timing Details</h2>
+      <div class="form-row" style="margin-bottom: 2rem; background: rgba(0,0,0,0.2); padding: 1.25rem; border-radius: var(--radius-sm);">
+        <div>
+          <span class="form-label">Departure</span>
+          <strong id="detail-dep-time" style="font-size: 1.2rem; display: block;">06:00</strong>
+          <span id="detail-source" style="color: var(--text-muted);">Chennai</span>
+        </div>
+        <div style="align-self: center; text-align: center; color: var(--primary-cyan); font-size: 1.5rem;">
+          ➔
+        </div>
+        <div>
+          <span class="form-label">Arrival</span>
+          <strong id="detail-arr-time" style="font-size: 1.2rem; display: block;">10:30</strong>
+          <span id="detail-destination" style="color: var(--text-muted);">Bangalore</span>
+        </div>
+        <div>
+          <span class="form-label">Journey Date</span>
+          <strong id="detail-dep-date" style="font-size: 1.1rem; display: block; margin-top: 0.2rem;">2026-08-15</strong>
+        </div>
+      </div>
+
+      <h2 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem;">Available Coaches & Amenities</h2>
+      <div class="form-row" style="margin-bottom: 2.5rem; gap: 1rem;">
+        <div style="padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px;">
+          <strong>💺 Chair Car (CC)</strong>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">Reclining seats, onboard Wi-Fi & meal service.</p>
+        </div>
+        <div style="padding: 1rem; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px;">
+          <strong>🚄 Executive Chair (EC)</strong>
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.25rem;">360° rotating seats & executive lounge access.</p>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 1rem;">
+        <a href="trains.html" class="btn btn-secondary" style="flex: 1;">Back to Search</a>
+        <a id="detail-book-btn" href="booking.html" class="btn btn-primary" style="flex: 2;">Proceed to Ticket Booking</a>
+      </div>
+    </div>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
