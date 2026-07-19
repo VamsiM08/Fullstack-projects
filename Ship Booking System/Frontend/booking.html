@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reserve Cabin Suite - Oceania Direct</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-icon"><i class="fa-solid fa-water-ladder"></i></div>
+      Oceania Direct
+    </a>
+    <ul class="nav-menu">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="ships.html" class="nav-link">Fleet</a></li>
+      <li><a href="booking_history.html" class="nav-link">Reservations</a></li>
+      <li><a href="passenger_dashboard.html" class="nav-link">Dashboard</a></li>
+    </ul>
+    <div id="nav-auth-container"></div>
+  </nav>
+
+  <main class="container">
+    
+    <div style="margin-bottom: 2.5rem;">
+      <span class="hero-tag"><i class="fa-solid fa-ticket"></i> Step 1 of 2: Reservation Setup</span>
+      <h1 class="hero-heading text-gradient" style="font-size: 3rem;">Cabin & Seat Reservation</h1>
+    </div>
+
+    <!-- Step Progress Indicator -->
+    <div class="glass-panel" style="padding: 1.2rem 2rem; margin-bottom: 3rem; display: flex; justify-content: space-around; align-items: center;">
+      <div style="color: var(--gold-accent); font-weight: 800; display: flex; align-items: center; gap: 8px;">
+        <span style="width: 28px; height: 28px; border-radius: 50%; background: var(--gold-accent); color: var(--deep-ocean); display: flex; align-items: center; justify-content: center;">1</span> Passenger & Cabin
+      </div>
+      <div style="color: rgba(255,255,255,0.4);"><i class="fa-solid fa-angle-right"></i></div>
+      <div style="color: rgba(255,255,255,0.5); font-weight: 600; display: flex; align-items: center; gap: 8px;">
+        <span style="width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: center;">2</span> Payment & Issuance
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 3rem;">
+      
+      <!-- Left Column: Reservation Form -->
+      <div class="glass-panel" style="padding: 2.2rem;">
+        <h3 style="font-size: 1.5rem; margin-bottom: 1.8rem; color: var(--turquoise);"><i class="fa-solid fa-file-signature"></i> Passenger Credentials</h3>
+
+        <form id="booking-form" onsubmit="submitBooking(event)">
+          
+          <div class="form-group" style="margin-bottom: 1.2rem;">
+            <label><i class="fa-solid fa-user"></i> Passenger Full Name</label>
+            <input type="text" id="passenger_name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.2rem;">
+            <label><i class="fa-solid fa-ship"></i> Select Cruise Vessel</label>
+            <select id="ship_name" class="form-control" onchange="updateFareCalculation()" required>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.2rem;">
+            <label><i class="fa-solid fa-bed"></i> Cabin Suite Category</label>
+            <select id="cabin_type" class="form-control" onchange="updateFareCalculation()" required>
+              <option value="Economy">Economy Deck (Standard Fare)</option>
+              <option value="Deluxe" selected>Deluxe Ocean Suite (+40%)</option>
+              <option value="Suite">Executive Suite (+80%)</option>
+              <option value="Family Cabin">Family Cabin (+60%)</option>
+              <option value="VIP Cabin">VIP Presidential Yacht Suite (+120%)</option>
+            </select>
+          </div>
+
+          <!-- Interactive Deck Layout Selector -->
+          <div class="form-group" style="margin-bottom: 1.5rem;">
+            <label><i class="fa-solid fa-couch"></i> Select Preferred Seat / Deck Berth</label>
+            <div class="deck-plan-grid" id="deck-seat-container">
+              <!-- Seats generated dynamically -->
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.2rem;">
+            <label><i class="fa-solid fa-calendar-day"></i> Journey Departure Date</label>
+            <input type="date" id="journey_date" class="form-control" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+            <div class="form-group">
+              <label>Source Port</label>
+              <input type="text" id="source_port" class="form-control" placeholder="Source Port" required>
+            </div>
+            <div class="form-group">
+              <label>Destination Port</label>
+              <input type="text" id="destination_port" class="form-control" placeholder="Destination Port" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-gold" style="width: 100%; height: 52px; font-size: 1.05rem;">
+            <i class="fa-solid fa-credit-card"></i> Proceed To Payment Checkout
+          </button>
+        </form>
+      </div>
+
+      <!-- Right Column: Live Fare Summary -->
+      <div>
+        <div class="glass-panel glass-card-gold" style="padding: 2.2rem; position: sticky; top: 110px;">
+          <h3 style="font-size: 1.6rem; margin-bottom: 1.5rem; color: var(--gold-accent);"><i class="fa-solid fa-receipt"></i> Reservation Fare Summary</h3>
+          
+          <div class="ship-meta-list" style="margin-bottom: 2rem; gap: 14px;">
+            <div class="ship-meta-item"><span>Selected Vessel:</span> <strong id="summary-ship-name" style="color:var(--turquoise);">-</strong></div>
+            <div class="ship-meta-item"><span>Cabin Category:</span> <strong id="summary-cabin-type">-</strong></div>
+            <div class="ship-meta-item"><span>Selected Seat:</span> <strong id="summary-seat-id" style="color:var(--gold-accent);">Berth #D-04</strong></div>
+            <div class="ship-meta-item"><span>Route:</span> <strong id="summary-route">-</strong></div>
+            <div class="ship-meta-item"><span>Travel Date:</span> <strong id="summary-date">-</strong></div>
+            <div class="ship-meta-item"><span>Base Seat Fare:</span> <strong id="summary-base-fare">₹0</strong></div>
+            <div class="ship-meta-item"><span>Suite Multiplier:</span> <strong id="summary-multiplier">x1.4</strong></div>
+          </div>
+
+          <div style="border-top: 1px solid var(--glass-border); padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <span style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Total Payable Amount</span>
+              <div id="summary-total-amount" class="fare-price" style="font-size: 2.5rem;">₹0</div>
+            </div>
+            <span class="badge-status badge-active" style="position:static;">Live Calculated</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div style="max-width: 1380px; margin: 0 auto; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.85rem;">
+      &copy; 2026 Oceania Direct Maritime Systems.
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    let schedulesList = [];
+    let shipsList = [];
+    let baseFare = 8500;
+    let selectedSeat = "Berth #D-04";
+
+    async function initBookingPage() {
+      const user = getCurrentUser();
+      document.getElementById('passenger_name').value = user ? user.full_name : 'Rahul Sharma';
+
+      // Generate Deck Seats Grid
+      const seatContainer = document.getElementById('deck-seat-container');
+      const seatCodes = ['D-01', 'D-02', 'D-03', 'D-04', 'D-05', 'D-06', 'D-07', 'D-08'];
+      seatContainer.innerHTML = seatCodes.map((s, idx) => `
+        <div class="seat-box ${idx === 3 ? 'selected' : ''}" onclick="selectSeat('${s}', this)">
+          <i class="fa-solid fa-bed"></i> ${s}
+        </div>
+      `).join('');
+
+      try {
+        const [ships, schedules] = await Promise.all([
+          apiFetch('/ships/'),
+          apiFetch('/schedules/')
+        ]);
+        shipsList = ships;
+        schedulesList = schedules;
+
+        const select = document.getElementById('ship_name');
+        select.innerHTML = ships.map(s => `<option value="${s.ship_name}">${s.ship_name} (${s.ship_type})</option>`).join('');
+
+        const params = new URLSearchParams(window.location.search);
+        const reqShipId = parseInt(params.get('ship_id'));
+        if (reqShipId) {
+          const selected = ships.find(s => s.ship_id === reqShipId);
+          if (selected) select.value = selected.ship_name;
+        }
+
+        updateFareCalculation();
+      } catch (err) {
+        showToast("Error retrieving schedules from backend API", "error");
+      }
+    }
+
+    function selectSeat(seatCode, el) {
+      selectedSeat = `Berth #${seatCode}`;
+      document.querySelectorAll('.seat-box').forEach(s => s.classList.remove('selected'));
+      el.classList.add('selected');
+      document.getElementById('summary-seat-id').innerText = selectedSeat;
+    }
+
+    function updateFareCalculation() {
+      const shipName = document.getElementById('ship_name').value;
+      const cabinType = document.getElementById('cabin_type').value;
+
+      const schedule = schedulesList.find(s => s.ship_name === shipName) || {
+        source_port: "Chennai Port",
+        destination_port: "Port Blair",
+        departure_date: "2026-10-15",
+        fare: 8500
+      };
+
+      baseFare = schedule.fare || 8500;
+      document.getElementById('source_port').value = schedule.source_port;
+      document.getElementById('destination_port').value = schedule.destination_port;
+      document.getElementById('journey_date').value = schedule.departure_date;
+
+      let mult = 1.0;
+      if (cabinType === 'Deluxe') mult = 1.4;
+      else if (cabinType === 'Suite') mult = 1.8;
+      else if (cabinType === 'Family Cabin') mult = 1.6;
+      else if (cabinType === 'VIP Cabin') mult = 2.2;
+
+      const total = Math.round(baseFare * mult);
+
+      document.getElementById('summary-ship-name').innerText = shipName;
+      document.getElementById('summary-cabin-type').innerText = cabinType;
+      document.getElementById('summary-route').innerText = `${schedule.source_port} ➔ ${schedule.destination_port}`;
+      document.getElementById('summary-date').innerText = schedule.departure_date;
+      document.getElementById('summary-base-fare').innerText = `₹${baseFare.toLocaleString()}`;
+      document.getElementById('summary-multiplier').innerText = `x${mult.toFixed(1)}`;
+      document.getElementById('summary-total-amount').innerText = `₹${total.toLocaleString()}`;
+    }
+
+    async function submitBooking(e) {
+      e.preventDefault();
+      const cabinType = document.getElementById('cabin_type').value;
+      let mult = 1.0;
+      if (cabinType === 'Deluxe') mult = 1.4;
+      else if (cabinType === 'Suite') mult = 1.8;
+      else if (cabinType === 'Family Cabin') mult = 1.6;
+      else if (cabinType === 'VIP Cabin') mult = 2.2;
+      const totalAmount = Math.round(baseFare * mult);
+
+      const bookingPayload = {
+        passenger_name: document.getElementById('passenger_name').value,
+        ship_name: document.getElementById('ship_name').value,
+        cabin_type: cabinType,
+        journey_date: document.getElementById('journey_date').value,
+        source_port: document.getElementById('source_port').value,
+        destination_port: document.getElementById('destination_port').value,
+        total_amount: totalAmount,
+        booking_status: "Confirmed"
+      };
+
+      try {
+        const res = await apiFetch('/bookings/add/', 'POST', bookingPayload);
+        showToast("Reservation created! Directing to Payment...", "success");
+        const bId = res.booking ? res.booking.booking_id : 401;
+        setTimeout(() => {
+          window.location.href = `payment.html?booking_id=${bId}&amount=${totalAmount}&passenger=${encodeURIComponent(bookingPayload.passenger_name)}`;
+        }, 700);
+      } catch (err) {
+        showToast(err.message || "Failed to confirm reservation", "error");
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', initBookingPage);
+  </script>
+</body>
+</html>

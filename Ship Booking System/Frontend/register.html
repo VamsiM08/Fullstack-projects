@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passenger Registration - Oceania Direct</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-icon"><i class="fa-solid fa-water-ladder"></i></div>
+      Oceania Direct
+    </a>
+    <ul class="nav-menu">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="ships.html" class="nav-link">Fleet</a></li>
+    </ul>
+    <div id="nav-auth-container"></div>
+  </nav>
+
+  <main class="container">
+    
+    <div class="split-auth-container">
+      
+      <!-- Left Side Visual -->
+      <div class="split-auth-visual" style="background: linear-gradient(135deg, rgba(1, 42, 74, 0.6), rgba(0, 18, 32, 0.9)), url('https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?auto=format&fit=crop&w=1200&q=85') center/cover;">
+        <span class="hero-tag" style="align-self: flex-start; margin-bottom: 1rem;"><i class="fa-solid fa-id-card"></i> Join Oceania Direct</span>
+        <h2 style="font-size: 2.8rem; font-weight: 900; line-height: 1.15; margin-bottom: 1rem;">Set Sail With Privilege</h2>
+        <p style="color: rgba(255,255,255,0.75); font-size: 1.05rem;">Register today for priority cabin upgrades, instant digital ticketing, and exclusive member discounts.</p>
+      </div>
+
+      <!-- Right Side Form -->
+      <div class="split-auth-form">
+        <div style="margin-bottom: 2rem;">
+          <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.4rem;">Create Account</h2>
+          <p style="color: rgba(255,255,255,0.7);">Enter your passenger credentials to register.</p>
+        </div>
+
+        <form id="register-form" onsubmit="handleRegister(event)">
+          
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label><i class="fa-solid fa-user"></i> Full Name</label>
+            <input type="text" id="full_name" class="form-control" placeholder="e.g. Rahul Sharma" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label><i class="fa-solid fa-envelope"></i> Email Address</label>
+            <input type="email" id="email" class="form-control" placeholder="e.g. rahul@gmail.com" required>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem;">
+            <div class="form-group">
+              <label><i class="fa-solid fa-phone"></i> Phone</label>
+              <input type="text" id="phone" class="form-control" placeholder="9876543210" required>
+            </div>
+            <div class="form-group">
+              <label><i class="fa-solid fa-flag"></i> Nationality</label>
+              <input type="text" id="nationality" class="form-control" placeholder="Indian" required>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1rem;">
+            <label><i class="fa-solid fa-passport"></i> Passport / ID Number</label>
+            <input type="text" id="passport_number" class="form-control" placeholder="N1234567" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.8rem;">
+            <label><i class="fa-solid fa-lock"></i> Account Password</label>
+            <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; height: 50px; font-size: 1rem;">
+            <i class="fa-solid fa-user-plus"></i> Register Passenger Profile
+          </button>
+
+          <p style="text-align: center; margin-top: 1.8rem; color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+            Already registered? <a href="login.html" style="color: var(--turquoise); font-weight: 700;">Sign In</a>
+          </p>
+        </form>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div style="text-align: center; color: rgba(255,255,255,0.4); font-size: 0.85rem;">
+      &copy; 2026 Oceania Direct Maritime Systems.
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    async function handleRegister(e) {
+      e.preventDefault();
+      const payload = {
+        full_name: document.getElementById('full_name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        nationality: document.getElementById('nationality').value,
+        passport_number: document.getElementById('passport_number').value,
+        password: document.getElementById('password').value
+      };
+
+      try {
+        const response = await apiFetch('/passengers/add/', 'POST', payload);
+        showToast("Registration successful!", "success");
+        const passenger = response.passenger || payload;
+        passenger.role = "Passenger";
+        setCurrentUser(passenger);
+        setTimeout(() => window.location.href = "passenger_dashboard.html", 600);
+      } catch (err) {
+        showToast(err.message || "Registration failed", "error");
+      }
+    }
+  </script>
+</body>
+</html>

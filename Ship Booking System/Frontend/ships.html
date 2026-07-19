@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luxury Fleet Directory - Oceania Direct</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-icon"><i class="fa-solid fa-water-ladder"></i></div>
+      Oceania Direct
+    </a>
+    <ul class="nav-menu">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="ships.html" class="nav-link active">Fleet & Ships</a></li>
+      <li><a href="booking_history.html" class="nav-link">Reservations</a></li>
+      <li><a href="passenger_dashboard.html" class="nav-link">Dashboard</a></li>
+      <li><a href="admin_dashboard.html" class="nav-link">Admin Console</a></li>
+    </ul>
+    <div id="nav-auth-container"></div>
+  </nav>
+
+  <main class="container">
+    
+    <div style="margin-bottom: 2.5rem;">
+      <span class="hero-tag"><i class="fa-solid fa-ship"></i> Commercial Fleet Directory</span>
+      <h1 class="hero-heading text-gradient" style="font-size: 3.2rem;">Discover Our Luxury Liners</h1>
+      <p style="color: rgba(255,255,255,0.75); font-size: 1.1rem;">Filter ocean liners, high-speed passenger ferries, and executive yachts by vessel type and operating status.</p>
+    </div>
+
+    <!-- Filter Bar -->
+    <div class="glass-panel" style="padding: 1.8rem; margin-bottom: 3rem;">
+      <div class="search-form-grid">
+        <div class="form-group">
+          <label><i class="fa-solid fa-filter"></i> Ship Category</label>
+          <select id="filter-type" class="form-control" onchange="applyFilters()">
+            <option value="All">All Categories</option>
+            <option value="Cruise Ship">Cruise Ship</option>
+            <option value="Ferry">Ferry</option>
+            <option value="Cargo Passenger Ship">Cargo Passenger Ship</option>
+            <option value="Luxury Yacht">Luxury Yacht</option>
+            <option value="River Cruise">River Cruise</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-signal"></i> Operating Status</label>
+          <select id="filter-status" class="form-control" onchange="applyFilters()">
+            <option value="All">All Statuses</option>
+            <option value="Active">Active Duty</option>
+            <option value="Maintenance">Maintenance</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label><i class="fa-solid fa-magnifying-glass"></i> Search Vessel</label>
+          <input type="text" id="filter-search" class="form-control" placeholder="Search vessel or operator..." oninput="applyFilters()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Ships Grid -->
+    <div id="ships-grid" class="grid-3">
+      <!-- Loaded via JS -->
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div style="max-width: 1380px; margin: 0 auto; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.85rem;">
+      &copy; 2026 Oceania Direct Maritime Systems.
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    let allShips = [];
+    let allSchedules = [];
+
+    const shipImages = {
+      "Ocean Paradise": "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=800&q=80",
+      "Sea Empress": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80",
+      "Island Voyager": "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?auto=format&fit=crop&w=800&q=80",
+      "Nile Breeze": "https://images.unsplash.com/photo-1505705694340-019e1e335916?auto=format&fit=crop&w=800&q=80",
+      "Atlantis Trader": "https://images.unsplash.com/photo-1516834474-48c0abc2a902?auto=format&fit=crop&w=800&q=80"
+    };
+
+    async function loadShips() {
+      try {
+        const [ships, schedules] = await Promise.all([
+          apiFetch('/ships/'),
+          apiFetch('/schedules/')
+        ]);
+        allShips = ships;
+        allSchedules = schedules;
+        renderShips(allShips);
+      } catch (err) {
+        showToast("Error retrieving fleet catalog from server", "error");
+      }
+    }
+
+    function renderShips(list) {
+      const grid = document.getElementById('ships-grid');
+      if (list.length === 0) {
+        grid.innerHTML = `<div class="glass-panel" style="grid-column:1/-1; text-align:center; padding:4rem;">
+          <i class="fa-solid fa-ship" style="font-size:3rem; color:var(--sea-green); margin-bottom:1rem;"></i>
+          <h3>No vessels found matching filter criteria</h3>
+        </div>`;
+        return;
+      }
+
+      grid.innerHTML = list.map(ship => {
+        const schedule = allSchedules.find(s => s.ship_name === ship.ship_name) || {
+          source_port: "Chennai Port",
+          destination_port: "Port Blair",
+          fare: 8500
+        };
+        const imgUrl = shipImages[ship.ship_name] || "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=800&q=80";
+
+        return `
+          <div class="ship-card">
+            <div class="ship-card-img-wrapper">
+              <img src="${imgUrl}" alt="${ship.ship_name}" class="ship-card-img">
+              <span class="badge-score">★ 4.9 Premium</span>
+              <span class="badge-status ${ship.status === 'Active' ? 'badge-active' : (ship.status === 'Maintenance' ? 'badge-maintenance' : 'badge-inactive')}">${ship.status}</span>
+            </div>
+            <div class="ship-card-content">
+              <h3 class="ship-title">${ship.ship_name}</h3>
+              <div class="ship-meta-list">
+                <div class="ship-meta-item"><span>Category:</span> <strong style="color:var(--turquoise);">${ship.ship_type}</strong></div>
+                <div class="ship-meta-item"><span>Capacity:</span> <strong>${ship.capacity} Passengers</strong></div>
+                <div class="ship-meta-item"><span>Operator:</span> <strong>${ship.operator_name}</strong></div>
+                <div class="ship-meta-item"><span>Primary Route:</span> <strong>${schedule.source_port} ➔ ${schedule.destination_port}</strong></div>
+              </div>
+              <div class="ship-card-footer">
+                <div>
+                  <span style="font-size:0.75rem; color:rgba(255,255,255,0.6); display:block;">Starting Fare</span>
+                  <span class="fare-price">₹${schedule.fare.toLocaleString()}</span>
+                </div>
+                <a href="ship_details.html?id=${ship.ship_id}" class="btn btn-primary btn-sm">
+                  View Details <i class="fa-solid fa-angle-right"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function applyFilters() {
+      const type = document.getElementById('filter-type').value;
+      const status = document.getElementById('filter-status').value;
+      const query = document.getElementById('filter-search').value.toLowerCase();
+
+      const filtered = allShips.filter(s => {
+        const matchType = type === 'All' || s.ship_type === type;
+        const matchStatus = status === 'All' || s.status === status;
+        const matchQuery = s.ship_name.toLowerCase().includes(query) || s.operator_name.toLowerCase().includes(query);
+        return matchType && matchStatus && matchQuery;
+      });
+
+      renderShips(filtered);
+    }
+
+    document.addEventListener('DOMContentLoaded', loadShips);
+  </script>
+</body>
+</html>

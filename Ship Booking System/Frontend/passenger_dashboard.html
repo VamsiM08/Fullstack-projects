@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Passenger Dashboard - Oceania Direct</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-icon"><i class="fa-solid fa-water-ladder"></i></div>
+      Oceania Direct
+    </a>
+    <ul class="nav-menu">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="ships.html" class="nav-link">Fleet</a></li>
+      <li><a href="booking_history.html" class="nav-link">Reservations</a></li>
+      <li><a href="passenger_dashboard.html" class="nav-link active">Dashboard</a></li>
+    </ul>
+    <div id="nav-auth-container"></div>
+  </nav>
+
+  <main class="container">
+    
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+      <div>
+        <span class="hero-tag"><i class="fa-solid fa-chart-line"></i> Analytics & Portal</span>
+        <h1 class="hero-heading text-gradient" style="font-size: 3rem;" id="dash-greeting">Passenger Portal</h1>
+      </div>
+      <a href="ships.html" class="btn btn-gold"><i class="fa-solid fa-plus"></i> New Reservation</a>
+    </div>
+
+    <!-- Stat Tiles Grid -->
+    <div class="grid-4" style="margin-bottom: 3rem;">
+      <div class="glass-panel" style="padding: 1.8rem; display: flex; align-items: center; gap: 1.2rem;">
+        <div style="width: 54px; height: 54px; border-radius: 14px; background: rgba(0,180,216,0.18); color: var(--turquoise); display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">
+          <i class="fa-solid fa-ticket"></i>
+        </div>
+        <div>
+          <div style="font-size: 2rem; font-weight: 900; font-family: var(--font-heading);" id="stat-total-bookings">0</div>
+          <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Total Bookings</div>
+        </div>
+      </div>
+
+      <div class="glass-panel" style="padding: 1.8rem; display: flex; align-items: center; gap: 1.2rem;">
+        <div style="width: 54px; height: 54px; border-radius: 14px; background: rgba(244,197,66,0.18); color: var(--gold-accent); display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">
+          <i class="fa-solid fa-compass"></i>
+        </div>
+        <div>
+          <div style="font-size: 2rem; font-weight: 900; font-family: var(--font-heading);" id="stat-upcoming-journeys">0</div>
+          <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Upcoming Journeys</div>
+        </div>
+      </div>
+
+      <div class="glass-panel" style="padding: 1.8rem; display: flex; align-items: center; gap: 1.2rem;">
+        <div style="width: 54px; height: 54px; border-radius: 14px; background: rgba(16,185,129,0.18); color: var(--success); display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <div>
+          <div style="font-size: 2rem; font-weight: 900; font-family: var(--font-heading);" id="stat-completed-trips">0</div>
+          <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Completed Voyages</div>
+        </div>
+      </div>
+
+      <div class="glass-panel" style="padding: 1.8rem; display: flex; align-items: center; gap: 1.2rem;">
+        <div style="width: 54px; height: 54px; border-radius: 14px; background: rgba(0,180,216,0.18); color: var(--sea-green); display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">
+          <i class="fa-solid fa-indian-rupee-sign"></i>
+        </div>
+        <div>
+          <div style="font-size: 2rem; font-weight: 900; font-family: var(--font-heading); color: var(--gold-accent);" id="stat-total-spent">₹0</div>
+          <div style="font-size: 0.85rem; color: rgba(255,255,255,0.6);">Total Spent</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Analytics Chart & Profile Layout -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; margin-bottom: 3.5rem;">
+      
+      <!-- SVG Monthly Expenditure Chart -->
+      <div class="glass-panel" style="padding: 2rem; grid-column: span 2;">
+        <h3 style="font-size: 1.4rem; margin-bottom: 1.2rem; color: var(--turquoise);"><i class="fa-solid fa-chart-simple"></i> Travel Spending Trends (Monthly)</h3>
+        <div id="monthly-chart" class="chart-box">
+          <!-- Rendered dynamically by script.js -->
+        </div>
+      </div>
+
+      <!-- Profile Card -->
+      <div class="glass-panel" style="padding: 2rem;">
+        <h3 style="font-size: 1.4rem; margin-bottom: 1.2rem; color: var(--gold-accent);"><i class="fa-solid fa-id-card"></i> Passenger Profile</h3>
+        <div class="ship-meta-list" style="gap: 12px; margin-bottom: 1.8rem;">
+          <div class="ship-meta-item"><span>Full Name:</span> <strong id="prof-name">Rahul Sharma</strong></div>
+          <div class="ship-meta-item"><span>Email Address:</span> <strong id="prof-email">rahul@gmail.com</strong></div>
+          <div class="ship-meta-item"><span>Contact Phone:</span> <strong id="prof-phone">9876543210</strong></div>
+          <div class="ship-meta-item"><span>Nationality:</span> <strong id="prof-nationality">Indian</strong></div>
+          <div class="ship-meta-item"><span>Passport ID:</span> <strong id="prof-passport">N1234567</strong></div>
+        </div>
+        <button onclick="openProfileModal()" class="btn btn-glass btn-sm" style="width: 100%;">
+          <i class="fa-solid fa-pen-to-square"></i> Edit Profile Info
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Payment Receipts Table -->
+    <div class="glass-panel" style="padding: 2rem; margin-bottom: 4rem;">
+      <h3 style="font-size: 1.4rem; margin-bottom: 1.5rem; color: var(--sea-green);"><i class="fa-solid fa-receipt"></i> Recent Payment Receipts</h3>
+      
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.92rem;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--glass-border); color: var(--turquoise); font-size: 0.8rem; text-transform: uppercase;">
+              <th style="padding: 14px 18px;">Transaction ID</th>
+              <th style="padding: 14px 18px;">Booking Code</th>
+              <th style="padding: 14px 18px;">Method</th>
+              <th style="padding: 14px 18px;">Amount Paid</th>
+              <th style="padding: 14px 18px;">Payment Date</th>
+              <th style="padding: 14px 18px;">Status</th>
+            </tr>
+          </thead>
+          <tbody id="dash-payments-tbody">
+            <!-- Populated via JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Edit Profile Modal -->
+    <div id="profile-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Update Passenger Credentials</h3>
+          <button class="modal-close" onclick="closeModal('profile-modal')">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="profile-form" onsubmit="saveProfile(event)">
+            <input type="hidden" id="edit_passenger_id">
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label>Full Name</label>
+              <input type="text" id="edit_full_name" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label>Phone</label>
+              <input type="text" id="edit_phone" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 1rem;">
+              <label>Nationality</label>
+              <input type="text" id="edit_nationality" class="form-control" required>
+            </div>
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+              <label>Passport Number</label>
+              <input type="text" id="edit_passport_number" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-gold" style="width: 100%;">Save Profile Changes</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div style="max-width: 1380px; margin: 0 auto; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.85rem;">
+      &copy; 2026 Oceania Direct Maritime Systems.
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    let activeUser = null;
+
+    async function loadDashboard() {
+      activeUser = getCurrentUser() || {
+        passenger_id: 101,
+        full_name: "Rahul Sharma",
+        email: "rahul@gmail.com",
+        phone: "9876543210",
+        nationality: "Indian",
+        passport_number: "N1234567"
+      };
+
+      document.getElementById('dash-greeting').innerText = `Welcome, ${activeUser.full_name}`;
+      document.getElementById('prof-name').innerText = activeUser.full_name;
+      document.getElementById('prof-email').innerText = activeUser.email;
+      document.getElementById('prof-phone').innerText = activeUser.phone || '9876543210';
+      document.getElementById('prof-nationality').innerText = activeUser.nationality || 'Indian';
+      document.getElementById('prof-passport').innerText = activeUser.passport_number || 'N1234567';
+
+      try {
+        const [bookings, payments] = await Promise.all([
+          apiFetch('/bookings/'),
+          apiFetch('/payments/')
+        ]);
+
+        const myBookings = bookings.filter(b => b.passenger_name.toLowerCase().includes(activeUser.full_name.toLowerCase()) || activeUser.full_name.toLowerCase().includes(b.passenger_name.toLowerCase()));
+        const myPayments = payments.filter(p => p.passenger_name.toLowerCase().includes(activeUser.full_name.toLowerCase()) || activeUser.full_name.toLowerCase().includes(p.passenger_name.toLowerCase()));
+
+        document.getElementById('stat-total-bookings').innerText = myBookings.length;
+        document.getElementById('stat-upcoming-journeys').innerText = myBookings.filter(b => b.booking_status === 'Confirmed').length;
+        document.getElementById('stat-completed-trips').innerText = myBookings.filter(b => b.booking_status === 'Completed').length;
+
+        const totalSpent = myPayments.reduce((acc, p) => acc + (p.amount || 0), 0);
+        document.getElementById('stat-total-spent').innerText = `₹${totalSpent.toLocaleString()}`;
+
+        // Render SVG Chart Data
+        const chartData = [
+          { month: 'Jun', amount: 6200 },
+          { month: 'Jul', amount: 9800 },
+          { month: 'Aug', amount: 0 },
+          { month: 'Sep', amount: 12000 },
+          { month: 'Oct', amount: 14500 },
+          { month: 'Nov', amount: 25000 }
+        ];
+        renderBarChart('monthly-chart', chartData, 'month', 'amount', 'var(--turquoise)');
+
+        // Render Receipts Table
+        const tbody = document.getElementById('dash-payments-tbody');
+        if (myPayments.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="padding:2rem; text-align:center; color:rgba(255,255,255,0.5);">No receipts recorded yet.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = myPayments.map(p => `
+          <tr style="border-bottom:1px solid var(--glass-border);">
+            <td style="padding:14px 18px;"><strong style="color:var(--turquoise);">${p.transaction_id || 'TXN501'}</strong></td>
+            <td style="padding:14px 18px;">#BK-${p.booking_id}</td>
+            <td style="padding:14px 18px;">${p.payment_method}</td>
+            <td style="padding:14px 18px;"><strong style="color:var(--gold-accent);">₹${p.amount.toLocaleString()}</strong></td>
+            <td style="padding:14px 18px;">${p.payment_date}</td>
+            <td style="padding:14px 18px;"><span class="badge-status badge-active" style="position:static;">${p.payment_status}</span></td>
+          </tr>
+        `).join('');
+
+      } catch (err) {
+        showToast("Error updating dashboard analytics", "error");
+      }
+    }
+
+    function openProfileModal() {
+      document.getElementById('edit_passenger_id').value = activeUser.passenger_id || 101;
+      document.getElementById('edit_full_name').value = activeUser.full_name;
+      document.getElementById('edit_phone').value = activeUser.phone || '9876543210';
+      document.getElementById('edit_nationality').value = activeUser.nationality || 'Indian';
+      document.getElementById('edit_passport_number').value = activeUser.passport_number || 'N1234567';
+      document.getElementById('profile-modal').classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    async function saveProfile(e) {
+      e.preventDefault();
+      const id = document.getElementById('edit_passenger_id').value;
+      const payload = {
+        full_name: document.getElementById('edit_full_name').value,
+        phone: document.getElementById('edit_phone').value,
+        nationality: document.getElementById('edit_nationality').value,
+        passport_number: document.getElementById('edit_passport_number').value
+      };
+
+      try {
+        await apiFetch(`/passengers/update/${id}/`, 'PUT', payload);
+        showToast("Profile credentials updated", "success");
+        activeUser = { ...activeUser, ...payload };
+        setCurrentUser(activeUser);
+        closeModal('profile-modal');
+        loadDashboard();
+      } catch (err) {
+        showToast(err.message || "Failed to update profile", "error");
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadDashboard);
+  </script>
+</body>
+</html>

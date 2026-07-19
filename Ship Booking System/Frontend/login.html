@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In - Oceania Direct</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-icon"><i class="fa-solid fa-water-ladder"></i></div>
+      Oceania Direct
+    </a>
+    <ul class="nav-menu">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="ships.html" class="nav-link">Fleet</a></li>
+    </ul>
+    <div id="nav-auth-container"></div>
+  </nav>
+
+  <main class="container">
+    
+    <div class="split-auth-container">
+      
+      <!-- Left Side Visual -->
+      <div class="split-auth-visual">
+        <span class="hero-tag" style="align-self: flex-start; margin-bottom: 1rem;"><i class="fa-solid fa-anchor"></i> Member Portal</span>
+        <h2 style="font-size: 2.8rem; font-weight: 900; line-height: 1.15; margin-bottom: 1rem;">Experience Ocean Luxury</h2>
+        <p style="color: rgba(255,255,255,0.75); font-size: 1.05rem;">Access your VIP reservations, boarding passes, and custom travel schedules in real time.</p>
+      </div>
+
+      <!-- Right Side Glass Form -->
+      <div class="split-auth-form">
+        <div style="margin-bottom: 2rem;">
+          <h2 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 0.4rem;">Sign In</h2>
+          <p style="color: rgba(255,255,255,0.7);">Choose your account access level below.</p>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-bottom: 1.8rem; background: rgba(0,18,32,0.6); padding: 6px; border-radius: 12px; border: 1px solid var(--glass-border);">
+          <button type="button" id="tab-pass" onclick="setRole('Passenger')" class="btn btn-primary" style="flex:1; padding: 10px;">Passenger</button>
+          <button type="button" id="tab-adm" onclick="setRole('Admin')" class="btn btn-glass" style="flex:1; padding: 10px;">Administrator</button>
+        </div>
+
+        <form id="login-form" onsubmit="handleLogin(event)">
+          <input type="hidden" id="login_role" value="Passenger">
+
+          <div class="form-group" style="margin-bottom: 1.2rem;">
+            <label><i class="fa-solid fa-envelope"></i> Email Address</label>
+            <input type="email" id="login_email" class="form-control" value="rahul@gmail.com" required>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 1.8rem;">
+            <label><i class="fa-solid fa-lock"></i> Account Password</label>
+            <input type="password" id="login_password" class="form-control" value="rahul123" required>
+          </div>
+
+          <button type="submit" class="btn btn-gold" style="width: 100%; height: 50px; font-size: 1rem;">
+            <i class="fa-solid fa-right-to-bracket"></i> Sign In to Portal
+          </button>
+
+          <p style="text-align: center; margin-top: 1.8rem; color: rgba(255,255,255,0.7); font-size: 0.9rem;">
+            Don't have an account? <a href="register.html" style="color: var(--turquoise); font-weight: 700;">Create Passenger Account</a>
+          </p>
+        </form>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div style="text-align: center; color: rgba(255,255,255,0.4); font-size: 0.85rem;">
+      &copy; 2026 Oceania Direct Maritime Systems.
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    let currentRole = "Passenger";
+
+    function setRole(role) {
+      currentRole = role;
+      document.getElementById('login_role').value = role;
+      
+      const passBtn = document.getElementById('tab-pass');
+      const admBtn = document.getElementById('tab-adm');
+
+      if (role === 'Admin') {
+        admBtn.className = 'btn btn-gold';
+        passBtn.className = 'btn btn-glass';
+        document.getElementById('login_email').value = 'admin@oceania.com';
+        document.getElementById('login_password').value = 'admin123';
+      } else {
+        passBtn.className = 'btn btn-primary';
+        admBtn.className = 'btn btn-glass';
+        document.getElementById('login_email').value = 'rahul@gmail.com';
+        document.getElementById('login_password').value = 'rahul123';
+      }
+    }
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('login_email').value;
+
+      if (currentRole === 'Admin') {
+        setCurrentUser({ full_name: "System Administrator", email, role: "Admin" });
+        showToast("Administrator session authorized", "success");
+        setTimeout(() => window.location.href = "admin_dashboard.html", 500);
+        return;
+      }
+
+      try {
+        const passengers = await apiFetch('/passengers/');
+        const matched = passengers.find(p => p.email.toLowerCase() === email.toLowerCase());
+        if (matched) {
+          matched.role = "Passenger";
+          setCurrentUser(matched);
+          showToast(`Welcome back, ${matched.full_name}!`, "success");
+          setTimeout(() => window.location.href = "passenger_dashboard.html", 500);
+        } else {
+          const user = { full_name: email.split('@')[0], email, role: "Passenger" };
+          setCurrentUser(user);
+          showToast(`Welcome, ${user.full_name}`, "success");
+          setTimeout(() => window.location.href = "passenger_dashboard.html", 500);
+        }
+      } catch (err) {
+        setCurrentUser({ full_name: "Rahul Sharma", email: "rahul@gmail.com", role: "Passenger" });
+        showToast("Signed in offline mode", "info");
+        setTimeout(() => window.location.href = "passenger_dashboard.html", 500);
+      }
+    }
+  </script>
+</body>
+</html>

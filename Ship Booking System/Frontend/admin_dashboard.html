@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Executive Console - Oceania Direct</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-icon"><i class="fa-solid fa-water-ladder"></i></div>
+      Oceania Direct <span style="font-size: 0.75rem; background: var(--gold-accent); color: var(--deep-ocean); padding: 2px 8px; border-radius: 4px; font-weight: 800;">ADMIN CONSOLE</span>
+    </a>
+    <ul class="nav-menu">
+      <li><a href="index.html" class="nav-link">Live Site</a></li>
+      <li><a href="ships.html" class="nav-link">Fleet Catalog</a></li>
+      <li><a href="admin_dashboard.html" class="nav-link active">Admin Console</a></li>
+    </ul>
+    <div id="nav-auth-container"></div>
+  </nav>
+
+  <main class="container">
+    
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+      <div>
+        <span class="hero-tag"><i class="fa-solid fa-crown"></i> Central Control Center</span>
+        <h1 class="hero-heading text-gradient" style="font-size: 3rem;">Executive Operations Console</h1>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <button onclick="exportActiveTable()" class="btn btn-glass"><i class="fa-solid fa-file-csv"></i> Export CSV</button>
+        <button onclick="openAddModal()" class="btn btn-gold"><i class="fa-solid fa-plus"></i> <span id="btn-add-label">Add Passenger</span></button>
+      </div>
+    </div>
+
+    <!-- Executive KPI Summary -->
+    <div class="grid-4" style="margin-bottom: 2.5rem;">
+      <div class="glass-panel" style="padding: 1.5rem;">
+        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase;">Total Revenue</div>
+        <div style="font-size: 2.2rem; font-weight: 900; color: var(--gold-accent);" id="kpi-revenue">₹43,200</div>
+        <div style="font-size: 0.8rem; color: var(--success);"><i class="fa-solid fa-arrow-up"></i> +18.4% vs last month</div>
+      </div>
+      <div class="glass-panel" style="padding: 1.5rem;">
+        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase;">Registered Passengers</div>
+        <div style="font-size: 2.2rem; font-weight: 900; color: var(--turquoise);" id="kpi-passengers">3</div>
+        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.5);">Active Passholders</div>
+      </div>
+      <div class="glass-panel" style="padding: 1.5rem;">
+        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase;">Fleet Fleet Count</div>
+        <div style="font-size: 2.2rem; font-weight: 900; color: var(--sea-green);" id="kpi-ships">5</div>
+        <div style="font-size: 0.8rem; color: var(--success);">4 Active, 1 Maintenance</div>
+      </div>
+      <div class="glass-panel" style="padding: 1.5rem;">
+        <div style="font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase;">Confirmed Bookings</div>
+        <div style="font-size: 2.2rem; font-weight: 900; color: var(--pure-white);" id="kpi-bookings">3</div>
+        <div style="font-size: 0.8rem; color: var(--turquoise);">Real-time Synced</div>
+      </div>
+    </div>
+
+    <!-- Revenue Analytics Chart -->
+    <div class="glass-panel" style="padding: 2rem; margin-bottom: 3rem;">
+      <h3 style="font-size: 1.3rem; margin-bottom: 1rem; color: var(--gold-accent);"><i class="fa-solid fa-chart-area"></i> Revenue Analytics Graph</h3>
+      <div id="revenue-chart" class="chart-box">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Admin Sidebar & Table Layout -->
+    <div class="admin-layout">
+      
+      <!-- Left Sidebar Tabs -->
+      <aside class="admin-sidebar">
+        <button class="sidebar-btn active" id="tab-passengers" onclick="switchAdminTab('passengers')"><i class="fa-solid fa-users"></i> Passengers (Mod 1)</button>
+        <button class="sidebar-btn" id="tab-ships" onclick="switchAdminTab('ships')"><i class="fa-solid fa-ship"></i> Ships Fleet (Mod 2)</button>
+        <button class="sidebar-btn" id="tab-schedules" onclick="switchAdminTab('schedules')"><i class="fa-solid fa-route"></i> Schedules (Mod 3)</button>
+        <button class="sidebar-btn" id="tab-bookings" onclick="switchAdminTab('bookings')"><i class="fa-solid fa-ticket"></i> Bookings (Mod 4)</button>
+        <button class="sidebar-btn" id="tab-payments" onclick="switchAdminTab('payments')"><i class="fa-solid fa-wallet"></i> Payments (Mod 5)</button>
+      </aside>
+
+      <!-- Right Table Panel -->
+      <section class="glass-panel" style="padding: 2rem; overflow-x: auto;">
+        <table id="admin-data-table" style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.92rem;">
+          <thead id="admin-table-head">
+            <!-- Loaded via JS -->
+          </thead>
+          <tbody id="admin-table-body">
+            <!-- Loaded via JS -->
+          </tbody>
+        </table>
+      </section>
+
+    </div>
+
+    <!-- Modal CRUD Form -->
+    <div id="admin-crud-modal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 id="crud-modal-title">Record Form</h3>
+          <button class="modal-close" onclick="closeCrudModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+          <form id="admin-crud-form" onsubmit="handleCrudSubmit(event)">
+            <div id="dynamic-form-fields"></div>
+            <button type="submit" class="btn btn-gold" style="width: 100%; margin-top: 1.5rem; height: 50px;">Save Record to REST API</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="footer">
+    <div style="max-width: 1380px; margin: 0 auto; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.85rem;">
+      &copy; 2026 Oceania Direct Administrative Operations.
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    let activeTab = 'passengers';
+    let editMode = false;
+    let editingId = null;
+    let store = {
+      passengers: [],
+      ships: [],
+      schedules: [],
+      bookings: [],
+      payments: []
+    };
+
+    async function loadAdminData() {
+      try {
+        const [passengers, ships, schedules, bookings, payments] = await Promise.all([
+          apiFetch('/passengers/'),
+          apiFetch('/ships/'),
+          apiFetch('/schedules/'),
+          apiFetch('/bookings/'),
+          apiFetch('/payments/')
+        ]);
+
+        store.passengers = passengers;
+        store.ships = ships;
+        store.schedules = schedules;
+        store.bookings = bookings;
+        store.payments = payments;
+
+        const rev = payments.reduce((acc, p) => acc + (p.amount || 0), 0);
+        document.getElementById('kpi-revenue').innerText = `₹${rev.toLocaleString()}`;
+        document.getElementById('kpi-passengers').innerText = passengers.length;
+        document.getElementById('kpi-ships').innerText = ships.length;
+        document.getElementById('kpi-bookings').innerText = bookings.length;
+
+        // Revenue Graph
+        const revData = [
+          { label: 'Q1', value: 12500 },
+          { label: 'Q2', value: 28400 },
+          { label: 'Q3', value: 39200 },
+          { label: 'Q4', value: rev }
+        ];
+        renderBarChart('revenue-chart', revData, 'label', 'value', 'var(--gold-accent)');
+
+        renderAdminTable();
+      } catch (err) {
+        showToast("Error retrieving admin records from Django backend", "error");
+      }
+    }
+
+    function switchAdminTab(tab) {
+      activeTab = tab;
+      ['passengers', 'ships', 'schedules', 'bookings', 'payments'].forEach(t => {
+        const b = document.getElementById(`tab-${t}`);
+        if (b) b.className = (t === tab) ? 'sidebar-btn active' : 'sidebar-btn';
+      });
+
+      const labelMap = {
+        passengers: "Add Passenger",
+        ships: "Add Ship Vessel",
+        schedules: "Add Schedule Route",
+        bookings: "Create Booking",
+        payments: "Record Payment"
+      };
+      document.getElementById('btn-add-label').innerText = labelMap[tab];
+      renderAdminTable();
+    }
+
+    function renderAdminTable() {
+      const thead = document.getElementById('admin-table-head');
+      const tbody = document.getElementById('admin-table-body');
+
+      if (activeTab === 'passengers') {
+        thead.innerHTML = `
+          <tr style="border-bottom:1px solid var(--glass-border); color:var(--turquoise); font-size:0.8rem; text-transform:uppercase;">
+            <th style="padding:14px;">ID</th>
+            <th style="padding:14px;">Full Name</th>
+            <th style="padding:14px;">Email</th>
+            <th style="padding:14px;">Phone</th>
+            <th style="padding:14px;">Nationality</th>
+            <th style="padding:14px;">Passport</th>
+            <th style="padding:14px;">Actions</th>
+          </tr>
+        `;
+        tbody.innerHTML = store.passengers.map(p => `
+          <tr style="border-bottom:1px solid var(--glass-border);">
+            <td style="padding:14px;"><strong style="color:var(--turquoise);">#P-${p.passenger_id}</strong></td>
+            <td style="padding:14px;"><strong>${p.full_name}</strong></td>
+            <td style="padding:14px;">${p.email}</td>
+            <td style="padding:14px;">${p.phone}</td>
+            <td style="padding:14px;">${p.nationality}</td>
+            <td style="padding:14px;">${p.passport_number}</td>
+            <td style="padding:14px;">
+              <button onclick="openEditModal(${p.passenger_id})" class="btn btn-glass btn-sm"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteRecord('passengers', ${p.passenger_id})" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `).join('');
+      } else if (activeTab === 'ships') {
+        thead.innerHTML = `
+          <tr style="border-bottom:1px solid var(--glass-border); color:var(--turquoise); font-size:0.8rem; text-transform:uppercase;">
+            <th style="padding:14px;">Ship ID</th>
+            <th style="padding:14px;">Vessel Name</th>
+            <th style="padding:14px;">Type</th>
+            <th style="padding:14px;">Capacity</th>
+            <th style="padding:14px;">Operator</th>
+            <th style="padding:14px;">Status</th>
+            <th style="padding:14px;">Actions</th>
+          </tr>
+        `;
+        tbody.innerHTML = store.ships.map(s => `
+          <tr style="border-bottom:1px solid var(--glass-border);">
+            <td style="padding:14px;"><strong style="color:var(--turquoise);">#SH-${s.ship_id}</strong></td>
+            <td style="padding:14px;"><strong>${s.ship_name}</strong></td>
+            <td style="padding:14px;">${s.ship_type}</td>
+            <td style="padding:14px;">${s.capacity} Pax</td>
+            <td style="padding:14px;">${s.operator_name}</td>
+            <td style="padding:14px;"><span class="badge-status ${s.status === 'Active' ? 'badge-active' : 'badge-maintenance'}" style="position:static;">${s.status}</span></td>
+            <td style="padding:14px;">
+              <button onclick="openEditModal(${s.ship_id})" class="btn btn-glass btn-sm"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteRecord('ships', ${s.ship_id})" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `).join('');
+      } else if (activeTab === 'schedules') {
+        thead.innerHTML = `
+          <tr style="border-bottom:1px solid var(--glass-border); color:var(--turquoise); font-size:0.8rem; text-transform:uppercase;">
+            <th style="padding:14px;">Sch ID</th>
+            <th style="padding:14px;">Vessel</th>
+            <th style="padding:14px;">Route</th>
+            <th style="padding:14px;">Departure</th>
+            <th style="padding:14px;">Arrival</th>
+            <th style="padding:14px;">Fare</th>
+            <th style="padding:14px;">Actions</th>
+          </tr>
+        `;
+        tbody.innerHTML = store.schedules.map(sc => `
+          <tr style="border-bottom:1px solid var(--glass-border);">
+            <td style="padding:14px;"><strong style="color:var(--turquoise);">#SCH-${sc.schedule_id}</strong></td>
+            <td style="padding:14px;"><strong>${sc.ship_name}</strong></td>
+            <td style="padding:14px;">${sc.source_port} ➔ ${sc.destination_port}</td>
+            <td style="padding:14px;">${sc.departure_date} ${sc.departure_time}</td>
+            <td style="padding:14px;">${sc.arrival_date} ${sc.arrival_time}</td>
+            <td style="padding:14px;"><strong style="color:var(--gold-accent);">₹${sc.fare.toLocaleString()}</strong></td>
+            <td style="padding:14px;">
+              <button onclick="openEditModal(${sc.schedule_id})" class="btn btn-glass btn-sm"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteRecord('schedules', ${sc.schedule_id})" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `).join('');
+      } else if (activeTab === 'bookings') {
+        thead.innerHTML = `
+          <tr style="border-bottom:1px solid var(--glass-border); color:var(--turquoise); font-size:0.8rem; text-transform:uppercase;">
+            <th style="padding:14px;">Booking Ref</th>
+            <th style="padding:14px;">Passenger</th>
+            <th style="padding:14px;">Vessel & Suite</th>
+            <th style="padding:14px;">Route & Date</th>
+            <th style="padding:14px;">Amount</th>
+            <th style="padding:14px;">Status</th>
+            <th style="padding:14px;">Actions</th>
+          </tr>
+        `;
+        tbody.innerHTML = store.bookings.map(b => `
+          <tr style="border-bottom:1px solid var(--glass-border);">
+            <td style="padding:14px;"><strong style="color:var(--turquoise);">#BK-${b.booking_id}</strong></td>
+            <td style="padding:14px;"><strong>${b.passenger_name}</strong></td>
+            <td style="padding:14px;">${b.ship_name} (${b.cabin_type})</td>
+            <td style="padding:14px;">${b.source_port} ➔ ${b.destination_port}<br><small style="color:rgba(255,255,255,0.6);">${b.journey_date}</small></td>
+            <td style="padding:14px;"><strong style="color:var(--gold-accent);">₹${b.total_amount.toLocaleString()}</strong></td>
+            <td style="padding:14px;"><span class="badge-status ${b.booking_status === 'Confirmed' ? 'badge-active' : (b.booking_status === 'Completed' ? 'badge-active' : 'badge-inactive')}" style="position:static;">${b.booking_status}</span></td>
+            <td style="padding:14px;">
+              <button onclick="openEditModal(${b.booking_id})" class="btn btn-glass btn-sm"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteRecord('bookings', ${b.booking_id})" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `).join('');
+      } else if (activeTab === 'payments') {
+        thead.innerHTML = `
+          <tr style="border-bottom:1px solid var(--glass-border); color:var(--turquoise); font-size:0.8rem; text-transform:uppercase;">
+            <th style="padding:14px;">Pay ID</th>
+            <th style="padding:14px;">Booking Ref</th>
+            <th style="padding:14px;">Passenger</th>
+            <th style="padding:14px;">Amount</th>
+            <th style="padding:14px;">Method</th>
+            <th style="padding:14px;">Txn ID</th>
+            <th style="padding:14px;">Status</th>
+            <th style="padding:14px;">Actions</th>
+          </tr>
+        `;
+        tbody.innerHTML = store.payments.map(py => `
+          <tr style="border-bottom:1px solid var(--glass-border);">
+            <td style="padding:14px;"><strong style="color:var(--turquoise);">#PY-${py.payment_id}</strong></td>
+            <td style="padding:14px;">#BK-${py.booking_id}</td>
+            <td style="padding:14px;">${py.passenger_name}</td>
+            <td style="padding:14px;"><strong style="color:var(--gold-accent);">₹${py.amount.toLocaleString()}</strong></td>
+            <td style="padding:14px;">${py.payment_method}</td>
+            <td style="padding:14px;"><small style="color:var(--turquoise);">${py.transaction_id}</small></td>
+            <td style="padding:14px;"><span class="badge-status badge-active" style="position:static;">${py.payment_status}</span></td>
+            <td style="padding:14px;">
+              <button onclick="openEditModal(${py.payment_id})" class="btn btn-glass btn-sm"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteRecord('payments', ${py.payment_id})" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    function exportActiveTable() {
+      exportTableToCSV('admin-data-table', `${activeTab}_export.csv`);
+    }
+
+    function openAddModal() {
+      editMode = false;
+      editingId = null;
+      document.getElementById('crud-modal-title').innerText = `Add ${activeTab.slice(0, -1).toUpperCase()}`;
+      renderFormFields({});
+      document.getElementById('admin-crud-modal').classList.add('active');
+    }
+
+    function openEditModal(id) {
+      editMode = true;
+      editingId = id;
+      document.getElementById('crud-modal-title').innerText = `Edit ${activeTab.slice(0, -1).toUpperCase()} #${id}`;
+      let item = store[activeTab].find(x => (x[`${activeTab.slice(0, -1)}_id`] || x.id) === id);
+      renderFormFields(item || {});
+      document.getElementById('admin-crud-modal').classList.add('active');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('active');
+    }
+
+    function closeCrudModal() {
+      document.getElementById('admin-crud-modal').classList.remove('active');
+    }
+
+    function renderFormFields(data) {
+      const container = document.getElementById('dynamic-form-fields');
+
+      if (activeTab === 'passengers') {
+        container.innerHTML = `
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Passenger ID</label>
+            <input type="number" id="f_passenger_id" class="form-control" value="${data.passenger_id || 104}" ${editMode ? 'readonly' : ''}>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Full Name</label>
+            <input type="text" id="f_full_name" class="form-control" value="${data.full_name || ''}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Email</label>
+            <input type="email" id="f_email" class="form-control" value="${data.email || ''}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Phone</label>
+            <input type="text" id="f_phone" class="form-control" value="${data.phone || ''}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Nationality</label>
+            <input type="text" id="f_nationality" class="form-control" value="${data.nationality || 'Indian'}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Passport Number</label>
+            <input type="text" id="f_passport_number" class="form-control" value="${data.passport_number || ''}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Password</label>
+            <input type="text" id="f_password" class="form-control" value="${data.password || 'pass123'}" required>
+          </div>
+        `;
+      } else if (activeTab === 'ships') {
+        container.innerHTML = `
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Ship ID</label>
+            <input type="number" id="f_ship_id" class="form-control" value="${data.ship_id || 206}" ${editMode ? 'readonly' : ''}>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Ship Name</label>
+            <input type="text" id="f_ship_name" class="form-control" value="${data.ship_name || ''}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Ship Type</label>
+            <select id="f_ship_type" class="form-control">
+              <option ${data.ship_type === 'Cruise Ship' ? 'selected' : ''}>Cruise Ship</option>
+              <option ${data.ship_type === 'Ferry' ? 'selected' : ''}>Ferry</option>
+              <option ${data.ship_type === 'Cargo Passenger Ship' ? 'selected' : ''}>Cargo Passenger Ship</option>
+              <option ${data.ship_type === 'Luxury Yacht' ? 'selected' : ''}>Luxury Yacht</option>
+              <option ${data.ship_type === 'River Cruise' ? 'selected' : ''}>River Cruise</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Capacity</label>
+            <input type="number" id="f_capacity" class="form-control" value="${data.capacity || 1000}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Operator Name</label>
+            <input type="text" id="f_operator_name" class="form-control" value="${data.operator_name || 'Royal Cruises'}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Status</label>
+            <select id="f_status" class="form-control">
+              <option ${data.status === 'Active' ? 'selected' : ''}>Active</option>
+              <option ${data.status === 'Maintenance' ? 'selected' : ''}>Maintenance</option>
+              <option ${data.status === 'Inactive' ? 'selected' : ''}>Inactive</option>
+            </select>
+          </div>
+        `;
+      } else if (activeTab === 'schedules') {
+        container.innerHTML = `
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Schedule ID</label>
+            <input type="number" id="f_schedule_id" class="form-control" value="${data.schedule_id || 305}" ${editMode ? 'readonly' : ''}>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Ship Name</label>
+            <input type="text" id="f_ship_name" class="form-control" value="${data.ship_name || 'Ocean Paradise'}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Source Port</label>
+            <input type="text" id="f_source_port" class="form-control" value="${data.source_port || 'Chennai Port'}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Destination Port</label>
+            <input type="text" id="f_destination_port" class="form-control" value="${data.destination_port || 'Port Blair'}" required>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div class="form-group">
+              <label>Dep Date</label>
+              <input type="date" id="f_departure_date" class="form-control" value="${data.departure_date || '2026-10-15'}" required>
+            </div>
+            <div class="form-group">
+              <label>Dep Time</label>
+              <input type="text" id="f_departure_time" class="form-control" value="${data.departure_time || '08:00'}" required>
+            </div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+            <div class="form-group">
+              <label>Arr Date</label>
+              <input type="date" id="f_arrival_date" class="form-control" value="${data.arrival_date || '2026-10-16'}" required>
+            </div>
+            <div class="form-group">
+              <label>Arr Time</label>
+              <input type="text" id="f_arrival_time" class="form-control" value="${data.arrival_time || '06:00'}" required>
+            </div>
+          </div>
+          <div class="form-group" style="margin-top:1rem;">
+            <label>Fare Amount (₹)</label>
+            <input type="number" id="f_fare" class="form-control" value="${data.fare || 8500}" required>
+          </div>
+        `;
+      } else if (activeTab === 'bookings') {
+        container.innerHTML = `
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Booking ID</label>
+            <input type="number" id="f_booking_id" class="form-control" value="${data.booking_id || 404}" ${editMode ? 'readonly' : ''}>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Passenger Name</label>
+            <input type="text" id="f_passenger_name" class="form-control" value="${data.passenger_name || 'Rahul Sharma'}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Ship Name</label>
+            <input type="text" id="f_ship_name" class="form-control" value="${data.ship_name || 'Ocean Paradise'}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Cabin Type</label>
+            <select id="f_cabin_type" class="form-control">
+              <option ${data.cabin_type === 'Economy' ? 'selected' : ''}>Economy</option>
+              <option ${data.cabin_type === 'Deluxe' ? 'selected' : ''}>Deluxe</option>
+              <option ${data.cabin_type === 'Suite' ? 'selected' : ''}>Suite</option>
+              <option ${data.cabin_type === 'Family Cabin' ? 'selected' : ''}>Family Cabin</option>
+              <option ${data.cabin_type === 'VIP Cabin' ? 'selected' : ''}>VIP Cabin</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Total Amount (₹)</label>
+            <input type="number" id="f_total_amount" class="form-control" value="${data.total_amount || 12000}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Booking Status</label>
+            <select id="f_booking_status" class="form-control">
+              <option ${data.booking_status === 'Confirmed' ? 'selected' : ''}>Confirmed</option>
+              <option ${data.booking_status === 'Waiting' ? 'selected' : ''}>Waiting</option>
+              <option ${data.booking_status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+              <option ${data.booking_status === 'Completed' ? 'selected' : ''}>Completed</option>
+            </select>
+          </div>
+        `;
+      } else if (activeTab === 'payments') {
+        container.innerHTML = `
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Payment ID</label>
+            <input type="number" id="f_payment_id" class="form-control" value="${data.payment_id || 504}" ${editMode ? 'readonly' : ''}>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Booking ID</label>
+            <input type="number" id="f_booking_id" class="form-control" value="${data.booking_id || 401}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Passenger Name</label>
+            <input type="text" id="f_passenger_name" class="form-control" value="${data.passenger_name || 'Rahul Sharma'}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Amount (₹)</label>
+            <input type="number" id="f_amount" class="form-control" value="${data.amount || 12000}" required>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Payment Method</label>
+            <select id="f_payment_method" class="form-control">
+              <option ${data.payment_method === 'UPI' ? 'selected' : ''}>UPI</option>
+              <option ${data.payment_method === 'Credit Card' ? 'selected' : ''}>Credit Card</option>
+              <option ${data.payment_method === 'Debit Card' ? 'selected' : ''}>Debit Card</option>
+              <option ${data.payment_method === 'Net Banking' ? 'selected' : ''}>Net Banking</option>
+              <option ${data.payment_method === 'Wallet' ? 'selected' : ''}>Wallet</option>
+            </select>
+          </div>
+          <div class="form-group" style="margin-bottom:1rem;">
+            <label>Payment Status</label>
+            <select id="f_payment_status" class="form-control">
+              <option ${data.payment_status === 'Success' ? 'selected' : ''}>Success</option>
+              <option ${data.payment_status === 'Pending' ? 'selected' : ''}>Pending</option>
+              <option ${data.payment_status === 'Failed' ? 'selected' : ''}>Failed</option>
+            </select>
+          </div>
+        `;
+      }
+    }
+
+    async function handleCrudSubmit(e) {
+      e.preventDefault();
+      let payload = {};
+
+      if (activeTab === 'passengers') {
+        payload = {
+          passenger_id: parseInt(document.getElementById('f_passenger_id').value),
+          full_name: document.getElementById('f_full_name').value,
+          email: document.getElementById('f_email').value,
+          phone: document.getElementById('f_phone').value,
+          nationality: document.getElementById('f_nationality').value,
+          passport_number: document.getElementById('f_passport_number').value,
+          password: document.getElementById('f_password').value
+        };
+      } else if (activeTab === 'ships') {
+        payload = {
+          ship_id: parseInt(document.getElementById('f_ship_id').value),
+          ship_name: document.getElementById('f_ship_name').value,
+          ship_type: document.getElementById('f_ship_type').value,
+          capacity: parseInt(document.getElementById('f_capacity').value),
+          operator_name: document.getElementById('f_operator_name').value,
+          status: document.getElementById('f_status').value
+        };
+      } else if (activeTab === 'schedules') {
+        payload = {
+          schedule_id: parseInt(document.getElementById('f_schedule_id').value),
+          ship_name: document.getElementById('f_ship_name').value,
+          source_port: document.getElementById('f_source_port').value,
+          destination_port: document.getElementById('f_destination_port').value,
+          departure_date: document.getElementById('f_departure_date').value,
+          departure_time: document.getElementById('f_departure_time').value,
+          arrival_date: document.getElementById('f_arrival_date').value,
+          arrival_time: document.getElementById('f_arrival_time').value,
+          fare: parseFloat(document.getElementById('f_fare').value)
+        };
+      } else if (activeTab === 'bookings') {
+        payload = {
+          booking_id: parseInt(document.getElementById('f_booking_id').value),
+          passenger_name: document.getElementById('f_passenger_name').value,
+          ship_name: document.getElementById('f_ship_name').value,
+          cabin_type: document.getElementById('f_cabin_type').value,
+          journey_date: '2026-10-15',
+          source_port: 'Chennai Port',
+          destination_port: 'Port Blair',
+          total_amount: parseFloat(document.getElementById('f_total_amount').value),
+          booking_status: document.getElementById('f_booking_status').value
+        };
+      } else if (activeTab === 'payments') {
+        payload = {
+          payment_id: parseInt(document.getElementById('f_payment_id').value),
+          booking_id: parseInt(document.getElementById('f_booking_id').value),
+          passenger_name: document.getElementById('f_passenger_name').value,
+          amount: parseFloat(document.getElementById('f_amount').value),
+          payment_method: document.getElementById('f_payment_method').value,
+          payment_status: document.getElementById('f_payment_status').value,
+          transaction_id: 'TXN' + Math.floor(100000000 + Math.random() * 900000000),
+          payment_date: '2026-09-20'
+        };
+      }
+
+      const endpoint = editMode 
+        ? `/${activeTab}/update/${editingId}/` 
+        : `/${activeTab}/add/`;
+      
+      const method = editMode ? 'PUT' : 'POST';
+
+      try {
+        await apiFetch(endpoint, method, payload);
+        showToast(`Record ${editMode ? 'updated' : 'added'} successfully`, "success");
+        closeCrudModal();
+        loadAdminData();
+      } catch (err) {
+        showToast(err.message || "Operation failed", "error");
+      }
+    }
+
+    async function deleteRecord(tab, id) {
+      if (!confirm(`Delete record #${id} from ${tab}?`)) return;
+
+      try {
+        await apiFetch(`/${tab}/delete/${id}/`, 'DELETE');
+        showToast(`Record #${id} deleted`, "info");
+        loadAdminData();
+      } catch (err) {
+        showToast(err.message || "Delete failed", "error");
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadAdminData);
+  </script>
+</body>
+</html>

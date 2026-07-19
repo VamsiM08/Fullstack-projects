@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vessel Specification & Amenities - Oceania Direct</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-icon"><i class="fa-solid fa-water-ladder"></i></div>
+      Oceania Direct
+    </a>
+    <ul class="nav-menu">
+      <li><a href="index.html" class="nav-link">Home</a></li>
+      <li><a href="ships.html" class="nav-link">Fleet</a></li>
+      <li><a href="booking_history.html" class="nav-link">Reservations</a></li>
+      <li><a href="passenger_dashboard.html" class="nav-link">Dashboard</a></li>
+    </ul>
+    <div id="nav-auth-container"></div>
+  </nav>
+
+  <main class="container">
+    <div id="detail-wrapper">
+      <p style="color:var(--turquoise); text-align:center; padding:4rem;">Loading vessel specifications...</p>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div style="max-width: 1380px; margin: 0 auto; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.85rem;">
+      &copy; 2026 Oceania Direct Maritime Systems.
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    const shipImages = {
+      "Ocean Paradise": "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=1600&q=85",
+      "Sea Empress": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=1600&q=85",
+      "Island Voyager": "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?auto=format&fit=crop&w=1600&q=85",
+      "Nile Breeze": "https://images.unsplash.com/photo-1505705694340-019e1e335916?auto=format&fit=crop&w=1600&q=85",
+      "Atlantis Trader": "https://images.unsplash.com/photo-1516834474-48c0abc2a902?auto=format&fit=crop&w=1600&q=85"
+    };
+
+    async function loadShipDetails() {
+      const params = new URLSearchParams(window.location.search);
+      const shipId = parseInt(params.get('id')) || 201;
+
+      try {
+        const [ships, schedules] = await Promise.all([
+          apiFetch('/ships/'),
+          apiFetch('/schedules/')
+        ]);
+
+        const ship = ships.find(s => s.ship_id === shipId) || ships[0];
+        const schedule = schedules.find(s => s.ship_name === ship.ship_name) || {
+          schedule_id: 301,
+          ship_name: ship.ship_name,
+          source_port: "Chennai Port",
+          destination_port: "Port Blair",
+          departure_date: "2026-10-15",
+          departure_time: "08:00",
+          arrival_date: "2026-10-16",
+          arrival_time: "06:00",
+          fare: 8500
+        };
+
+        const imgUrl = shipImages[ship.ship_name] || "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=1600&q=85";
+
+        document.getElementById('detail-wrapper').innerHTML = `
+          <div style="margin-bottom: 2rem;">
+            <a href="ships.html" class="btn btn-glass btn-sm" style="margin-bottom:1rem;"><i class="fa-solid fa-arrow-left"></i> Fleet Catalog</a>
+            <h1 class="hero-heading text-gradient" style="font-size:3.5rem; margin-bottom:0.5rem;">${ship.ship_name}</h1>
+            <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap;">
+              <span class="badge-status ${ship.status === 'Active' ? 'badge-active' : 'badge-maintenance'}" style="position:static;">${ship.status}</span>
+              <span style="color:var(--turquoise); font-weight:700;"><i class="fa-solid fa-building-flag"></i> ${ship.operator_name}</span>
+              <span style="color:rgba(255,255,255,0.7);"><i class="fa-solid fa-users"></i> ${ship.capacity} Passengers</span>
+              <span style="color:var(--gold-accent); font-weight:800;">★ 4.9 Rating (128 Reviews)</span>
+            </div>
+          </div>
+
+          <!-- Large Gallery Hero -->
+          <div style="height: 420px; border-radius: var(--radius-xl); overflow: hidden; border: 1px solid var(--glass-border); margin-bottom: 3.5rem; box-shadow: var(--shadow-md); position: relative;">
+            <img src="${imgUrl}" alt="${ship.ship_name}" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 3rem;">
+            
+            <!-- Left Column: Specs, Amenities, Itinerary -->
+            <div>
+              
+              <!-- Journey Itinerary -->
+              <div class="glass-panel" style="padding: 2rem; margin-bottom: 2.5rem;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--turquoise);"><i class="fa-solid fa-route"></i> Scheduled Route Itinerary</h3>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; background: rgba(0,18,32,0.6); padding: 1.5rem; border-radius: var(--radius-md); border: 1px solid var(--glass-border); margin-bottom: 1.5rem;">
+                  <div>
+                    <span style="font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase;">Departure Port</span>
+                    <h4 style="font-size: 1.2rem; color: var(--gold-accent);">${schedule.source_port}</h4>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">${schedule.departure_date} at ${schedule.departure_time}</p>
+                  </div>
+                  <div style="color: var(--sea-green); font-size: 1.8rem;"><i class="fa-solid fa-arrow-right-long"></i></div>
+                  <div style="text-align: right;">
+                    <span style="font-size: 0.8rem; color: rgba(255,255,255,0.6); text-transform: uppercase;">Destination Port</span>
+                    <h4 style="font-size: 1.2rem; color: var(--gold-accent);">${schedule.destination_port}</h4>
+                    <p style="font-size: 0.85rem; color: rgba(255,255,255,0.7);">${schedule.arrival_date} at ${schedule.arrival_time}</p>
+                  </div>
+                </div>
+
+                <div class="ship-meta-list">
+                  <div class="ship-meta-item"><span>Schedule Code:</span> <strong>#SCH-${schedule.schedule_id}</strong></div>
+                  <div class="ship-meta-item"><span>Vessel Type:</span> <strong>${ship.ship_type}</strong></div>
+                  <div class="ship-meta-item"><span>Standard Fare:</span> <strong>₹${schedule.fare.toLocaleString()}</strong></div>
+                </div>
+              </div>
+
+              <!-- Onboard Amenities -->
+              <div class="glass-panel" style="padding: 2rem; margin-bottom: 2.5rem;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 1.5rem; color: var(--gold-accent);"><i class="fa-solid fa-bell-concierge"></i> Luxury Onboard Amenities</h3>
+                <div class="grid-4" style="gap: 1rem;">
+                  <div class="glass-panel" style="padding: 1.2rem; text-align: center;">
+                    <i class="fa-solid fa-utensils" style="font-size: 1.8rem; color: var(--turquoise); margin-bottom: 0.5rem;"></i>
+                    <h5 style="font-size: 0.95rem;">Fine Dining</h5>
+                  </div>
+                  <div class="glass-panel" style="padding: 1.2rem; text-align: center;">
+                    <i class="fa-solid fa-water-ladder" style="font-size: 1.8rem; color: var(--sea-green); margin-bottom: 0.5rem;"></i>
+                    <h5 style="font-size: 0.95rem;">Infinity Pool</h5>
+                  </div>
+                  <div class="glass-panel" style="padding: 1.2rem; text-align: center;">
+                    <i class="fa-solid fa-spa" style="font-size: 1.8rem; color: var(--gold-accent); margin-bottom: 0.5rem;"></i>
+                    <h5 style="font-size: 0.95rem;">Ocean Spa</h5>
+                  </div>
+                  <div class="glass-panel" style="padding: 1.2rem; text-align: center;">
+                    <i class="fa-solid fa-dumbbell" style="font-size: 1.8rem; color: var(--turquoise); margin-bottom: 0.5rem;"></i>
+                    <h5 style="font-size: 0.95rem;">Fitness Center</h5>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Right Sidebar CTA -->
+            <div>
+              <div class="glass-panel glass-card-gold" style="padding: 2.2rem; position: sticky; top: 110px;">
+                <span class="hero-tag" style="margin-bottom: 1rem;">Instant Ticket Booking</span>
+                <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Reserve Cabin Suite</h3>
+                <p style="color: rgba(255,255,255,0.7); font-size: 0.92rem; margin-bottom: 1.5rem;">Select your cabin accommodations and proceed to instant seat confirmation.</p>
+
+                <div style="background: rgba(0,18,32,0.7); border: 1px solid var(--glass-border); padding: 1.2rem; border-radius: var(--radius-md); margin-bottom: 1.8rem;">
+                  <span style="font-size: 0.8rem; color: rgba(255,255,255,0.6); display: block;">Base Fare Starting From</span>
+                  <div class="fare-price" style="font-size: 2.4rem;">₹${schedule.fare.toLocaleString()}</div>
+                  <span style="font-size: 0.8rem; color: var(--success);"><i class="fa-solid fa-shield-check"></i> All Taxes & Port Fees Included</span>
+                </div>
+
+                <a href="booking.html?ship_id=${ship.ship_id}&schedule_id=${schedule.schedule_id}" class="btn btn-gold" style="width: 100%; height: 52px; font-size: 1.05rem;">
+                  <i class="fa-solid fa-ticket"></i> Book Journey Now
+                </a>
+              </div>
+            </div>
+
+          </div>
+        `;
+
+      } catch (err) {
+        document.getElementById('detail-wrapper').innerHTML = `<p style="color:var(--danger); text-align:center;">Failed to load vessel details.</p>`;
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadShipDetails);
+  </script>
+</body>
+</html>

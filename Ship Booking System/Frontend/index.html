@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Oceania Direct - World's Finest Luxury Cruises & Sea Voyages</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar">
+    <a href="index.html" class="brand">
+      <div class="brand-logo-icon"><i class="fa-solid fa-water-ladder"></i></div>
+      Oceania Direct
+    </a>
+    <ul class="nav-menu">
+      <li><a href="index.html" class="nav-link active">Home</a></li>
+      <li><a href="ships.html" class="nav-link">Fleet & Ships</a></li>
+      <li><a href="booking_history.html" class="nav-link">Reservations</a></li>
+      <li><a href="passenger_dashboard.html" class="nav-link">Dashboard</a></li>
+      <li><a href="admin_dashboard.html" class="nav-link">Admin Console</a></li>
+    </ul>
+    <div id="nav-auth-container"></div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="container">
+    <div class="hero-wrapper">
+      <span class="hero-tag"><i class="fa-solid fa-compass-drafting"></i> Commercial Maritime Experience</span>
+      <h1 class="hero-heading text-gradient">Explore The World's Finest Ocean Cruises</h1>
+      <p class="hero-subtext">Book luxury sea voyages, high-speed coastal ferries, and presidential yacht suites with real-time cabin availability.</p>
+
+      <!-- Floating Glass Search Widget -->
+      <div class="hero-search-box">
+        <form id="search-journey-form" onsubmit="handleSearch(event)">
+          <div class="search-form-grid">
+            <div class="form-group">
+              <label><i class="fa-solid fa-anchor"></i> Departure Port</label>
+              <select class="form-control" id="search-source">
+                <option value="">All Ports</option>
+                <option value="Chennai Port">Chennai Port</option>
+                <option value="Mumbai Port">Mumbai Port</option>
+                <option value="Kochi Port">Kochi Port</option>
+                <option value="Kolkata Jetty">Kolkata Jetty</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fa-solid fa-location-dot"></i> Destination Port</label>
+              <select class="form-control" id="search-destination">
+                <option value="">All Destinations</option>
+                <option value="Port Blair">Port Blair</option>
+                <option value="Goa Harbor">Goa Harbor</option>
+                <option value="Lakshadweep Island">Lakshadweep Island</option>
+                <option value="Sundarbans Bay">Sundarbans Bay</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label><i class="fa-solid fa-calendar-day"></i> Departure Date</label>
+              <input type="date" class="form-control" id="search-date">
+            </div>
+            <div class="form-group">
+              <label><i class="fa-solid fa-bed"></i> Cabin Suite</label>
+              <select class="form-control" id="search-cabin">
+                <option value="">Any Cabin</option>
+                <option value="Economy">Economy Deck</option>
+                <option value="Deluxe">Deluxe Room</option>
+                <option value="Suite">Executive Suite</option>
+                <option value="VIP Cabin">VIP President</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-gold" style="height: 52px; font-size: 1rem;">
+                <i class="fa-solid fa-magnifying-glass"></i> Search Journeys
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <!-- Featured Ships Section -->
+    <section style="margin-bottom: 5rem;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+        <div>
+          <span class="text-turquoise" style="font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Luxury Fleet Showcase</span>
+          <h2 style="font-size: 2.6rem; font-weight: 800;">Featured Cruise Vessels</h2>
+        </div>
+        <a href="ships.html" class="btn btn-glass">Explore Full Fleet <i class="fa-solid fa-arrow-right"></i></a>
+      </div>
+
+      <div id="featured-ships-grid" class="grid-3">
+        <!-- Loaded via JS -->
+      </div>
+    </section>
+
+    <!-- Interactive Cruise Destinations Map -->
+    <section class="destination-map-card">
+      <span class="hero-tag"><i class="fa-solid fa-earth-americas"></i> Global Routes</span>
+      <h2 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem;">Popular Cruise Destinations</h2>
+      <p style="color: rgba(255, 255, 255, 0.7); max-width: 600px; margin: 0 auto 2rem;">Hover over destination nodes to preview oceanic departure times and voyage schedules.</p>
+
+      <div class="map-svg-wrapper">
+        <svg viewBox="0 0 1000 480" style="width: 100%; height: auto; opacity: 0.35;">
+          <path d="M150,120 Q300,80 450,150 T800,100 T950,280" fill="none" stroke="var(--turquoise)" stroke-width="2" stroke-dasharray="8 8" />
+          <path d="M100,320 Q250,220 500,350 T850,220" fill="none" stroke="var(--gold-accent)" stroke-width="2" stroke-dasharray="6 6" />
+        </svg>
+
+        <!-- Port Interactive Nodes -->
+        <div class="port-node" style="top: 28%; left: 45%;">
+          <div class="port-tooltip"><strong>Chennai ➔ Port Blair</strong><br>Departs 08:00 AM</div>
+        </div>
+        <div class="port-node" style="top: 42%; left: 25%;">
+          <div class="port-tooltip"><strong>Mumbai ➔ Goa Harbor</strong><br>Departs 06:00 PM</div>
+        </div>
+        <div class="port-node" style="top: 65%; left: 32%;">
+          <div class="port-tooltip"><strong>Kochi ➔ Lakshadweep</strong><br>Departs 10:00 AM</div>
+        </div>
+        <div class="port-node" style="top: 22%; left: 78%;">
+          <div class="port-tooltip"><strong>Singapore Express</strong><br>Daily Departure</div>
+        </div>
+        <div class="port-node" style="top: 55%; left: 82%;">
+          <div class="port-tooltip"><strong>Maldives Lagoon Cruise</strong><br>Luxury Yacht</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Offers Section -->
+    <section style="margin-bottom: 5rem;">
+      <div style="text-align: center; margin-bottom: 3rem;">
+        <span class="text-gold" style="font-weight: 700; text-transform: uppercase;">Exclusive Member Deals</span>
+        <h2 style="font-size: 2.5rem; font-weight: 800;">Seasonal Cruise Packages</h2>
+      </div>
+
+      <div class="grid-3">
+        <div class="glass-panel glass-card-gold" style="padding: 2.5rem; text-align: center;">
+          <div style="font-size: 2.5rem; color: var(--gold-accent); margin-bottom: 1rem;"><i class="fa-solid fa-gift"></i></div>
+          <span class="hero-tag" style="margin-bottom: 1rem;">Early Bird Offer</span>
+          <h3 style="font-size: 1.8rem; margin-bottom: 0.8rem;">20% Off Ocean View Cabins</h3>
+          <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.8rem;">Book 30 days prior to departure date and receive complementary gourmet dining vouchers.</p>
+          <a href="ships.html" class="btn btn-gold btn-sm">Claim Voucher</a>
+        </div>
+
+        <div class="glass-panel" style="padding: 2.5rem; text-align: center;">
+          <div style="font-size: 2.5rem; color: var(--turquoise); margin-bottom: 1rem;"><i class="fa-solid fa-users"></i></div>
+          <span class="hero-tag" style="margin-bottom: 1rem;">Family Escape</span>
+          <h3 style="font-size: 1.8rem; margin-bottom: 0.8rem;">Kids Sail Complimentary</h3>
+          <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.8rem;">Bring up to 2 children under 12 in Family Suites free of charge on select island routes.</p>
+          <a href="ships.html" class="btn btn-glass btn-sm">Explore Family Routes</a>
+        </div>
+
+        <div class="glass-panel" style="padding: 2.5rem; text-align: center;">
+          <div style="font-size: 2.5rem; color: var(--sea-green); margin-bottom: 1rem;"><i class="fa-solid fa-crown"></i></div>
+          <span class="hero-tag" style="margin-bottom: 1rem;">VIP Presidential</span>
+          <h3 style="font-size: 1.8rem; margin-bottom: 0.8rem;">Private Yacht Charter</h3>
+          <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.8rem;">Experience complete privacy with dedicated captain, personal chef, and helicopter landing access.</p>
+          <a href="ships.html" class="btn btn-primary btn-sm">View VIP Fleet</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Animated Wave SVG Footer -->
+  <svg class="footer-wave" viewBox="0 0 1440 120" preserveAspectRatio="none">
+    <path class="wave-path" fill="#000B14" d="M0,32L60,42.7C120,53,240,75,360,80C480,85,600,75,720,58.7C840,43,960,21,1080,21.3C1200,21,1320,43,1380,53.3L1440,64L1440,120L1380,120C1320,120,1200,120,1080,120C960,120,840,120,720,120C600,120,480,120,360,120C240,120,120,120,60,120L0,120Z"></path>
+  </svg>
+
+  <footer class="footer">
+    <div style="max-width: 1380px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 3rem; margin-bottom: 3rem;">
+      <div>
+        <a href="index.html" class="brand" style="margin-bottom: 1rem; display: inline-flex;">
+          <div class="brand-logo-icon"><i class="fa-solid fa-water-ladder"></i></div>
+          Oceania Direct
+        </a>
+        <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">World-class maritime transportation, luxury cruise bookings, and high-speed ferry schedules powered by Django REST framework.</p>
+      </div>
+      <div>
+        <h4 style="font-size: 1.1rem; margin-bottom: 1.2rem; color: var(--turquoise);">Navigational Links</h4>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
+          <li><a href="index.html" class="nav-link">Home</a></li>
+          <li><a href="ships.html" class="nav-link">Explore Ships</a></li>
+          <li><a href="booking_history.html" class="nav-link">Reservations</a></li>
+          <li><a href="passenger_dashboard.html" class="nav-link">Passenger Dashboard</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size: 1.1rem; margin-bottom: 1.2rem; color: var(--gold-accent);">Luxury Cabin Suites</h4>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px;">
+          <li><a href="ships.html" class="nav-link">Economy Ocean Deck</a></li>
+          <li><a href="ships.html" class="nav-link">Deluxe Ocean Room</a></li>
+          <li><a href="ships.html" class="nav-link">Executive Balcony Suite</a></li>
+          <li><a href="ships.html" class="nav-link">VIP Presidential Yacht</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 style="font-size: 1.1rem; margin-bottom: 1.2rem; color: var(--sea-green);">Support & Contact</h4>
+        <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem; margin-bottom: 1rem;"><i class="fa-solid fa-phone"></i> +1 (800) OCEAN-VIP</p>
+        <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem;"><i class="fa-solid fa-envelope"></i> support@oceaniadirect.com</p>
+      </div>
+    </div>
+    <div style="max-width: 1380px; margin: 0 auto; border-top: 1px solid var(--glass-border); padding-top: 1.5rem; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.85rem;">
+      &copy; 2026 Oceania Direct Maritime Systems. All Rights Reserved. Built with Django REST APIs & Vanilla JavaScript.
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    const shipImages = {
+      "Ocean Paradise": "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=800&q=80",
+      "Sea Empress": "https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80",
+      "Island Voyager": "https://images.unsplash.com/photo-1569263979104-865ab7cd8d13?auto=format&fit=crop&w=800&q=80",
+      "Nile Breeze": "https://images.unsplash.com/photo-1505705694340-019e1e335916?auto=format&fit=crop&w=800&q=80",
+      "Atlantis Trader": "https://images.unsplash.com/photo-1516834474-48c0abc2a902?auto=format&fit=crop&w=800&q=80"
+    };
+
+    async function loadFeaturedShips() {
+      const grid = document.getElementById('featured-ships-grid');
+      grid.innerHTML = '<p style="color:var(--turquoise); grid-column:1/-1; text-align:center;">Syncing luxury fleet schedules...</p>';
+      
+      try {
+        const ships = await apiFetch('/ships/');
+        grid.innerHTML = ships.slice(0, 3).map(ship => {
+          const imgUrl = shipImages[ship.ship_name] || "https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=800&q=80";
+          return `
+            <div class="ship-card">
+              <div class="ship-card-img-wrapper">
+                <img src="${imgUrl}" alt="${ship.ship_name}" class="ship-card-img">
+                <span class="badge-score">★ 4.9 Superb</span>
+                <span class="badge-status ${ship.status === 'Active' ? 'badge-active' : 'badge-maintenance'}">${ship.status}</span>
+              </div>
+              <div class="ship-card-content">
+                <h3 class="ship-title">${ship.ship_name}</h3>
+                <div class="ship-meta-list">
+                  <div class="ship-meta-item"><span>Category:</span> <strong style="color:var(--turquoise);">${ship.ship_type}</strong></div>
+                  <div class="ship-meta-item"><span>Capacity:</span> <strong>${ship.capacity} Passengers</strong></div>
+                  <div class="ship-meta-item"><span>Operator:</span> <strong>${ship.operator_name}</strong></div>
+                </div>
+                <div class="ship-card-footer">
+                  <div>
+                    <span style="font-size:0.75rem; color:rgba(255,255,255,0.6); display:block;">Starting From</span>
+                    <span class="fare-price">₹8,500</span>
+                  </div>
+                  <a href="ship_details.html?id=${ship.ship_id}" class="btn btn-primary btn-sm">
+                    Book Journey <i class="fa-solid fa-angle-right"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } catch (err) {
+        grid.innerHTML = '<p style="color:var(--danger); grid-column:1/-1; text-align:center;">Failed to connect to REST API backend.</p>';
+      }
+    }
+
+    function handleSearch(e) {
+      e.preventDefault();
+      const src = document.getElementById('search-source').value;
+      const dst = document.getElementById('search-destination').value;
+      window.location.href = `ships.html?source=${encodeURIComponent(src)}&dest=${encodeURIComponent(dst)}`;
+    }
+
+    document.addEventListener('DOMContentLoaded', loadFeaturedShips);
+  </script>
+</body>
+</html>
