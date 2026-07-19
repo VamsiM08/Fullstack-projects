@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | Join Island Escape Membership</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="auth-page">
+
+  <div class="auth-card" style="max-width:540px;">
+    <div class="auth-header">
+      <a href="index.html" class="nav-logo" style="justify-content: center; margin-bottom: 1rem;">
+        <i class="fas fa-umbrella-beach"></i>
+        <span>ISLAND<span style="color:#00B4D8;">ESCAPE</span></span>
+      </a>
+      <h2>Join VIP Club</h2>
+      <p style="color:#6C757D; font-size:0.9rem; margin-top:0.3rem;">Unlock exclusive overwater villa privileges & airport seaplane perks.</p>
+    </div>
+
+    <form id="register-form">
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-user"></i> Full Name</label>
+        <input type="text" id="reg-name" class="form-control" placeholder="e.g. Marcus Vance" required />
+      </div>
+
+      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-envelope"></i> Email</label>
+          <input type="email" id="reg-email" class="form-control" placeholder="marcus@voyage.com" required />
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="fas fa-phone"></i> Phone Number</label>
+          <input type="tel" id="reg-phone" class="form-control" placeholder="+1 310-555-0199" required />
+        </div>
+      </div>
+
+      <div class="form-group" style="position:relative;">
+        <label class="form-label"><i class="fas fa-lock"></i> Password</label>
+        <input type="password" id="reg-password" class="form-control" placeholder="Create strong password" required />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-crown"></i> Select Preferred Membership</label>
+        <select id="reg-membership" class="form-control">
+          <option value="Platinum VIP">Platinum VIP (Includes Free Seaplane Upgrade)</option>
+          <option value="Gold Member">Gold Member (Complimentary Spa Sessions)</option>
+          <option value="Diamond Elite">Diamond Elite (Private Butler & Yacht)</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-coral" style="width:100%; padding:0.9rem;">
+        Complete Registration <i class="fas fa-check-circle"></i>
+      </button>
+    </form>
+
+    <div style="text-align:center; margin-top:1.5rem; font-size:0.9rem; color:#6C757D;">
+      Already a member? <a href="login.html" style="color:#0077B6; font-weight:700;">Sign In</a>
+    </div>
+  </div>
+
+  <script src="{% static 'js/script.js' %}"></script>
+  <script>
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value;
+      const email = document.getElementById('reg-email').value;
+      const phone = document.getElementById('reg-phone').value;
+      const membership = document.getElementById('reg-membership').value;
+
+      try {
+        const res = await apiFetch('/customers/add/', {
+          method: 'POST',
+          body: JSON.stringify({ name, email, phone, membership })
+        });
+        showToast('Registration successful! Welcome to Island Escape.', 'success');
+        setTimeout(() => window.location.href = 'customer_dashboard.html', 1200);
+      } catch (err) {
+        showToast('Registration failed: ' + err.message, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

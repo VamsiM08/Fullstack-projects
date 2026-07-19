@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reserve Vacation | Island Escape Booking Wizard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body style="background: var(--secondary-sand);">
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled">
+    <div class="container nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-umbrella-beach"></i>
+        <span>ISLAND<span style="color:#00B4D8;">ESCAPE</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="islands.html" class="nav-link">Islands</a></li>
+        <li><a href="packages.html" class="nav-link">Packages</a></li>
+        <li><a href="customer_dashboard.html" class="nav-link">Dashboard</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container" style="padding-top: 8rem; padding-bottom: 5rem;">
+
+    <!-- STEPPER TRACKER -->
+    <div class="stepper-wrap">
+      <div class="step-item completed">
+        <div class="step-circle"><i class="fas fa-check"></i></div>
+        <span class="step-title">Select Package</span>
+      </div>
+      <div class="step-item active">
+        <div class="step-circle">2</div>
+        <span class="step-title">Traveler Details</span>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">3</div>
+        <span class="step-title">Payment</span>
+      </div>
+      <div class="step-item">
+        <div class="step-circle">4</div>
+        <span class="step-title">Confirmation</span>
+      </div>
+    </div>
+
+    <!-- BOOKING GRID -->
+    <div style="display: grid; grid-template-columns: 1.8fr 1fr; gap: 2.5rem;" class="booking-responsive-grid">
+
+      <!-- LEFT FORM -->
+      <div class="glass-card" style="padding: 2.5rem;">
+        <h2 style="margin-bottom: 0.5rem;"><i class="fas fa-user-edit" style="color:var(--primary-ocean);"></i> Reservation Details</h2>
+        <p style="color:#6C757D; font-size:0.9rem; margin-bottom: 2rem;">Enter primary traveler information and select travel dates.</p>
+
+        <form id="booking-form">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-calendar-alt"></i> Check-in Date</label>
+              <input type="date" id="book-checkin" class="form-control" required value="2026-08-01" />
+            </div>
+            <div class="form-group">
+              <label class="form-label"><i class="fas fa-calendar-check"></i> Check-out Date</label>
+              <input type="date" id="book-checkout" class="form-control" required value="2026-08-07" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label"><i class="fas fa-users"></i> Number of Guests</label>
+            <select id="book-guests" class="form-control">
+              <option value="2">2 Adults (Honeymoon Villa)</option>
+              <option value="1">1 Adult (Solo Retreat)</option>
+              <option value="4">4 Guests (Family Suite)</option>
+            </select>
+          </div>
+
+          <hr style="margin:2rem 0; border-color:var(--secondary-gray-100);" />
+
+          <h3 style="font-size:1.25rem; margin-bottom:1rem;">Primary Traveler Information</h3>
+
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="book-name" class="form-control" value="Alexander Wright" required />
+          </div>
+
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:1rem;">
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" id="book-email" class="form-control" value="alex.wright@luxuryescapes.com" required />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" id="book-phone" class="form-control" value="+1 415-890-2134" required />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Special Concierge Requests (Optional)</label>
+            <textarea id="book-requests" class="form-control" rows="3" placeholder="e.g. Seaplane window seat preference, dietary requirements, champagne in villa..."></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-coral btn-lg" style="width:100%; margin-top:1rem;">
+            Proceed to Payment Checkout <i class="fas fa-credit-card"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- RIGHT SUMMARY -->
+      <div>
+        <div class="glass-card" style="padding: 2rem; position: sticky; top: 6rem;">
+          <h3 style="margin-bottom:1.25rem; font-size:1.3rem;">Order Summary</h3>
+          
+          <img id="summary-pkg-img" src="https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=600&q=80" style="width:100%; height:180px; object-fit:cover; border-radius:var(--radius-md); margin-bottom:1rem;" alt="Package preview" />
+
+          <h4 id="summary-pkg-title" style="font-size:1.15rem; margin-bottom:0.5rem; color:var(--primary-navy);">Maldivian Overwater Royalty Villa Escape</h4>
+
+          <div style="display:flex; justify-content:space-between; margin-top:1.5rem; font-size:0.9rem; color:#6C757D;">
+            <span>Package Price:</span>
+            <span id="summary-pkg-price" style="font-weight:700; color:var(--primary-navy);">$4,249.15</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:0.5rem; font-size:0.9rem; color:#6C757D;">
+            <span>Airport Seaplane Transfer:</span>
+            <span style="font-weight:700; color:var(--accent-emerald);">INCLUDED</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; margin-top:0.5rem; font-size:0.9rem; color:#6C757D;">
+            <span>Taxes & VIP Service Fees:</span>
+            <span style="font-weight:700; color:var(--accent-emerald);">INCLUDED</span>
+          </div>
+
+          <hr style="margin:1.5rem 0; border-color:var(--secondary-gray-100);" />
+
+          <div style="display:flex; gap:0.5rem; margin-bottom:1rem;">
+            <input type="text" id="coupon-input" placeholder="Coupon Code (e.g. PARADISE15)" class="form-control" style="font-size:0.85rem;" />
+            <button class="btn btn-outline btn-sm" onclick="applyCoupon()">Apply</button>
+          </div>
+
+          <div style="background:rgba(16,185,129,0.1); padding:0.85rem 1rem; border-radius:var(--radius-md); display:flex; align-items:center; gap:0.6rem; font-size:0.85rem; color:var(--accent-emerald); font-weight:600;">
+            <i class="fas fa-shield-alt" style="font-size:1.2rem;"></i> 100% Secure Encrypted Booking Guarantee
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script src="{% static 'js/script.js' %}"></script>
+  <script>
+    function applyCoupon() {
+      const code = document.getElementById('coupon-input').value.toUpperCase();
+      if (code === 'PARADISE15') {
+        showToast('15% VIP Coupon Applied!', 'success');
+      } else {
+        showToast('Invalid Coupon Code', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

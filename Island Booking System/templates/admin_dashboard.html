@@ -1,0 +1,91 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal | Island Escape Enterprise Console</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled">
+    <div class="container nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-umbrella-beach"></i>
+        <span>ISLAND<span style="color:#00B4D8;">ADMIN</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Main Site</a></li>
+        <li><a href="customer_dashboard.html" class="nav-link">Customer View</a></li>
+        <li><a href="admin_dashboard.html" class="nav-link active">Admin Portal</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="dashboard-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div style="text-align:center; padding-bottom:1.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <i class="fas fa-user-shield" style="font-size:2.5rem; color:var(--primary-turquoise); margin-bottom:0.5rem;"></i>
+        <h4 style="color:var(--secondary-white); font-size:1.1rem;">Super Admin</h4>
+        <span class="badge badge-success" style="margin-top:0.4rem;">System Owner</span>
+      </div>
+
+      <div class="sidebar-menu">
+        <div class="sidebar-link active" data-tab="islands" onclick="showAdminTab('islands')"><i class="fas fa-island-tropical"></i> <span>Islands</span></div>
+        <div class="sidebar-link" data-tab="packages" onclick="showAdminTab('packages')"><i class="fas fa-box-open"></i> <span>Packages</span></div>
+        <div class="sidebar-link" data-tab="bookings" onclick="showAdminTab('bookings')"><i class="fas fa-calendar-check"></i> <span>Bookings</span></div>
+        <div class="sidebar-link" data-tab="customers" onclick="showAdminTab('customers')"><i class="fas fa-users"></i> <span>Customers</span></div>
+        <div class="sidebar-link" data-tab="payments" onclick="showAdminTab('payments')"><i class="fas fa-receipt"></i> <span>Payments</span></div>
+      </div>
+    </aside>
+
+    <!-- MAIN ADMIN CONTENT -->
+    <main class="dashboard-main">
+      <!-- TOP OVERVIEW CARDS -->
+      <div class="stats-grid" style="margin-bottom:2.5rem;">
+        <div class="glass-card stat-card" style="padding:1.25rem;">
+          <div class="stat-number" id="count-islands">--</div>
+          <div class="stat-label">Islands</div>
+        </div>
+        <div class="glass-card stat-card" style="padding:1.25rem;">
+          <div class="stat-number" id="count-packages" style="color:var(--primary-turquoise);">--</div>
+          <div class="stat-label">Packages</div>
+        </div>
+        <div class="glass-card stat-card" style="padding:1.25rem;">
+          <div class="stat-number" id="count-bookings" style="color:var(--accent-coral);">--</div>
+          <div class="stat-label">Bookings</div>
+        </div>
+        <div class="glass-card stat-card" style="padding:1.25rem;">
+          <div class="stat-number" id="count-revenue" style="color:var(--accent-emerald);">--</div>
+          <div class="stat-label">Total Revenue</div>
+        </div>
+      </div>
+
+      <!-- DYNAMIC TAB CONTENT AREA -->
+      <div id="admin-tab-content">
+        <!-- JS Rendered Tables -->
+      </div>
+    </main>
+  </div>
+
+  <!-- ADMIN GENERIC MODAL -->
+  <div class="modal-overlay" id="admin-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="admin-modal-title">Form Modal</h3>
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+      </div>
+      <div id="admin-modal-body">
+        <!-- JS Rendered Form -->
+      </div>
+    </div>
+  </div>
+
+  <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

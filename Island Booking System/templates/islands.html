@@ -1,0 +1,87 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tropical Islands | Island Escape Paradise Directory</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled">
+    <div class="container nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-umbrella-beach"></i>
+        <span>ISLAND<span style="color:#00B4D8;">ESCAPE</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="islands.html" class="nav-link active">Islands</a></li>
+        <li><a href="packages.html" class="nav-link">Packages</a></li>
+        <li><a href="customer_dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="admin_dashboard.html" class="nav-link">Admin Portal</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+        <a href="packages.html" class="btn btn-primary btn-sm">Book Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- BANNER -->
+  <div style="background: linear-gradient(180deg, var(--primary-navy) 0%, var(--primary-deep-blue) 100%); color: var(--secondary-white); padding: 8rem 0 4rem 0; text-align: center;">
+    <div class="container">
+      <span class="section-tag" style="background: rgba(255,255,255,0.1); color: var(--primary-sky);"><i class="fas fa-compass"></i> Tropical Directory</span>
+      <h1 style="color: var(--secondary-white); font-size: 3.5rem; margin-top: 0.5rem;">Explore Exotic Islands</h1>
+      <p style="color: rgba(255,255,255,0.8); max-width: 650px; margin: 0 auto;">Filter through private island sanctuaries across the Indian Ocean, South Pacific, Aegean, and Caribbean.</p>
+    </div>
+  </div>
+
+  <!-- FILTER CONTROLS & GRID -->
+  <section class="section-padding">
+    <div class="container">
+
+      <!-- FILTER BAR -->
+      <div class="glass-card" style="padding: 1.25rem 2rem; margin-bottom: 3rem; display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center;">
+        <div style="flex: 2; min-width: 250px; display: flex; align-items: center; gap: 0.75rem; background: var(--secondary-gray-50); padding: 0.6rem 1rem; border-radius: var(--radius-md);">
+          <i class="fas fa-search" style="color: var(--primary-ocean);"></i>
+          <input type="text" id="filter-search" placeholder="Search island name, country (e.g. Maldives, Bora Bora)..." style="border: none; background: transparent; outline: none; width: 100%; font-family: var(--font-body); font-size: 0.95rem;" />
+        </div>
+
+        <div style="flex: 1; min-width: 180px; display: flex; align-items: center; gap: 0.75rem; background: var(--secondary-gray-50); padding: 0.6rem 1rem; border-radius: var(--radius-md);">
+          <i class="fas fa-cloud-sun" style="color: var(--primary-ocean);"></i>
+          <select id="filter-climate" style="border: none; background: transparent; outline: none; width: 100%; font-family: var(--font-body); font-size: 0.95rem;">
+            <option value="all">All Climate Zones</option>
+            <option value="Tropical">Tropical</option>
+            <option value="Mediterranean">Mediterranean</option>
+            <option value="Equatorial">Equatorial</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ISLANDS CATALOG GRID -->
+      <div class="cards-grid" id="islands-catalog-grid">
+        <div style="grid-column: 1/-1; text-align: center; padding: 4rem;">
+          <i class="fas fa-spinner fa-spin fa-2x" style="color:#0077B6;"></i>
+          <p style="margin-top: 1rem; color: #6C757D;">Fetching island destinations...</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-bottom">
+      &copy; 2026 Island Escape System. Designed for Ultra-Luxury Tourism.
+    </div>
+  </footer>
+
+  <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,107 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traveler Dashboard | Island Escape Concierge Portal</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled">
+    <div class="container nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-umbrella-beach"></i>
+        <span>ISLAND<span style="color:#00B4D8;">ESCAPE</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="islands.html" class="nav-link">Islands</a></li>
+        <li><a href="packages.html" class="nav-link">Packages</a></li>
+        <li><a href="customer_dashboard.html" class="nav-link active">Dashboard</a></li>
+        <li><a href="admin_dashboard.html" class="nav-link">Admin Portal</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="dashboard-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div style="text-align:center; padding-bottom:1.5rem; border-bottom:1px solid rgba(255,255,255,0.1);">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80" style="width:75px; height:75px; border-radius:50%; object-fit:cover; margin:0 auto 0.75rem auto; border:3px solid var(--primary-turquoise);" alt="Avatar" />
+        <h4 style="color:var(--secondary-white); font-size:1.1rem;">Alexander Wright</h4>
+        <span class="badge badge-success" style="margin-top:0.4rem;"><i class="fas fa-crown"></i> Platinum VIP</span>
+      </div>
+
+      <div class="sidebar-menu">
+        <a href="#trips" class="sidebar-link active"><i class="fas fa-plane"></i> <span>My Itineraries</span></a>
+        <a href="#payments" class="sidebar-link"><i class="fas fa-receipt"></i> <span>Payment History</span></a>
+        <a href="islands.html" class="sidebar-link"><i class="fas fa-heart"></i> <span>Saved Wishlist</span></a>
+        <a href="login.html" class="sidebar-link" style="margin-top:auto;"><i class="fas fa-sign-out-alt"></i> <span>Sign Out</span></a>
+      </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT -->
+    <main class="dashboard-main">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2.5rem;">
+        <div>
+          <h1 style="font-size:2.25rem;">Welcome, Alexander</h1>
+          <p style="color:#6C757D;">Your personal luxury island itineraries and booking receipts.</p>
+        </div>
+        <a href="packages.html" class="btn btn-primary"><i class="fas fa-plus"></i> Book New Trip</a>
+      </div>
+
+      <!-- STATS OVERVIEW CARDS -->
+      <div class="stats-grid" style="margin-bottom:2.5rem;">
+        <div class="glass-card stat-card" style="padding:1.5rem;">
+          <div style="font-size:1.8rem; font-weight:800; color:var(--primary-ocean);">2</div>
+          <div class="stat-label">Upcoming Escapes</div>
+        </div>
+        <div class="glass-card stat-card" style="padding:1.5rem;">
+          <div style="font-size:1.8rem; font-weight:800; color:var(--accent-emerald);">$9,353.15</div>
+          <div class="stat-label">Total Expensed</div>
+        </div>
+        <div class="glass-card stat-card" style="padding:1.5rem;">
+          <div style="font-size:1.8rem; font-weight:800; color:var(--accent-gold);">14</div>
+          <div class="stat-label">Total Days Reserved</div>
+        </div>
+        <div class="glass-card stat-card" style="padding:1.5rem;">
+          <div style="font-size:1.8rem; font-weight:800; color:var(--accent-coral);">Level 4</div>
+          <div class="stat-label">VIP Tier Status</div>
+        </div>
+      </div>
+
+      <!-- UPCOMING TRIPS SECTION -->
+      <section id="trips" style="margin-bottom:3rem;">
+        <h2 style="margin-bottom:1.25rem;"><i class="fas fa-luggage-cart" style="color:var(--primary-ocean);"></i> Active Reservations</h2>
+        <div id="customer-bookings-list">
+          <div style="text-align:center; padding:3rem;"><i class="fas fa-spinner fa-spin fa-2x" style="color:#0077B6;"></i></div>
+        </div>
+      </section>
+
+      <!-- PAYMENTS SECTION -->
+      <section id="payments">
+        <h2 style="margin-bottom:1.25rem;"><i class="fas fa-credit-card" style="color:var(--primary-ocean);"></i> Transaction History</h2>
+        <div class="table-responsive">
+          <table class="custom-table">
+            <thead>
+              <tr>
+                <th>ID</th><th>Txn ID</th><th>Package</th><th>Method</th><th>Amount</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="customer-payments-list">
+              <!-- JS Populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>

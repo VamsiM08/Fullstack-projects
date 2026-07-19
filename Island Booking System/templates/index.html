@@ -1,0 +1,303 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Island Escape | Luxury Tropical Travel & Private Resort Booking</title>
+  <meta name="description" content="Book exclusive overwater villas, private tropical islands, and luxury travel packages in Maldives, Bora Bora, Bali, and Santorini.">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="nav-logo">
+        <i class="fas fa-umbrella-beach"></i>
+        <span>ISLAND<span style="color:#00B4D8;">ESCAPE</span></span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="nav-link active">Home</a></li>
+        <li><a href="islands.html" class="nav-link">Islands</a></li>
+        <li><a href="packages.html" class="nav-link">Packages</a></li>
+        <li><a href="customer_dashboard.html" class="nav-link">Dashboard</a></li>
+        <li><a href="admin_dashboard.html" class="nav-link">Admin Portal</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+        <a href="packages.html" class="btn btn-primary btn-sm">Book Now <i class="fas fa-arrow-right"></i></a>
+      </div>
+
+      <button class="mobile-toggle" aria-label="Toggle Menu">
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <div class="hero-bg">
+      <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1920&q=90" alt="Tropical Lagoon Paradise" />
+    </div>
+    <div class="hero-overlay"></div>
+
+    <div class="container hero-content">
+      <div class="hero-badge">
+        <i class="fas fa-award" style="color: #FFD166;"></i> World's #1 Luxury Island Tourism Platform
+      </div>
+      <h1 class="hero-title">Escape To Paradise</h1>
+      <p class="hero-subtitle">Discover secluded private water villas, pristine turquoise lagoons, and bespoke tropical escapes tailored for extraordinary memories.</p>
+
+      <!-- SEARCH BOX GLASS -->
+      <form id="home-search-form" class="search-box-glass">
+        <div class="search-field">
+          <label><i class="fas fa-compass"></i> Destination</label>
+          <input type="text" id="search-destination" placeholder="Maldives, Bora Bora, Bali..." />
+        </div>
+        <div class="search-field">
+          <label><i class="fas fa-calendar-alt"></i> Travel Dates</label>
+          <input type="date" id="search-date" />
+        </div>
+        <div class="search-field">
+          <label><i class="fas fa-user-friends"></i> Travelers</label>
+          <select id="search-guests">
+            <option value="2">2 Guests (Couple)</option>
+            <option value="1">1 Traveler (Solo)</option>
+            <option value="4">4 Guests (Family)</option>
+            <option value="6">6+ VIP Group</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-coral btn-lg">
+          <i class="fas fa-search"></i> Search Islands
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- FEATURED ISLANDS -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fas fa-star"></i> Handpicked Destinations</span>
+        <h2 class="section-title">Featured Luxury Islands</h2>
+        <p class="section-subtitle">Hand-selected tropical sanctuaries offering unprecedented privacy, Michelin-star dining, and crystalline ocean views.</p>
+      </div>
+
+      <div class="cards-grid" id="featured-islands-grid">
+        <!-- JS Populated -->
+        <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+          <i class="fas fa-spinner fa-spin fa-2x" style="color:#0077B6;"></i>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 3rem;">
+        <a href="islands.html" class="btn btn-outline btn-lg">View All Islands <i class="fas fa-compass"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- POPULAR PACKAGES -->
+  <section class="section-padding" style="background: rgba(0, 180, 216, 0.04);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fas fa-gem"></i> Curated Experiences</span>
+        <h2 class="section-title">Trending Island Packages</h2>
+        <p class="section-subtitle">All-inclusive luxury vacation packages with private seaplane transfers and helicopter tours included.</p>
+      </div>
+
+      <div class="cards-grid" id="popular-packages-grid">
+        <!-- JS Populated -->
+        <div style="grid-column: 1/-1; text-align: center; padding: 3rem;">
+          <i class="fas fa-spinner fa-spin fa-2x" style="color:#0077B6;"></i>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fas fa-crown"></i> Premium Promise</span>
+        <h2 class="section-title">Why Book With Island Escape</h2>
+        <p class="section-subtitle">Experience unmatched luxury hospitality and seamless trip curation from start to finish.</p>
+      </div>
+
+      <div class="features-grid">
+        <div class="glass-card feature-card">
+          <div class="feature-icon"><i class="fas fa-plane-arrival"></i></div>
+          <h3>Private Transfer Concierge</h3>
+          <p style="color:#6C757D; font-size:0.9rem; margin-top:0.5rem;">VIP escort from international airport gates straight to private seaplanes or luxury yachts.</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon"><i class="fas fa-water"></i></div>
+          <h3>Overwater Sanctuaries</h3>
+          <p style="color:#6C757D; font-size:0.9rem; margin-top:0.5rem;">Guaranteed glass-floor water villas with private infinity pools overlooking coral reefs.</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon"><i class="fas fa-concierge-bell"></i></div>
+          <h3>24/7 Island Butler</h3>
+          <p style="color:#6C757D; font-size:0.9rem; margin-top:0.5rem;">Dedicated personal butler on standby to curate underwater dining, spa sessions, and private cruises.</p>
+        </div>
+        <div class="glass-card feature-card">
+          <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+          <h3>100% Flex Protection</h3>
+          <p style="color:#6C757D; font-size:0.9rem; margin-top:0.5rem;">Complimentary date modifications and full refund protection for total peace of mind.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADVENTURE ACTIVITIES -->
+  <section class="section-padding" style="background: var(--primary-navy); color: var(--secondary-white);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag" style="background: rgba(255,255,255,0.1); color: var(--primary-sky);"><i class="fas fa-swimmer"></i> Exquisite Adventures</span>
+        <h2 class="section-title" style="color: var(--secondary-white);">Unforgettable Experiences</h2>
+        <p class="section-subtitle" style="color: rgba(255,255,255,0.7);">Elevate your vacation with once-in-a-lifetime ocean adventures.</p>
+      </div>
+
+      <div class="cards-grid">
+        <div class="glass-card-dark" style="padding: 2rem;">
+          <i class="fas fa-helicopter" style="font-size: 2.5rem; color: var(--primary-turquoise); margin-bottom: 1rem;"></i>
+          <h3>Aerial Island Helitours</h3>
+          <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 0.5rem;">Soar over coral atolls and volcanic craters in private turbine helicopters.</p>
+        </div>
+        <div class="glass-card-dark" style="padding: 2rem;">
+          <i class="fas fa-fish" style="font-size: 2.5rem; color: var(--accent-gold); margin-bottom: 1rem;"></i>
+          <h3>Manta Ray & Shark Safaris</h3>
+          <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 0.5rem;">Swim alongside gentle giant manta rays in protected UNESCO biosphere reserves.</p>
+        </div>
+        <div class="glass-card-dark" style="padding: 2rem;">
+          <i class="fas fa-ship" style="font-size: 2.5rem; color: var(--accent-coral); margin-bottom: 1rem;"></i>
+          <h3>Sunset Luxury Yachting</h3>
+          <p style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 0.5rem;">Charter private 80ft ocean catamarans with champagne tasting and live acoustic music.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATISTICS COUNTER -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="glass-card stat-card">
+          <div class="stat-number">50+</div>
+          <div class="stat-label">Luxury Private Islands</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-number">12k+</div>
+          <div class="stat-label">Happy Guests</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-number">99.8%</div>
+          <div class="stat-label">Satisfaction Score</div>
+        </div>
+        <div class="glass-card stat-card">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">VIP Concierge</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CUSTOMER REVIEWS -->
+  <section class="section-padding" style="background: rgba(0, 180, 216, 0.04);">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag"><i class="fas fa-quote-left"></i> Guest Stories</span>
+        <h2 class="section-title">Loved By Discerning Travelers</h2>
+        <p class="section-subtitle">Read real experiences from honeymooners, executives, and luxury enthusiasts.</p>
+      </div>
+
+      <div class="cards-grid">
+        <div class="glass-card" style="padding: 2rem;">
+          <div style="color: var(--accent-gold); margin-bottom: 1rem;">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p style="font-style: italic; font-size: 0.95rem; margin-bottom: 1.5rem; color: var(--secondary-gray-900);">"Baros Maldives overwater villa booked through Island Escape was pure bliss. The seaplane reception and private sunset cruise exceeded our high expectations."</p>
+          <div style="display:flex; align-items:center; gap:1rem;">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" style="width:50px; height:50px; border-radius:50%; object-fit:cover;" alt="Alexander Wright" />
+            <div>
+              <div style="font-weight:700;">Alexander Wright</div>
+              <div style="font-size:0.8rem; color:var(--secondary-gray-600);">Verified Platinum Member</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card" style="padding: 2rem;">
+          <div style="color: var(--accent-gold); margin-bottom: 1rem;">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+          <p style="font-style: italic; font-size: 0.95rem; margin-bottom: 1.5rem; color: var(--secondary-gray-900);">"Bora Bora was breathtaking. The direct booking flow was smooth, and receiving our detailed itinerary with butler contacts beforehand made traveling effortless."</p>
+          <div style="display:flex; align-items:center; gap:1rem;">
+            <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=100&q=80" style="width:50px; height:50px; border-radius:50%; object-fit:cover;" alt="Sophia Martinez" />
+            <div>
+              <div style="font-weight:700;">Sophia Martinez</div>
+              <div style="font-size:0.8rem; color:var(--secondary-gray-600);">Honeymoon Traveler</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="section-padding">
+    <div class="container">
+      <div class="glass-card" style="background: linear-gradient(135deg, var(--primary-ocean) 0%, var(--primary-navy) 100%); color: var(--secondary-white); padding: 4rem 2rem; text-align: center; border-radius: var(--radius-lg);">
+        <h2 style="color: var(--secondary-white); font-size: 2.5rem; margin-bottom: 1rem;">Receive Private Island Privilege Offers</h2>
+        <p style="color: rgba(255,255,255,0.8); max-width: 600px; margin: 0 auto 2rem auto;">Subscribe to get early access to unlisted villa openings, seasonal discounts up to 30%, and complimentary helicopter upgrades.</p>
+        <div style="max-width: 500px; margin: 0 auto; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+          <input type="email" placeholder="Enter your business email..." style="flex:1; min-width:240px; padding: 0.9rem 1.2rem; border-radius: var(--radius-full); border: none; outline: none; font-size: 0.95rem;" />
+          <button class="btn btn-coral">Join VIP Club <i class="fas fa-paper-plane"></i></button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand"><i class="fas fa-umbrella-beach" style="color:#00B4D8;"></i> ISLAND ESCAPE</div>
+          <p class="footer-desc">The premier global platform for luxury island villa reservations, ocean cruises, and tropical retreats.</p>
+        </div>
+        <div>
+          <h4 class="footer-title">Destinations</h4>
+          <ul class="footer-links">
+            <li><a href="islands.html">Maldives Overwater</a></li>
+            <li><a href="islands.html">Bora Bora Lagoon</a></li>
+            <li><a href="islands.html">Uluwatu Bali</a></li>
+            <li><a href="islands.html">Santorini Greece</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-title">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="packages.html">All Packages</a></li>
+            <li><a href="customer_dashboard.html">Customer Dashboard</a></li>
+            <li><a href="admin_dashboard.html">Admin Portal</a></li>
+            <li><a href="login.html">Sign In</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-title">Contact Concierge</h4>
+          <p style="color:rgba(255,255,255,0.7); font-size:0.9rem;"><i class="fas fa-phone-alt"></i> +1 800-PARADISE</p>
+          <p style="color:rgba(255,255,255,0.7); font-size:0.9rem; margin-top:0.5rem;"><i class="fas fa-envelope"></i> concierge@islandescape.com</p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        &copy; 2026 Island Escape System. All rights reserved. Designed for Ultra-Luxury Tourism.
+      </div>
+    </div>
+  </footer>
+
+  <script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
